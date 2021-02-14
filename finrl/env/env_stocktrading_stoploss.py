@@ -8,8 +8,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import random
-from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
-from stable_baselines3.common import logger
+from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
+from stable_baselines import logger
 import time
 class StockTradingEnvStopLoss(gym.Env):
     """
@@ -171,31 +171,31 @@ class StockTradingEnvStopLoss(gym.Env):
         self.log_step(reason=reason, terminal_reward=reward)
         # Add outputs to logger interface
         gl_pct = self.account_information["total_assets"][-1] / self.initial_amount
-        logger.record("environment/GainLoss_pct",(gl_pct - 1)*100)
-        logger.record(
+        logger.logkv("environment/GainLoss_pct",(gl_pct - 1)*100)
+        logger.logkv(
             "environment/total_assets",
             int(self.account_information["total_assets"][-1]),
         )
         reward_pct = self.account_information["total_assets"][-1] / self.initial_amount
-        logger.record("environment/total_reward_pct", (reward_pct - 1) * 100)
-        logger.record("environment/total_trades", self.sum_trades)
-        logger.record(
+        logger.logkv("environment/total_reward_pct", (reward_pct - 1) * 100)
+        logger.logkv("environment/total_trades", self.sum_trades)
+        logger.logkv(
             "environment/actual_num_trades",
             self.actual_num_trades,
         )
-        logger.record(
+        logger.logkv(
             "environment/avg_daily_trades",
             self.sum_trades / (self.current_step),
         )
-        logger.record(
+        logger.logkv(
             "environment/avg_daily_trades_per_asset",
             self.sum_trades / (self.current_step) / len(self.assets),
         )
-        logger.record("environment/completed_steps", self.current_step)
-        logger.record(
+        logger.logkv("environment/completed_steps", self.current_step)
+        logger.logkv(
             "environment/sum_rewards", np.sum(self.account_information["reward"])
         )
-        logger.record(
+        logger.logkv(
             "environment/cash_proportion",
             self.account_information["cash"][-1]
             / self.account_information["total_assets"][-1],
