@@ -38,8 +38,6 @@ class FeatureEngineer:
         self.use_turbulence = use_turbulence
         self.user_defined_feature = user_defined_feature
         
-        self.MACD_FAST = 12; self.MACD_SLOW = 26; self.MACD_SIGNAL = 9
-        self.MA_PERIOD = ; self.EMA_PERIOD = 20
 
     def preprocess_data(self, df):
         """main method to do the feature engineering
@@ -82,14 +80,14 @@ class FeatureEngineer:
             for i in range(len(unique_ticker)):
                 try:
                     temp_indicator = stock[stock.tic == unique_ticker[i]]
-                    if indicator = "EMA":
-                        temp_indicator = eval(indicator + "(temp_indicator['close'], timeperiod = self.EMA_PERIOD) )")
                     if indicator = "MA":
-                        temp_indicator = eval(indicator + "(temp_indicator['close'], timeperiod = self.MA_PERIOD, matype=0))")
-                    if indicator = "MACD":
-                        temp_indicator = eval(indicator + "(temp_indicator['close'], fastperiod = self.MACD_FAST, slowperiod = self.MACD_SLOW, signalperiod = self.MACD_SIGNAL)")
+                        temp_indicator = eval(indicator + "(temp_indicator['close'], timeperiod = config.MA_PERIOD, matype=0))")
+                    if indicator = "EMA":
+                        temp_indicator = eval(indicator + "(temp_indicator['close'], timeperiod = config.EMA_PERIOD) )")
                     if indicator = "BIAS":
                         temp_indicator = eval(indicator + "(temp_indicator['close'], )")
+                    if indicator = "MACD":
+                        temp_indicator = eval(indicator + "(temp_indicator['close'], fastperiod = config.MACD_FAST, slowperiod = config.MACD_SLOW, signalperiod = config.MACD_SIGNAL)")
                     if indicator = "VR":
                         temp_indicator = eval(indicator + "(temp_indicator['close'], )")
                     if indicator = "OBV":
