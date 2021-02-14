@@ -11,6 +11,8 @@ import random
 from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines import logger
 import time
+
+
 class StockTradingEnvStopLoss(gym.Env):
     """
     A stock trading environment for OpenAI gym
