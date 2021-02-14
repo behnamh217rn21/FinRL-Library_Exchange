@@ -258,11 +258,11 @@ class StockTradingEnvStopLoss(gym.Env):
             reward = ((total_assets - total_penalty) / self.initial_amount) - 1
             reward /= self.current_step 
             
-#             print(f"assets: {assets}")
-#             print(f"Cash Penalty: {cash_penalty}")
-#             print(f"Stop Loss Penalty: {stop_loss_penalty}")
-#             print(f"Low Profit Penalty: {low_profit_penalty}")
-#             print(f"Reward: {reward}")
+            # print(f"assets: {assets}")
+            # print(f"Cash Penalty: {cash_penalty}")
+            # print(f"Stop Loss Penalty: {stop_loss_penalty}")
+            # print(f"Low Profit Penalty: {low_profit_penalty}")
+            # print(f"Reward: {reward}")
 
             return reward
     def step(self, actions):
@@ -327,7 +327,7 @@ class StockTradingEnvStopLoss(gym.Env):
                 self.log_step(reason="STOP LOSS")
                 
             
-#             print(f"closing_diff_avg_buy: {self.closing_diff_avg_buy}")
+            # print(f"closing_diff_avg_buy: {self.closing_diff_avg_buy}")
 
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
@@ -375,23 +375,23 @@ class StockTradingEnvStopLoss(gym.Env):
             coh = coh - spend - costs
             holdings_updated = holdings + actions
             
-#             print(f"actions: {actions}")
-#             print(f"latest holdings: {holdings_updated}")
+            # print(f"actions: {actions}")
+            # print(f"latest holdings: {holdings_updated}")
 
             # Update average buy price
             buys = np.sign(buys)
             self.n_buys += buys
             self.avg_buy_price = np.where(buys > 0, self.avg_buy_price + ((closings - self.avg_buy_price) / self.n_buys), self.avg_buy_price) #incremental average
             
-#             print(f"n_buys before: {self.n_buys}")
-#             print(f"avg_buy_price before: {self.avg_buy_price}")
+            # print(f"n_buys before: {self.n_buys}")
+            # print(f"avg_buy_price before: {self.avg_buy_price}")
             
             #set as zero when we don't have any holdings anymore
             self.n_buys = np.where(holdings_updated > 0, self.n_buys, 0)
             self.avg_buy_price = np.where(holdings_updated > 0, self.avg_buy_price, 0) 
             
-#             print(f"n_buys after: {self.n_buys}")
-#             print(f"avg_buy_price after: {self.avg_buy_price}")
+            # print(f"n_buys after: {self.n_buys}")
+            # print(f"avg_buy_price after: {self.avg_buy_price}")
             
             self.date_index += 1
             if self.turbulence_threshold is not None:
