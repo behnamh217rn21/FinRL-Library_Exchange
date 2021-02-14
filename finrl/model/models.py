@@ -88,14 +88,13 @@ class DRLAgent:
     def __init__(self, env):
         self.env = env
 
-    def get_model(
-        self,
-        model_name,
-        policy="LnLstmPolicy",
-        policy_kwargs=None,
-        model_kwargs=None,
-        verbose=1,
-    ):
+    def get_model(self,
+                  model_name,
+                  policy="LnLstmPolicy",
+                  policy_kwargs=None,
+                  model_kwargs=None,
+                  verbose=1,
+                 ):
         if model_name not in MODELS:
             raise NotImplementedError("NotImplementedError")
 
@@ -126,11 +125,12 @@ class DRLAgent:
 class DRLEnsembleAgent:
     @staticmethod
     def get_model(model_name,
-                    env,
-                    policy="MlpPolicy",
-                    policy_kwargs=None,
-                    model_kwargs=None,
-                    verbose=1):
+                  env,
+                  policy="MlpPolicy",
+                  policy_kwargs=None,
+                  model_kwargs=None,
+                  verbose=1
+                 ):
 
         if model_name not in MODELS:
             raise NotImplementedError("NotImplementedError")
@@ -171,18 +171,18 @@ class DRLEnsembleAgent:
         return sharpe
 
     def __init__(self,df,
-                train_period,val_test_period,
-                rebalance_window, validation_window,
-                stock_dim,
-                hmax,                
-                initial_amount,
-                buy_cost_pct,
-                sell_cost_pct,
-                reward_scaling,
-                state_space,
-                action_space,
-                tech_indicator_list,
-                print_verbosity):
+                 train_period,val_test_period,
+                 rebalance_window, validation_window,
+                 stock_dim,
+                 hmax,                
+                 initial_amount,
+                 buy_cost_pct,
+                 sell_cost_pct,
+                 reward_scaling,
+                 state_space,
+                 action_space,
+                 tech_indicator_list,
+                 print_verbosity):
 
         self.df=df
         self.train_period = train_period
@@ -212,26 +212,25 @@ class DRLEnsembleAgent:
 
     def DRL_prediction(self,model,name,last_state,iter_num,turbulence_threshold,initial):
         ### make a prediction based on trained model###
-
         ## trading env
         trade_data = data_split(self.df, start=self.unique_trade_date[iter_num - self.rebalance_window], end=self.unique_trade_date[iter_num])
         trade_env = DummyVecEnv([lambda: StockTradingEnv(trade_data,
-                                                        self.stock_dim,
-                                                        self.hmax,
-                                                        self.initial_amount,
-                                                        self.buy_cost_pct,
-                                                        self.sell_cost_pct,
-                                                        self.reward_scaling,
-                                                        self.state_space,
-                                                        self.action_space,
-                                                        self.tech_indicator_list,
-                                                        turbulence_threshold=turbulence_threshold,
-                                                        initial=initial,
-                                                        previous_state=last_state,
-                                                        model_name=name,
-                                                        mode='trade',
-                                                        iteration=iter_num,
-                                                        print_verbosity=self.print_verbosity)])
+                                                         self.stock_dim,
+                                                         self.hmax,
+                                                         self.initial_amount,
+                                                         self.buy_cost_pct,
+                                                         self.sell_cost_pct,
+                                                         self.reward_scaling,
+                                                         self.state_space,
+                                                         self.action_space,
+                                                         self.tech_indicator_list,
+                                                         turbulence_threshold=turbulence_threshold,
+                                                         initial=initial,
+                                                         previous_state=last_state,
+                                                         model_name=name,
+                                                         mode='trade',
+                                                         iteration=iter_num,
+                                                         print_verbosity=self.print_verbosity)])
 
         trade_obs = trade_env.reset()
 
@@ -253,9 +252,9 @@ class DRLEnsembleAgent:
         # of the previous model to the current model as the initial state
         last_state_ensemble = []
 
+        a2c_sharpe_list = []
         ppo2_sharpe_list = []
         ddpg_sharpe_list = []
-        a2c_sharpe_list = []
 
         model_use = []
         validation_start_date_list = []
@@ -269,7 +268,6 @@ class DRLEnsembleAgent:
         for i in range(self.rebalance_window + self.validation_window, len(self.unique_trade_date), self.rebalance_window):
             validation_start_date = self.unique_trade_date[i - self.rebalance_window - self.validation_window]
             validation_end_date = self.unique_trade_date[i - self.rebalance_window]
-
             validation_start_date_list.append(validation_start_date)
             validation_end_date_list.append(validation_end_date)
             iteration_list.append(i)
@@ -289,11 +287,8 @@ class DRLEnsembleAgent:
             start_date_index = end_date_index - 63 + 1
 
             historical_turbulence = self.df.iloc[start_date_index:(end_date_index + 1), :]
-
             historical_turbulence = historical_turbulence.drop_duplicates(subset=['date'])
-
             historical_turbulence_mean = np.mean(historical_turbulence.turbulence.values)
-
             print(historical_turbulence_mean)
 
             if historical_turbulence_mean > insample_turbulence_threshold:
@@ -312,16 +307,16 @@ class DRLEnsembleAgent:
             ## training env
             train = data_split(self.df, start=self.train_period[0], end=self.unique_trade_date[i - self.rebalance_window - self.validation_window])
             self.train_env = DummyVecEnv([lambda: StockTradingEnv(train,
-                                                                self.stock_dim,
-                                                                self.hmax,
-                                                                self.initial_amount,
-                                                                self.buy_cost_pct,
-                                                                self.sell_cost_pct,
-                                                                self.reward_scaling,
-                                                                self.state_space,
-                                                                self.action_space,
-                                                                self.tech_indicator_list,
-                                                                print_verbosity=self.print_verbosity)])
+                                                                  self.stock_dim,
+                                                                  self.hmax,
+                                                                  self.initial_amount,
+                                                                  self.buy_cost_pct,
+                                                                  self.sell_cost_pct,
+                                                                  self.reward_scaling,
+                                                                  self.state_space,
+                                                                  self.action_space,
+                                                                  self.tech_indicator_list,
+                                                                  print_verbosity=self.print_verbosity)])
 
             validation = data_split(self.df, start=self.unique_trade_date[i - self.rebalance_window - self.validation_window],
                                     end=self.unique_trade_date[i - self.rebalance_window])
@@ -338,20 +333,20 @@ class DRLEnsembleAgent:
 
             print("======A2C Validation from: ", validation_start_date, "to ",validation_end_date)
             val_env_a2c = DummyVecEnv([lambda: StockTradingEnv(validation,
-                                                                self.stock_dim,
-                                                                self.hmax,
-                                                                self.initial_amount,
-                                                                self.buy_cost_pct,
-                                                                self.sell_cost_pct,
-                                                                self.reward_scaling,
-                                                                self.state_space,
-                                                                self.action_space,
-                                                                self.tech_indicator_list,
-                                                                turbulence_threshold=turbulence_threshold,
-                                                                iteration=i,
-                                                                model_name='A2C',
-                                                                mode='validation',
-                                                                print_verbosity=self.print_verbosity)])
+                                                               self.stock_dim,
+                                                               self.hmax,
+                                                               self.initial_amount,
+                                                               self.buy_cost_pct,
+                                                               self.sell_cost_pct,
+                                                               self.reward_scaling,
+                                                               self.state_space,
+                                                               self.action_space,
+                                                               self.tech_indicator_list,
+                                                               turbulence_threshold=turbulence_threshold,
+                                                               iteration=i,
+                                                               model_name='A2C',
+                                                               mode='validation',
+                                                               print_verbosity=self.print_verbosity)])
             val_obs_a2c = val_env_a2c.reset()
             self.DRL_validation(model=model_a2c,test_data=validation,test_env=val_env_a2c,test_obs=val_obs_a2c)
             sharpe_a2c = self.get_validation_sharpe(i,model_name="A2C")
@@ -414,16 +409,16 @@ class DRLEnsembleAgent:
             # Environment setup for model retraining up to first trade date
             train_full = data_split(self.df, start=self.train_period[0], end=self.unique_trade_date[i - self.rebalance_window])
             self.train_full_env = DummyVecEnv([lambda: StockTradingEnv(train_full,
-                                                                self.stock_dim,
-                                                                self.hmax,
-                                                                self.initial_amount,
-                                                                self.buy_cost_pct,
-                                                                self.sell_cost_pct,
-                                                                self.reward_scaling,
-                                                                self.state_space,
-                                                                self.action_space,
-                                                                self.tech_indicator_list,
-                                                                print_verbosity=self.print_verbosity)])
+                                                                       self.stock_dim,
+                                                                       self.hmax,
+                                                                       self.initial_amount,
+                                                                       self.buy_cost_pct,
+                                                                       self.sell_cost_pct,
+                                                                       self.reward_scaling,
+                                                                       self.state_space,
+                                                                       self.action_space,
+                                                                       self.tech_indicator_list,
+                                                                       print_verbosity=self.print_verbosity)])
             # Model Selection based on sharpe ratio
             if (sharpe_ppo2 >= sharpe_a2c) & (sharpe_ppo2 >= sharpe_ddpg):
                 model_use.append('PPO2')
@@ -447,9 +442,9 @@ class DRLEnsembleAgent:
             print("======Trading from: ", self.unique_trade_date[i - self.rebalance_window], "to ", self.unique_trade_date[i])
             #print("Used Model: ", model_ensemble)
             last_state_ensemble = self.DRL_prediction(model=model_ensemble, name="ensemble",
-                                                     last_state=last_state_ensemble, iter_num=i,
-                                                     turbulence_threshold = turbulence_threshold,
-                                                     initial=initial)
+                                                      last_state=last_state_ensemble, iter_num=i,
+                                                      turbulence_threshold = turbulence_threshold,
+                                                      initial=initial)
             ############## Trading ends ##############
 
         end = time.time()
