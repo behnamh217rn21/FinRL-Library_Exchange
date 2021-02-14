@@ -7,7 +7,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from stable_baselines3.common.vec_env import DummyVecEnv
+from stable_baselines.common.vec_env import DummyVecEnv
 
 
 class StockPortfolioEnv(gym.Env):
