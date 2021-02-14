@@ -14,7 +14,6 @@ class Downloader:
     def __init__(self):
         self.data_df = pd.DataFrame()
 
-
     def fetch_data(self) -> pd.DataFrame:
         """Fetches data from drive
         Parameters
