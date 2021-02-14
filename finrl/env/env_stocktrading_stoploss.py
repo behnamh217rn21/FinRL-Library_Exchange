@@ -55,27 +55,26 @@ class StockTradingEnvStopLoss(gym.Env):
         given no change in prices, no change in asset values
     """
     metadata = {"render.modes": ["human"]}
-    def __init__(
-        self,
-        df,
-        buy_cost_pct=3e-3,
-        sell_cost_pct=3e-3,
-        date_col_name="date",
-        hmax=10,
-        discrete_actions=False,
-        shares_increment=1,
-        stoploss_penalty=0.9,
-        profit_loss_ratio=2,
-        turbulence_threshold=None,
-        print_verbosity=10,
-        initial_amount=1e6,
-        daily_information_cols=["open", "close", "high", "low", "volume"],
-        cache_indicator_data=True,
-        cash_penalty_proportion=0.1,
-        random_start=True,
-        patient=False,
-        currency="$",
-    ):
+    def __init__(self,
+                 df,
+                 buy_cost_pct=3e-3,
+                 sell_cost_pct=3e-3,
+                 date_col_name="date",
+                 hmax=10,
+                 discrete_actions=False,
+                 shares_increment=1,
+                 stoploss_penalty=0.9,
+                 profit_loss_ratio=2,
+                 turbulence_threshold=None,
+                 print_verbosity=10,
+                 initial_amount=1e6,
+                 daily_information_cols=["open", "close", "high", "low", "volume"],
+                 cache_indicator_data=True,
+                 cash_penalty_proportion=0.1,
+                 random_start=True,
+                 patient=False,
+                 currency="$",
+                ):
         self.df = df
         self.stock_col = "tic"
         self.assets = df[self.stock_col].unique()
@@ -115,13 +114,16 @@ class StockTradingEnvStopLoss(gym.Env):
                 self.get_date_vector(i) for i, _ in enumerate(self.dates)
             ]
             print("data cached!")
+            
     def seed(self, seed=None):
         if seed is None:
             seed = int(round(time.time() * 1000))
         random.seed(seed)
+        
     @property
     def current_step(self):
         return self.date_index - self.starting_point
+    
     def reset(self):
         self.seed()
         self.sum_trades = 0
@@ -154,6 +156,7 @@ class StockTradingEnvStopLoss(gym.Env):
         )
         self.state_memory.append(init_state)
         return init_state
+    
     def get_date_vector(self, date, cols=None):
         if (cols is None) and (self.cached_data is not None):
             return self.cached_data[date]
@@ -168,6 +171,7 @@ class StockTradingEnvStopLoss(gym.Env):
                 v += subset.loc[date, cols].tolist()
             assert len(v) == len(self.assets) * len(cols)
             return v
+        
     def return_terminal(self, reason="Last Date", reward=0):
         state = self.state_memory[-1]
         self.log_step(reason=reason, terminal_reward=reward)
@@ -203,6 +207,7 @@ class StockTradingEnvStopLoss(gym.Env):
             / self.account_information["total_assets"][-1],
         )
         return state, reward, True, {}
+    
     def log_step(self, reason, terminal_reward=None):
         if terminal_reward is None:
             terminal_reward = self.account_information["reward"][-1]
@@ -223,6 +228,7 @@ class StockTradingEnvStopLoss(gym.Env):
         ]
         self.episode_history.append(rec)
         print(self.template.format(*rec))
+        
     def log_header(self):
         self.template = "{0:4}|{1:4}|{2:15}|{3:15}|{4:15}|{5:10}|{6:10}|{7:10}"  # column widths: 8, 10, 15, 7, 10
         print(
@@ -238,6 +244,7 @@ class StockTradingEnvStopLoss(gym.Env):
             )
         )
         self.printed_header = True
+        
     def get_reward(self):
         if self.current_step == 0:
             return 0
@@ -265,8 +272,9 @@ class StockTradingEnvStopLoss(gym.Env):
             # print(f"Stop Loss Penalty: {stop_loss_penalty}")
             # print(f"Low Profit Penalty: {low_profit_penalty}")
             # print(f"Reward: {reward}")
-
             return reward
+        
+        
     def step(self, actions):
         # let's just log what we're doing in terms of max actions at each step.
         self.sum_trades += np.sum(np.abs(actions))
@@ -313,9 +321,8 @@ class StockTradingEnvStopLoss(gym.Env):
                 actions = np.where(closings > 0, actions // closings, 0)
                 actions = actions.astype(int)
                 # round down actions to the nearest multiplies of shares_increment
-                actions = np.where(actions >= 0,
-                                (actions // self.shares_increment) * self.shares_increment,
-                                ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
+                actions = np.where(actions >= 0, (actions // self.shares_increment) * self.shares_increment,
+                                 ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
             else:
                 actions = np.where(closings > 0, actions / closings, 0)
 
@@ -327,8 +334,7 @@ class StockTradingEnvStopLoss(gym.Env):
             
             if any(np.clip(self.closing_diff_avg_buy, -np.inf, 0) < 0):
                 self.log_step(reason="STOP LOSS")
-                
-            
+ 
             # print(f"closing_diff_avg_buy: {self.closing_diff_avg_buy}")
 
             # compute our proceeds from sells, and add to cash
@@ -408,18 +414,22 @@ class StockTradingEnvStopLoss(gym.Env):
             self.state_memory.append(state)
 
             return state, reward, False, {}
+        
+        
     def get_sb_env(self):
         def get_self():
             return deepcopy(self)
         e = DummyVecEnv([get_self])
         obs = e.reset()
         return e, obs
+    
     def get_multiproc_env(self, n=10):
         def get_self():
             return deepcopy(self)
         e = SubprocVecEnv([get_self for _ in range(n)], start_method="fork")
         obs = e.reset()
         return e, obs
+    
     def save_asset_memory(self):
         if self.current_step == 0:
             return None
@@ -428,6 +438,7 @@ class StockTradingEnvStopLoss(gym.Env):
                 -len(self.account_information["cash"]) :
             ]
             return pd.DataFrame(self.account_information)
+        
     def save_action_memory(self):
         if self.current_step == 0:
             return None
