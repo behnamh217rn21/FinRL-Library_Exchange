@@ -13,7 +13,7 @@ from finrl.preprocessing.preprocessors import FeatureEngineer
 from finrl.preprocessing.data import data_split
 from finrl.env.env_stocktrading_cashpenalty import StockTradingEnvCashpenalty
 from finrl.model.models import DRLAgent
-from finrl.trade.backtest import BackTestStats
+from finrl.trade.backtest import backtest_plot, backtest_stats
 import multiprocessing
 
 
@@ -111,16 +111,31 @@ def train_one():
     
     print("==============Start Trading===========")
     """"
-    df_account_value, df_actions = DRLAgent.DRL_prediction(
-        model=trained_sac, test_data=trade, test_env=env_trade, test_obs=obs_trade
-    )
-    df_account_value.to_csv(
-        "./" + config.RESULTS_DIR + "/df_account_value_" + now + ".csv"
-    )
+    df_account_value, df_actions = DRLAgent.DRL_prediction(model=trained_ddpg, 
+                                                           environment = e_trade_gym
+                                                          )
+    new_df_actions = df_actions.filter(['date','actions'], axis=1)
+    for i in range(0, len(df_actions)):
+    new_df_actions.loc[i, 'actions'][0] = round(new_df_actions.loc[i, 'actions'][0], 2)
+    new_df_actions.loc[i, 'actions'][1] = round(new_df_actions.loc[i, 'actions'][1], 2)
+    action = round(action, 2)
+    
+    df_account_value.to_csv("./" + config.RESULTS_DIR + "/df_account_value_" + now + ".csv")
     df_actions.to_csv("./" + config.RESULTS_DIR + "/df_actions_" + now + ".csv")
 
     print("==============Get Backtest Results===========")
-    perf_stats_all = BackTestStats(df_account_value)
+    perf_stats_all = backtest_stats(account_value=df_account_value, value_col_name = 'total_assets')
     perf_stats_all = pd.DataFrame(perf_stats_all)
     perf_stats_all.to_csv("./" + config.RESULTS_DIR + "/perf_stats_all_" + now + ".csv")
+    print("==============Compare to DJIA===========")
+    
+    %matplotlib inline
+    # S&P 500: ^GSPC
+    # Dow Jones Index: ^DJI
+    # NASDAQ 100: ^NDX
+    # EUR/USD: EURUSD=X
+    backtest_plot(df_account_value, value_col_name='total_assets',
+                  baseline_start='2016-01-01', baseline_end='2021-01-01',
+                  baseline_ticker='EURUSD=X'
+                  )
     """"
