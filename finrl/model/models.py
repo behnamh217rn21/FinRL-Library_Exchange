@@ -22,7 +22,7 @@ from finrl.preprocessing.data import data_split
 from finrl.env.env_stocktrading import StockTradingEnv
 
 from stable_baselines import A2C
-from stable_baselines import PPO
+from stable_baselines import PPO2
 from stable_baselines import TD3
 from stable_baselines.td3.policies import MlpPolicy
 from stable_baselines.common.noise import (
@@ -33,7 +33,7 @@ from stable_baselines.common.noise import (
 from stable_baselines import SAC
 
 
-MODELS = {"a2c": A2C, "ddpg": DDPG, "td3": TD3, "sac": SAC, "ppo": PPO}
+MODELS = {"a2c": A2C, "ddpg": DDPG, "td3": TD3, "sac": SAC, "ppo2": PPO2}
 
 MODEL_KWARGS = {x: config.__dict__[f"{x.upper()}_PARAMS"] for x in MODELS.keys()}
 
