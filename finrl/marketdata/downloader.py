@@ -73,7 +73,6 @@ class Downloader:
         # print("Display DataFrame: ", data_df.head())
 
         data_df = data_df.sort_values(by=['D_H_Order','tic']).reset_index(drop=True)
-
         return data_df
 
 
