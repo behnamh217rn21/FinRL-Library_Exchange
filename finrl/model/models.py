@@ -8,11 +8,11 @@ import gym
 # from stable_baselines import SAC
 # from stable_baselines import TD3
 
-from stable_baselines.ppo import MlpPolicy
-from stable_baselines.common.vec_env import DummyVecEnv
+from stable_baselines3.ppo import MlpPolicy
+from stable_baselines3.common.vec_env import DummyVecEnv
 
-from stable_baselines import DDPG
-from stable_baselines.common.noise import (
+from stable_baselines3 import DDPG
+from stable_baselines3.common.noise import (
     NormalActionNoise,
     OrnsteinUhlenbeckActionNoise,
 )
@@ -21,19 +21,19 @@ from finrl.config import config
 from finrl.preprocessing.data import data_split
 from finrl.env.env_stocktrading import StockTradingEnv
 
-from stable_baselines import A2C
-from stable_baselines import PPO2
-from stable_baselines import TD3
-from stable_baselines.td3.policies import MlpPolicy
-from stable_baselines.common.noise import (
+from stable_baselines3 import A2C
+from stable_baselines3 import PPO
+from stable_baselines3 import TD3
+from stable_baselines3.td3.policies import MlpPolicy
+from stable_baselines3.common.noise import (
     NormalActionNoise,
     OrnsteinUhlenbeckActionNoise,
 )
 
-from stable_baselines import SAC
+from stable_baselines3 import SAC
 
 
-MODELS = {"a2c": A2C, "ddpg": DDPG, "td3": TD3, "sac": SAC, "ppo2": PPO2}
+MODELS = {"a2c": A2C, "ddpg": DDPG, "td3": TD3, "sac": SAC, "ppo": PPO}
 
 MODEL_KWARGS = {x: config.__dict__[f"{x.upper()}_PARAMS"] for x in MODELS.keys()}
 
@@ -53,7 +53,7 @@ class DRLAgent:
 
     Methods
     -------
-        train_PPO2()
+        train_PPO()
             the implementation for PPO algorithm
         train_A2C()
             the implementation for A2C algorithm
@@ -357,11 +357,11 @@ class DRLEnsembleAgent:
             sharpe_a2c = self.get_validation_sharpe(i,model_name="A2C")
             print("A2C Sharpe Ratio: ", sharpe_a2c)
 
-            print("======PPO2 Training========")
-            model_ppo2 = self.get_model("ppo2",self.train_env,policy="MlpPolicy",model_kwargs=PPO2_model_kwargs)
-            model_ppo2 = self.train_model(model_ppo2, "ppo2", tb_log_name="ppo2_{}".format(i), iter_num = i, total_timesteps=timesteps_dict['ppo2']) #100_000
-            print("======PPO2 Validation from: ", validation_start_date, "to ",validation_end_date)
-            val_env_ppo2 = DummyVecEnv([lambda: StockTradingEnv(validation,
+            print("======PPO Training========")
+            model_ppo = self.get_model("ppo",self.train_env,policy="MlpPolicy",model_kwargs=PPO_model_kwargs)
+            model_ppo = self.train_model(model_ppo, "ppo", tb_log_name="ppo_{}".format(i), iter_num = i, total_timesteps=timesteps_dict['ppo']) #100_000
+            print("======PPO Validation from: ", validation_start_date, "to ",validation_end_date)
+            val_env_ppo = DummyVecEnv([lambda: StockTradingEnv(validation,
                                                                 self.stock_dim,
                                                                 self.hmax,
                                                                 self.initial_amount,
@@ -376,10 +376,10 @@ class DRLEnsembleAgent:
                                                                 model_name='PPO',
                                                                 mode='validation',
                                                                 print_verbosity=self.print_verbosity)])
-            val_obs_ppo2 = val_env_ppo2.reset()
-            self.DRL_validation(model=model_ppo2,test_data=validation,test_env=val_env_ppo2,test_obs=val_obs_ppo2)
-            sharpe_ppo2 = self.get_validation_sharpe(i,model_name="PPO2")
-            print("PPO2 Sharpe Ratio: ", sharpe_ppo2)
+            val_obs_ppo = val_env_ppo.reset()
+            self.DRL_validation(model=model_ppo,test_data=validation,test_env=val_env_ppo,test_obs=val_obs_ppo)
+            sharpe_ppo = self.get_validation_sharpe(i,model_name="PPO")
+            print("PPO Sharpe Ratio: ", sharpe_ppo)
 
             print("======DDPG Training========")
             model_ddpg = self.get_model("ddpg",self.train_env,policy="MlpPolicy",model_kwargs=DDPG_model_kwargs)
@@ -458,7 +458,3 @@ class DRLEnsembleAgent:
         df_summary.columns = ['Iter','Val Start','Val End','Model Used','A2C Sharpe','PPO Sharpe','DDPG Sharpe']
 
         return df_summary
-
-
-
-
