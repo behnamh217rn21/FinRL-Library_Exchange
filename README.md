@@ -219,13 +219,6 @@ The stock data we use is pulled from Yahoo Finance API.
 
 Will maintain FinRL with the "AI4Finance" community and welcome your contributions!
 
-### Contributors
-
-Thanks to all the people who contribute. 
-<a href="https://github.com/AI4Finance-LLC/FinRL-Library/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=AI4Finance-LLC/FinRL-Library" />
-</a>
-
 ## Support various markets
    Would like to support more asset markets, so that the users can test their stategies.
 ## SOTA DRL algorithms 
