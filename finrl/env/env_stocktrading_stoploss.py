@@ -231,18 +231,16 @@ class StockTradingEnvStopLoss(gym.Env):
         
     def log_header(self):
         self.template = "{0:4}|{1:4}|{2:15}|{3:15}|{4:15}|{5:10}|{6:10}|{7:10}"  # column widths: 8, 10, 15, 7, 10
-        print(
-            self.template.format(
-                "EPISODE",
-                "STEPS",
-                "TERMINAL_REASON",
-                "CASH",
-                "TOT_ASSETS",
-                "TERMINAL_REWARD_unsc",
-                "GAINLOSS_PCT",
-                "CASH_PROPORTION",
-            )
-        )
+        print(self.template.format("EPISODE",
+                                   "STEPS",
+                                   "TERMINAL_REASON",
+                                   "CASH",
+                                   "TOT_ASSETS",
+                                   "TERMINAL_REWARD_unsc",
+                                   "GAINLOSS_PCT",
+                                   "CASH_PROPORTION",
+                                  )
+             )
         self.printed_header = True
         
     def get_reward(self):
@@ -322,7 +320,7 @@ class StockTradingEnvStopLoss(gym.Env):
                 actions = actions.astype(int)
                 # round down actions to the nearest multiplies of shares_increment
                 actions = np.where(actions >= 0, (actions // self.shares_increment) * self.shares_increment,
-                                 ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
+                                   ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
             else:
                 actions = np.where(closings > 0, actions / closings, 0)
 
@@ -367,8 +365,8 @@ class StockTradingEnvStopLoss(gym.Env):
             profit_sell = np.where(sell_closing_price - self.avg_buy_price > 0, 1, 0) #mark the one which is profitable
 
             self.profit_sell_diff_avg_buy = np.where(profit_sell==1, 
-                                                    closings - (self.min_profit_penalty * self.avg_buy_price),
-                                                    0)
+                                                     closings - (self.min_profit_penalty * self.avg_buy_price),
+                                                     0)
             
             if any(np.clip(self.profit_sell_diff_avg_buy, -np.inf, 0) < 0):
                 self.log_step(reason="LOW PROFIT")
