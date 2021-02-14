@@ -19,7 +19,7 @@ from stable_baselines.common.noise import (
 
 from finrl.config import config
 from finrl.preprocessing.data import data_split
-from finrl.env.env_stocktrading import StockTradingEnv
+from finrl.env.env_stocktrading_stoploss import StockTradingEnvStopLoss
 
 from stable_baselines import A2C
 from stable_baselines import PPO2
@@ -214,23 +214,23 @@ class DRLEnsembleAgent:
         ### make a prediction based on trained model###
         ## trading env
         trade_data = data_split(self.df, start=self.unique_trade_date[iter_num - self.rebalance_window], end=self.unique_trade_date[iter_num])
-        trade_env = DummyVecEnv([lambda: StockTradingEnv(trade_data,
-                                                         self.stock_dim,
-                                                         self.hmax,
-                                                         self.initial_amount,
-                                                         self.buy_cost_pct,
-                                                         self.sell_cost_pct,
-                                                         self.reward_scaling,
-                                                         self.state_space,
-                                                         self.action_space,
-                                                         self.tech_indicator_list,
-                                                         turbulence_threshold=turbulence_threshold,
-                                                         initial=initial,
-                                                         previous_state=last_state,
-                                                         model_name=name,
-                                                         mode='trade',
-                                                         iteration=iter_num,
-                                                         print_verbosity=self.print_verbosity)])
+        trade_env = DummyVecEnv([lambda: StockTradingEnvStopLoss(trade_data,
+                                                                 self.stock_dim,
+                                                                 self.hmax,
+                                                                 self.initial_amount,
+                                                                 self.buy_cost_pct,
+                                                                 self.sell_cost_pct,
+                                                                 self.reward_scaling,
+                                                                 self.state_space,
+                                                                 self.action_space,
+                                                                 self.tech_indicator_list,
+                                                                 turbulence_threshold=turbulence_threshold,
+                                                                 initial=initial,
+                                                                 previous_state=last_state,
+                                                                 model_name=name,
+                                                                 mode='trade',
+                                                                 iteration=iter_num,
+                                                                 print_verbosity=self.print_verbosity)])
 
         trade_obs = trade_env.reset()
 
@@ -306,17 +306,17 @@ class DRLEnsembleAgent:
             ############## Environment Setup starts ##############
             ## training env
             train = data_split(self.df, start=self.train_period[0], end=self.unique_trade_date[i - self.rebalance_window - self.validation_window])
-            self.train_env = DummyVecEnv([lambda: StockTradingEnv(train,
-                                                                  self.stock_dim,
-                                                                  self.hmax,
-                                                                  self.initial_amount,
-                                                                  self.buy_cost_pct,
-                                                                  self.sell_cost_pct,
-                                                                  self.reward_scaling,
-                                                                  self.state_space,
-                                                                  self.action_space,
-                                                                  self.tech_indicator_list,
-                                                                  print_verbosity=self.print_verbosity)])
+            self.train_env = DummyVecEnv([lambda: StockTradingEnvStopLoss(train,
+                                                                          self.stock_dim,
+                                                                          self.hmax,
+                                                                          self.initial_amount,
+                                                                          self.buy_cost_pct,
+                                                                          self.sell_cost_pct,
+                                                                          self.reward_scaling,
+                                                                          self.state_space,
+                                                                          self.action_space,
+                                                                          self.tech_indicator_list,
+                                                                          print_verbosity=self.print_verbosity)])
 
             validation = data_split(self.df, start=self.unique_trade_date[i - self.rebalance_window - self.validation_window],
                                     end=self.unique_trade_date[i - self.rebalance_window])
@@ -332,21 +332,21 @@ class DRLEnsembleAgent:
             model_a2c = self.train_model(model_a2c, "a2c", tb_log_name="a2c_{}".format(i), iter_num = i, total_timesteps=timesteps_dict['a2c']) #100_000
 
             print("======A2C Validation from: ", validation_start_date, "to ",validation_end_date)
-            val_env_a2c = DummyVecEnv([lambda: StockTradingEnv(validation,
-                                                               self.stock_dim,
-                                                               self.hmax,
-                                                               self.initial_amount,
-                                                               self.buy_cost_pct,
-                                                               self.sell_cost_pct,
-                                                               self.reward_scaling,
-                                                               self.state_space,
-                                                               self.action_space,
-                                                               self.tech_indicator_list,
-                                                               turbulence_threshold=turbulence_threshold,
-                                                               iteration=i,
-                                                               model_name='A2C',
-                                                               mode='validation',
-                                                               print_verbosity=self.print_verbosity)])
+            val_env_a2c = DummyVecEnv([lambda: StockTradingEnvStopLoss(validation,
+                                                                       self.stock_dim,
+                                                                       self.hmax,
+                                                                       self.initial_amount,
+                                                                       self.buy_cost_pct,
+                                                                       self.sell_cost_pct,
+                                                                       self.reward_scaling,
+                                                                       self.state_space,
+                                                                       self.action_space,
+                                                                       self.tech_indicator_list,
+                                                                       turbulence_threshold=turbulence_threshold,
+                                                                       iteration=i,
+                                                                       model_name='A2C',
+                                                                       mode='validation',
+                                                                       print_verbosity=self.print_verbosity)])
             val_obs_a2c = val_env_a2c.reset()
             self.DRL_validation(model=model_a2c,test_data=validation,test_env=val_env_a2c,test_obs=val_obs_a2c)
             sharpe_a2c = self.get_validation_sharpe(i,model_name="A2C")
@@ -356,21 +356,21 @@ class DRLEnsembleAgent:
             model_ppo2 = self.get_model("ppo2",self.train_env,policy="MlpPolicy",model_kwargs=PPO2_model_kwargs)
             model_ppo2 = self.train_model(model_ppo2, "ppo2", tb_log_name="ppo2_{}".format(i), iter_num = i, total_timesteps=timesteps_dict['ppo2']) #100_000
             print("======PPO Validation from: ", validation_start_date, "to ",validation_end_date)
-            val_env_ppo2 = DummyVecEnv([lambda: StockTradingEnv(validation,
-                                                                self.stock_dim,
-                                                                self.hmax,
-                                                                self.initial_amount,
-                                                                self.buy_cost_pct,
-                                                                self.sell_cost_pct,
-                                                                self.reward_scaling,
-                                                                self.state_space,
-                                                                self.action_space,
-                                                                self.tech_indicator_list,
-                                                                turbulence_threshold=turbulence_threshold,
-                                                                iteration=i,
-                                                                model_name='PPO2',
-                                                                mode='validation',
-                                                                print_verbosity=self.print_verbosity)])
+            val_env_ppo2 = DummyVecEnv([lambda: StockTradingEnvStopLoss(validation,
+                                                                        self.stock_dim,
+                                                                        self.hmax,
+                                                                        self.initial_amount,
+                                                                        self.buy_cost_pct,
+                                                                        self.sell_cost_pct,
+                                                                        self.reward_scaling,
+                                                                        self.state_space,
+                                                                        self.action_space,
+                                                                        self.tech_indicator_list,
+                                                                        turbulence_threshold=turbulence_threshold,
+                                                                        iteration=i,
+                                                                        model_name='PPO2',
+                                                                        mode='validation',
+                                                                        print_verbosity=self.print_verbosity)])
             val_obs_ppo2 = val_env_ppo2.reset()
             self.DRL_validation(model=model_ppo2,test_data=validation,test_env=val_env_ppo2,test_obs=val_obs_ppo2)
             sharpe_ppo2 = self.get_validation_sharpe(i,model_name="PPO2")
@@ -380,21 +380,21 @@ class DRLEnsembleAgent:
             model_ddpg = self.get_model("ddpg",self.train_env,policy="LnLstmPolicy",model_kwargs=DDPG_model_kwargs)
             model_ddpg = self.train_model(model_ddpg, "ddpg", tb_log_name="ddpg_{}".format(i), iter_num = i, total_timesteps=timesteps_dict['ddpg'])  #50_000
             print("======DDPG Validation from: ", validation_start_date, "to ",validation_end_date)
-            val_env_ddpg = DummyVecEnv([lambda: StockTradingEnv(validation,
-                                                                self.stock_dim,
-                                                                self.hmax,
-                                                                self.initial_amount,
-                                                                self.buy_cost_pct,
-                                                                self.sell_cost_pct,
-                                                                self.reward_scaling,
-                                                                self.state_space,
-                                                                self.action_space,
-                                                                self.tech_indicator_list,
-                                                                turbulence_threshold=turbulence_threshold,
-                                                                iteration=i,
-                                                                model_name='DDPG',
-                                                                mode='validation',
-                                                                print_verbosity=self.print_verbosity)])
+            val_env_ddpg = DummyVecEnv([lambda: StockTradingEnvStopLoss(validation,
+                                                                        self.stock_dim,
+                                                                        self.hmax,
+                                                                        self.initial_amount,
+                                                                        self.buy_cost_pct,
+                                                                        self.sell_cost_pct,
+                                                                        self.reward_scaling,
+                                                                        self.state_space,
+                                                                        self.action_space,
+                                                                        self.tech_indicator_list,
+                                                                        turbulence_threshold=turbulence_threshold,
+                                                                        iteration=i,
+                                                                        model_name='DDPG',
+                                                                        mode='validation',
+                                                                        print_verbosity=self.print_verbosity)])
             val_obs_ddpg = val_env_ddpg.reset()
             self.DRL_validation(model=model_ddpg,test_data=validation,test_env=val_env_ddpg,test_obs=val_obs_ddpg)
             sharpe_ddpg = self.get_validation_sharpe(i,model_name="DDPG")
@@ -408,17 +408,17 @@ class DRLEnsembleAgent:
                   self.unique_trade_date[i - self.rebalance_window])
             # Environment setup for model retraining up to first trade date
             train_full = data_split(self.df, start=self.train_period[0], end=self.unique_trade_date[i - self.rebalance_window])
-            self.train_full_env = DummyVecEnv([lambda: StockTradingEnv(train_full,
-                                                                       self.stock_dim,
-                                                                       self.hmax,
-                                                                       self.initial_amount,
-                                                                       self.buy_cost_pct,
-                                                                       self.sell_cost_pct,
-                                                                       self.reward_scaling,
-                                                                       self.state_space,
-                                                                       self.action_space,
-                                                                       self.tech_indicator_list,
-                                                                       print_verbosity=self.print_verbosity)])
+            self.train_full_env = DummyVecEnv([lambda: StockTradingEnvStopLoss(train_full,
+                                                                               self.stock_dim,
+                                                                               self.hmax,
+                                                                               self.initial_amount,
+                                                                               self.buy_cost_pct,
+                                                                               self.sell_cost_pct,
+                                                                               self.reward_scaling,
+                                                                               self.state_space,
+                                                                               self.action_space,
+                                                                               self.tech_indicator_list,
+                                                                               print_verbosity=self.print_verbosity)])
             # Model Selection based on sharpe ratio
             if (sharpe_ppo2 >= sharpe_a2c) & (sharpe_ppo2 >= sharpe_ddpg):
                 model_use.append('PPO2')
