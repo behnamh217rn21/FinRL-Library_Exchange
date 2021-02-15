@@ -81,7 +81,6 @@ class DRLAgent:
             test_obs, rewards, dones, info = test_env.step(action)
             if dones[0]:
                 print("hit end!")
-
                 break
         return account_memory[0], actions_memory[0]
 
