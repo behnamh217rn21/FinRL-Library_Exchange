@@ -56,15 +56,13 @@ class Downloader:
         except NotImplementedError:
             print("the features are not supported currently")
 
+        # convert date to standard string format, easy to filter
         data_df['date'] = pd.to_datetime(data_df.date, format='%d.%m.%Y %H:%M:%S.%f')
         # create day of the week column (monday = 0)
         data_df["day"] = data_df["date"].dt.dayofweek
 
         for i in range(0, len(data_df)):
             data_df.loc[i,"D_H_Order"] = str(data_df.loc[i,"day"]) + str(data_df["Gmt_time"][i]).split(' ')[1].split(':')[0][1]
-
-        # convert date to standard string format, easy to filter
-        data_df["date"] = data_df.date.apply(lambda x: x.strftime("%d.%m.%Y %H:%M:%S.%f"))
 
         # drop missing data
         data_df = data_df.dropna()
