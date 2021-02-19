@@ -38,7 +38,7 @@ class FeatureEngineer:
         self.use_turbulence = use_turbulence
         self.user_defined_feature = user_defined_feature
         
-        self.MA_win_size = config.MA_windows_size; self.EMA_win_size = config.EMA_windows_size
+        self.win_size = config.windows_size
         self.MACD_fastP = config.MACD_FAST; self.MACD_slowP = config.MACD_SLOW; self.MACD_sigP = config.MACD_SIGNAL
         
 
@@ -84,18 +84,19 @@ class FeatureEngineer:
                 try:
                     temp_indicator = stock[stock.tic == unique_ticker[i]]
                     if indicator = "MA":
-                        temp_indicator['MA'] = eval(indicator + "(temp_indicator['close'], timeperiod = self.MA_win_size)")
-                    if indicator = "EMA":
-                        temp_indicator['EMA'] = eval(indicator + "(temp_indicator['close'], timeperiod = self.EMA_win_size)")
+                        temp_indicator['MA'] = eval(indicator + "(temp_indicator['close'], timeperiod = self.windows_size)")
                     if indicator = "BIAS":
-                        P_V = temp_indicator.loc[:, 'close'] * temp_indicator.loc[:, 'volume']
-                        temp_indicator['MA'] =  P_V.rolling(window = self.MA_win_size).mean()
-                    if indicator = "MACD":
-                        temp_indicator['MACD'] = eval(indicator + "(temp_indicator['close'], fastperiod = self.MACD_fastP, slowperiod = self.MACD_slowP, signalperiod = self.MACD_sigP)")
-                    if indicator = "VR":
-                        temp_indicator['VR'] = eval(indicator + "(temp_indicator['close'], )")
+                        n = self.windows_size
+                        price_n = temp_indicator.loc[n, 'close']
+                        temp_indicator['BIAS'] = ((price_n - temp_indicator['MA']) / temp_indicator['MA']) * 100
+                    if indicator = "EMA":
+                        temp_indicator['EMA'] = eval(indicator + "(temp_indicator['close'], timeperiod = self.windows_size)")
                     if indicator = "OBV":
                         temp_indicator['OBV'] = eval(indicator + "(temp_indicator['close'], temp_indicator['volume'])")
+                    if indicator = "MACD":
+                        temp_indicator['MACD'] = eval(indicator + "(temp_indicator['close'], self.MACD_fastP, self.MACD_slowP, self.MACD_sigP)")
+                    if indicator = "VR":
+                        temp_indicator['VR'] = eval(indicator + "(temp_indicator['close'], )")
                         
                     temp_indicator = pd.DataFrame(temp_indicator)
                     indicator_df = indicator_df.append(
