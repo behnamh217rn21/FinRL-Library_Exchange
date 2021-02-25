@@ -7,8 +7,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pickle
-from stable_baselines3.common.vec_env import DummyVecEnv
-from stable_baselines3.common import logger
+from stable_baselines.common.vec_env import DummyVecEnv
+from stable_baselines import logger
 
 
 class StockTradingEnv(gym.Env):
