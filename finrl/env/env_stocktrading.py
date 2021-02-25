@@ -7,8 +7,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pickle
-from stable_baselines.common.vec_env import DummyVecEnv
-from stable_baselines import logger
+from stable_baselines3.common.vec_env import DummyVecEnv
+from stable_baselines3.common import logger
 
 
 class StockTradingEnv(gym.Env):
@@ -206,11 +206,11 @@ class StockTradingEnv(gym.Env):
                 plt.close()
 
             # Add outputs to logger interface
-            logger.logkv("environment/portfolio_value", end_total_asset)
-            logger.logkv("environment/total_reward", tot_reward)
-            logger.logkv("environment/total_reward_pct", (tot_reward / (end_total_asset - tot_reward)) * 100)
-            logger.logkv("environment/total_cost", self.cost)
-            logger.logkv("environment/total_trades", self.trades)
+            logger.record("environment/portfolio_value", end_total_asset)
+            logger.record("environment/total_reward", tot_reward)
+            logger.record("environment/total_reward_pct", (tot_reward / (end_total_asset - tot_reward)) * 100)
+            logger.record("environment/total_cost", self.cost)
+            logger.record("environment/total_trades", self.trades)
 
             return self.state, self.reward, self.terminal, {}
 
@@ -356,11 +356,12 @@ class StockTradingEnv(gym.Env):
             # date and close price length must match actions length
             date_list = self.date_memory[:-1]
             df_date = pd.DataFrame(date_list)
-            df_date.rename(columns={0:'date'},inplace= True)
+            df_date.columns = ['date']
+            
             action_list = self.actions_memory
             df_actions = pd.DataFrame(action_list)
-            df_actions.rename(columns =lambda x : self.data.tic.values[x], inplace= True)
-            df_actions.set_index = df_date  
+            df_actions.columns = self.data.tic.values
+            df_actions.index = df_date.date
             #df_actions = pd.DataFrame({'date':date_list,'actions':action_list})
         else:
             date_list = self.date_memory[:-1]
