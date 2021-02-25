@@ -91,7 +91,8 @@ class FeatureEngineer:
                     if indicator = "OBV":
                         temp_indicator['OBV'] = eval(indicator + "(temp_indicator['close'], temp_indicator['volume'])")
                     if indicator = "MACD":
-                        temp_indicator['MACD'] = eval(indicator + "(temp_indicator['close'], self.MACD_fastP, self.MACD_slowP, self.MACD_sigP)")   
+                        temp_indicator['MACD'] = eval(indicator + "(temp_indicator['close'], \
+                                                                    self.MACD_fastP, self.MACD_slowP, self.MACD_sigP)")   
                     temp_indicator = pd.DataFrame(temp_indicator)
                     indicator_df = indicator_df.append(
                         temp_indicator, ignore_index=True
