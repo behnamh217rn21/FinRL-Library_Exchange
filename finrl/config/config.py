@@ -42,8 +42,8 @@ DEFAULT_DATA_COLUMNS = ["date", "tic", "close"]
 ## stockstats technical indicator column names
 ## check https://pypi.org/project/stockstats/ for different names
 TECHNICAL_INDICATORS_LIST = ["MA", "EMA", "MACD", "BIAS", "VR", "OBV"]
-MACD_FAST = 12; MACD_SLOW = 26; MACD_SIGNAL = 9
-windows_size = 10
+MACD_SLOW = 26; MACD_FAST = 12; MACD_SIGNAL = 9
+windows_size = 14
 
 ## Model Parameters
 A2C_PARAMS = {"n_steps": 5, "ent_coef": 0.01, "learning_rate": 0.0007}
