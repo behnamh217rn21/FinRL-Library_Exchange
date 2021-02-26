@@ -24,8 +24,8 @@ wheel>=0.33.6
 #arrow
 #python-rapidjson
 #questionary
-#sqlalchemy
-#tabulate
+sqlalchemy
+tabulate
 
 # Crypto Exchange
 ccxt
