@@ -81,7 +81,7 @@ def train_one():
     
     #this is our training env. It allows multiprocessing
     env_train, _ = e_train_gym.get_multiproc_env(n = n_cores)
-    # env_train, _ = e_train_gym.get_sb_env()
+    #env_train, _ = e_train_gym.get_sb_env()
     
     #this is our observation environment. It allows full diagnostics
     env_trade, _ = e_trade_gym.get_sb_env()
