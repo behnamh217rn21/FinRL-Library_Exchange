@@ -34,4 +34,4 @@ ccxt
 colorama
 
 #notebooks need
-nest-asyncio
+#nest-asyncio
