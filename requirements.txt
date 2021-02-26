@@ -21,17 +21,17 @@ setuptools>=41.4.0
 wheel>=0.33.6
 
 # Newly Added
-arrow
-python-rapidjson
-questionary
-sqlalchemy
-tabulate
+#arrow
+#python-rapidjson
+#questionary
+#sqlalchemy
+#tabulate
 
-#Crypto Exchange
-ccxt
+# Crypto Exchange
+#ccxt
 
-#print colors
-colorama
+# print colors
+#colorama
 
-#notebooks need
+# notebooks need
 #nest-asyncio
