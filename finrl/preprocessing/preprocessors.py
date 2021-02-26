@@ -1,12 +1,12 @@
 import numpy as np
 import pandas as pd
-from talib.abstract import *
 from stockstats import StockDataFrame as Sdf
 from finrl.config import config
 
 
 class FeatureEngineer:
     """Provides methods for preprocessing the stock price data
+
     Attributes
     ----------
         use_technical_indicator : boolean
@@ -17,10 +17,12 @@ class FeatureEngineer:
             use turbulence index or not
         user_defined_feature:boolean
             user user defined features or not
+
     Methods
     -------
     preprocess_data()
         main method to do the feature engineering
+
     """
 
     def __init__(
@@ -34,10 +36,6 @@ class FeatureEngineer:
         self.tech_indicator_list = tech_indicator_list
         self.use_turbulence = use_turbulence
         self.user_defined_feature = user_defined_feature
-        
-        self.win_size = config.windows_size
-        self.MACD_fastP = config.MACD_FAST; self.MACD_slowP = config.MACD_SLOW; self.MACD_sigP = config.MACD_SIGNAL
-        
 
     def preprocess_data(self, df):
         """main method to do the feature engineering
@@ -79,20 +77,7 @@ class FeatureEngineer:
             indicator_df = pd.DataFrame()
             for i in range(len(unique_ticker)):
                 try:
-                    temp_indicator = stock[stock.tic == unique_ticker[i]]
-                    if indicator = "MA":
-                        temp_indicator['MA'] = eval(indicator + "(temp_indicator['close'], timeperiod = self.win_size)")
-                    if indicator = "BIAS":
-                        temp_indicator['BIAS'] = bias(temp_indicator)
-                    if indicator = "EMA":
-                        temp_indicator['EMA'] = eval(indicator + "(temp_indicator['close'], timeperiod = self.win_size)")
-                    if indicator = "VR":
-                        temp_indicator['VR'] = volatility_volume_ratio(temp_indicator)
-                    if indicator = "OBV":
-                        temp_indicator['OBV'] = eval(indicator + "(temp_indicator['close'], temp_indicator['volume'])")
-                    if indicator = "MACD":
-                        temp_indicator['MACD'] = eval(indicator + "(temp_indicator['close'], \
-                                                                    self.MACD_fastP, self.MACD_slowP, self.MACD_sigP)")   
+                    temp_indicator = stock[stock.tic == unique_ticker[i]][indicator]
                     temp_indicator = pd.DataFrame(temp_indicator)
                     indicator_df = indicator_df.append(
                         temp_indicator, ignore_index=True
@@ -101,28 +86,6 @@ class FeatureEngineer:
                     print(e)
             df[indicator] = indicator_df
         return df
-
-    def bias(temp_indicator):
-        for i in range(0, len(temp_indicator)):
-            x = temp_indicator.loc[i, 'close'] - temp_indicator.loc[i-1, 'MA']
-            temp_indicator.loc[i, 'BIAS'] = (x / temp_indicator.loc[i-1, 'MA']) * 100
-            return temp_indicator.loc[i, 'BIAS']
-
-    def volatility_volume_ratio(temp_indicator):
-        x = 0
-        temp_indicator['close_open'] = temp_indicator['close'] - temp_indicator['open']
-        for i in range(0, len(temp_indicator)):
-            if temp_indicator['close_open'] > 0:
-                x += temp_indicator.loc[i, 'volume']
-            elif temp_indicator['close_open'] < 0:
-                y += temp_indicator.loc[i, 'volume']
-            else:
-                z += temp_indicator.loc[i, 'volume']
-        z = z / 2
-        temp_indicator.loc[i, 'VR'] = ((x+z) / (y+z)) * 100
-        return temp_indicator.loc[:, 'VR']
-
-
 
     def add_user_defined_feature(self, data):
         """
