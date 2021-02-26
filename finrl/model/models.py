@@ -11,7 +11,7 @@ import gym
 from stable_baselines.common.vec_env import DummyVecEnv
 
 from stable_baselines import DDPG
-from stable_baselines.ddpg.policies import LnLstmPolicy
+from stable_baselines.ddpg.policies import MlpPolicy
 from stable_baselines.common.noise import (
     NormalActionNoise,
     OrnsteinUhlenbeckActionNoise,
