@@ -8,8 +8,8 @@ matplotlib.use("Agg")
 import datetime
 
 from finrl.config import config
-from finrl.marketdata.downloader import Downloader
-from finrl.preprocessing.preprocessors import FeatureEngineer
+from finrl.marketdata.yahoodownloader import YahooDownloader
+from finrl.preprocessing.preprocessors_v1 import FeatureEngineer
 from finrl.preprocessing.data import data_split
 from finrl.env.env_stocktrading_cashpenalty import StockTradingEnvCashpenalty
 from finrl.model.models import DRLAgent
