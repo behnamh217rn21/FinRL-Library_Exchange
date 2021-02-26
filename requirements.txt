@@ -28,10 +28,10 @@ wheel>=0.33.6
 #tabulate
 
 # Crypto Exchange
-#ccxt
+ccxt
 
 # print colors
-#colorama
+colorama
 
 # notebooks need
-#nest-asyncio
+nest-asyncio
