@@ -45,7 +45,7 @@ def train_one():
     
     print(StockTradingEnvStopLoss.__doc__)
 
-    information_cols = ['daily_variance', 'change', 'log_volume', 'close','day', 
+    information_cols = ['daily_variance', 'change', 'log_volume', 'close', 'day', 
                         'macd', 'rsi_30', 'cci_30', 'dx_30']
     env_train_kwargs = {
         initial_amount = 1e6,hmax = 5000, 
