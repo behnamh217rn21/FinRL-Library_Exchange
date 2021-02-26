@@ -23,7 +23,7 @@ wheel>=0.33.6
 # Newly Added
 arrow
 python-rapidjson
-#questionary
+questionary
 sqlalchemy
 tabulate
 
