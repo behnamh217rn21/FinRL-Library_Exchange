@@ -109,8 +109,8 @@ def train_one():
 
     # model.save("trained_models/DDPG_2.model")
     
-    print("==============Start Trading===========")
     """"
+    print("==============Start Trading===========")
     df_account_value, df_actions = DRLAgent.DRL_prediction(model=trained_ddpg, 
                                                            environment = e_trade_gym
                                                           )
