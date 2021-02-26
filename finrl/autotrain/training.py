@@ -43,10 +43,10 @@ def train_one():
     train = data_split(processed, config.START_DATE, config.START_TRADE_DATE)
     trade = data_split(processed, config.START_TRADE_DATE, config.END_DATE)
     
-    print(StockTradingEnvCashpenalty.__doc__)
+    print(StockTradingEnvStopLoss.__doc__)
 
     information_cols = ['daily_variance', 'change', 'log_volume', 'close','day', 
-                        'macd', 'ma', 'ema', 'bias', 'obv', 'vr']
+                        'macd', 'rsi_30', 'cci_30', 'dx_30']
     env_train_kwargs = {
         initial_amount = 1e6,hmax = 5000, 
         turbulence_threshold = None, 
@@ -59,7 +59,7 @@ def train_one():
         print_verbosity = 500, 
         random_start = True
     }
-    e_train_gym = StockTradingEnv(df=train, **env_kwargs)
+    e_train_gym = StockTradingEnvStopLoss(df=train, **env_kwargs)
     
     env_trade_kwargs = {
         initial_amount = 1e6,hmax = 5000, 
@@ -73,7 +73,7 @@ def train_one():
         print_verbosity = 500, 
         random_start = True
     }
-    e_trade_gym = StockTradingEnv(df=trade, turbulence_threshold=250, **env_kwargs)
+    e_trade_gym = StockTradingEnvStopLoss(df=trade, turbulence_threshold=250, **env_kwargs)
     
     # for this example, let's do multiprocessing with n_cores-2
     n_cores = multiprocessing.cpu_count() - 2
@@ -109,7 +109,7 @@ def train_one():
 
     # model.save("trained_models/DDPG_2.model")
     
-    """"
+    
     print("==============Start Trading===========")
     df_account_value, df_actions = DRLAgent.DRL_prediction(model=trained_ddpg, 
                                                            environment = e_trade_gym
@@ -133,9 +133,8 @@ def train_one():
     # S&P 500: ^GSPC
     # Dow Jones Index: ^DJI
     # NASDAQ 100: ^NDX
-    # EUR/USD: EURUSD=X
     backtest_plot(df_account_value, value_col_name='total_assets',
                   baseline_start='2016-01-01', baseline_end='2021-01-01',
                   baseline_ticker='EURUSD=X'
-                  )
-    """"
+                 )
+    
