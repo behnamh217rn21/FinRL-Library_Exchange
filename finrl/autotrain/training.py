@@ -79,11 +79,11 @@ def train_one():
     n_cores = multiprocessing.cpu_count() - 2
     print(f"using {n_cores} cores")
     
-    #this is our training env. It allows multiprocessing
+    # this is our training env. It allows multiprocessing
     env_train, _ = e_train_gym.get_multiproc_env(n = n_cores)
     #env_train, _ = e_train_gym.get_sb_env()
     
-    #this is our observation environment. It allows full diagnostics
+    # this is our observation environment. It allows full diagnostics
     env_trade, _ = e_trade_gym.get_sb_env()
 
     agent = DRLAgent(env=env_train)
@@ -107,7 +107,7 @@ def train_one():
          model=model, tb_log_name="ddpg", total_timesteps=80000, log_interval=1
      )
 
-    # model.save("trained_models/DDPG_2.model")
+    #model.save("trained_models/DDPG_2.model")
     
     
     print("==============Start Trading===========")
@@ -118,7 +118,6 @@ def train_one():
     for i in range(0, len(df_actions)):
     new_df_actions.loc[i, 'actions'][0] = round(new_df_actions.loc[i, 'actions'][0], 2)
     new_df_actions.loc[i, 'actions'][1] = round(new_df_actions.loc[i, 'actions'][1], 2)
-    action = round(action, 2)
     
     df_account_value.to_csv("./" + config.RESULTS_DIR + "/df_account_value_" + now + ".csv")
     df_actions.to_csv("./" + config.RESULTS_DIR + "/df_actions_" + now + ".csv")
