@@ -89,7 +89,7 @@ class DRLAgent:
 
     def get_model(self,
                   model_name,
-                  policy="LnLstmPolicy",
+                  policy="MlpPolicy",
                   policy_kwargs=None,
                   model_kwargs=None,
                   verbose=1,
@@ -376,7 +376,7 @@ class DRLEnsembleAgent:
             print("PPO2 Sharpe Ratio: ", sharpe_ppo2)
 
             print("======DDPG Training========")
-            model_ddpg = self.get_model("ddpg",self.train_env,policy="LnLstmPolicy",model_kwargs=DDPG_model_kwargs)
+            model_ddpg = self.get_model("ddpg",self.train_env,policy="MlpPolicy",model_kwargs=DDPG_model_kwargs)
             model_ddpg = self.train_model(model_ddpg, "ddpg", tb_log_name="ddpg_{}".format(i), iter_num = i, total_timesteps=timesteps_dict['ddpg'])  #50_000
             print("======DDPG Validation from: ", validation_start_date, "to ",validation_end_date)
             val_env_ddpg = DummyVecEnv([lambda: StockTradingEnvStopLoss(validation,
@@ -432,7 +432,7 @@ class DRLEnsembleAgent:
             else:
                 model_use.append('DDPG')
 
-                model_ensemble = self.get_model("ddpg",self.train_full_env,policy="LnLstmPolicy",model_kwargs=DDPG_model_kwargs)
+                model_ensemble = self.get_model("ddpg",self.train_full_env,policy="MlpPolicy",model_kwargs=DDPG_model_kwargs)
                 model_ensemble = self.train_model(model_ensemble, "ensemble", tb_log_name="ensemble_{}".format(i), iter_num = i, total_timesteps=timesteps_dict['ddpg']) #50_000
 
             ############## Training and Validation ends ##############
