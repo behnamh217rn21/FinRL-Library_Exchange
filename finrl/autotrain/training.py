@@ -127,14 +127,14 @@ def train_one():
     perf_stats_all = backtest_stats(account_value=df_account_value, value_col_name = 'total_assets')
     perf_stats_all = pd.DataFrame(perf_stats_all)
     perf_stats_all.to_csv("./" + config.RESULTS_DIR + "/perf_stats_all_" + now + ".csv")
-    print("==============Compare to DJIA===========")
     
+    
+    print("==============Compare to DJIA===========")
     %matplotlib inline
     # S&P 500: ^GSPC
     # Dow Jones Index: ^DJI
     # NASDAQ 100: ^NDX
-    backtest_plot(df_account_value, value_col_name='total_assets',
-                  baseline_start='2016-01-01', baseline_end='2021-01-01',
-                  baseline_ticker='EURUSD=X'
-                 )
-    
+    backtest_plot(df_account_value, 
+                  baseline_ticker = '^DJI', 
+                  baseline_start = config.START_TRADE_DATE,
+                  baseline_end = config.END_DATE, value_col_name = 'total_assets')
