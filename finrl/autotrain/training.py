@@ -17,7 +17,6 @@ from finrl.trade.backtest import backtest_plot, backtest_stats
 import multiprocessing
 
 
-
 def train_one():
     """
     train an agent
