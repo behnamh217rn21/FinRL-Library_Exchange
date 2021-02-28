@@ -97,18 +97,22 @@ def train_one():
                   'eval_env': env_trade,
                   'nb_eval_steps': 50
                  }
+    model_name = "ddpg"
+    model = agent.get_model(model_name,  
+                            model_kwargs = ddpg_params, 
+                            verbose = 0
+                           )
 
-     model = agent.get_model("ddpg",  
-                             model_kwargs = ddpg_params, 
-                             verbose = 0
-                            )
+    trained_ddpg = agent.train_model(
+        model=model, tb_log_name="ddpg", total_timesteps=80000, log_interval=1
+    )
 
-     trained_ddpg = agent.train_model(
-         model=model, tb_log_name="ddpg", total_timesteps=80000, log_interval=1
-     )
-
-    #model.save("trained_models/DDPG_2.model")
+    #model.save("trained_models/DDPG.model")
     
+    logs_base_dir = f"{config.TENSORBOARD_LOG_DIR}/{model_name}"
+    os.makedirs(logs_base_dir, exist_ok=True)
+    %load_ext tensorboard
+    %tensorboard --logdir {logs_base_dir}
     
     print("==============Start Trading===========")
     df_account_value, df_actions = DRLAgent.DRL_prediction(model=trained_ddpg, 
