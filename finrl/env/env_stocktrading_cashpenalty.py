@@ -226,7 +226,7 @@ class StockTradingEnvCashpenalty(gym.Env):
 
     def log_header(self):
         if self.printed_header is False:
-            self.template = "{0:4}|{1:4}|{2:15}|{3:15}|{4:15}|{5:10}|{6:10}|{7:10}"  # column widths: 8, 10, 15, 7, 10
+            self.template = "{0:7}|{1:5}|{2:15}|{3:15}|{4:15}|{5:20}|{6:12}|{7:15}"
             print(
                 self.template.format(
                     "EPISODE",
