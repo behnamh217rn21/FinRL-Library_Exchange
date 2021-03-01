@@ -230,7 +230,7 @@ class StockTradingEnvStopLoss(gym.Env):
         print(self.template.format(*rec))
         
     def log_header(self):
-        self.template = "{0:4}|{1:4}|{2:15}|{3:15}|{4:15}|{5:10}|{6:10}|{7:10}"  # column widths: 8, 10, 15, 7, 10
+        self.template = "{0:7}|{1:5}|{2:15}|{3:15}|{4:15}|{5:20}|{6:12}|{7:15}"
         print(self.template.format("EPISODE",
                                    "STEPS",
                                    "TERMINAL_REASON",
