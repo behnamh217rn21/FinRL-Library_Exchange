@@ -117,10 +117,6 @@ def train_one():
     df_account_value, df_actions = DRLAgent.DRL_prediction(model=trained_ddpg, 
                                                            environment = e_trade_gym
                                                           )
-    new_df_actions = df_actions.filter(['date','actions'], axis=1)
-    for i in range(0, len(df_actions)):
-    new_df_actions.loc[i, 'actions'][0] = round(new_df_actions.loc[i, 'actions'][0], 2)
-    new_df_actions.loc[i, 'actions'][1] = round(new_df_actions.loc[i, 'actions'][1], 2)
     
     df_account_value.to_csv("./" + config.RESULTS_DIR + "/df_account_value_" + now + ".csv")
     df_actions.to_csv("./" + config.RESULTS_DIR + "/df_actions_" + now + ".csv")
