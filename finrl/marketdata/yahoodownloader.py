@@ -9,7 +9,6 @@ import yfinance as yf
 class YahooDownloader:
     """Provides methods for retrieving daily stock data from
     Yahoo Finance API
-
     Attributes
     ----------
         start_date : str
@@ -18,25 +17,23 @@ class YahooDownloader:
             end date of the data (modified from config.py)
         ticker_list : list
             a list of stock tickers (modified from config.py)
-
     Methods
     -------
     fetch_data()
         Fetches data from yahoo API
-
     """
 
-    def __init__(self, start_date: str, end_date: str, ticker_list: list):
+    def __init__(self, start_date: str, end_date: str, ticker_list: list, interval_period: str):
 
         self.start_date = start_date
         self.end_date = end_date
         self.ticker_list = ticker_list
+        self.interval_period = interval_period
 
     def fetch_data(self) -> pd.DataFrame:
         """Fetches data from Yahoo API
         Parameters
         ----------
-
         Returns
         -------
         `pd.DataFrame`
@@ -46,7 +43,7 @@ class YahooDownloader:
         # Download and save the data in a pandas DataFrame:
         data_df = pd.DataFrame()
         for tic in self.ticker_list:
-            temp_df = yf.download(tic, start=self.start_date, end=self.end_date)
+            temp_df = yf.download(tic, start=self.start_date, end=self.end_date, interval=self.interval_period)
             temp_df["tic"] = tic
             data_df = data_df.append(temp_df)
         # reset the index, we want to use numbers as index instead of dates
