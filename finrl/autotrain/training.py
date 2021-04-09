@@ -22,8 +22,9 @@ import multiprocessing
 
 # Append path for main project folder
 import sys
-sys.path.append('../')
+sys.path.append('../../')
 sys.path.append("./FinRL-Library_Exchange")
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
