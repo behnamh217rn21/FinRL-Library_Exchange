@@ -11,9 +11,6 @@ def load_dataset(*, file_name: str) -> pd.DataFrame:
     """
     # _data = pd.read_csv(f"{config.DATASET_DIR}/{file_name}")
     _data = pd.read_csv("./" + config.DATASET_DIR + "/mt4_dataset.csv", sep=',', low_memory=False, index_col=[0])
-   
-    for i in range(0, len(df)):
-        _data.loc[i, "close"] = adjusted_prices(_data.loc[i, "tic"], _data.loc[i, "close"])
     return _data
 
 def data_split(df, start, end):
