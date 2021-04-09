@@ -4,9 +4,11 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use("Agg")
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 from sklearn import preprocessing
 import datetime
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 from finrl.config import config
 from finrl.marketdata.yahoodownloader import YahooDownloader
 from finrl.preprocessing.preprocessors import FeatureEngineer
@@ -15,6 +17,7 @@ from finrl.env.env_stocktrading_stoploss import StockTradingEnvStopLoss
 from finrl.model.models import DRLAgent
 from finrl.trade.backtest import backtest_plot, backtest_stats
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 import multiprocessing
 
 # Append path for main project folder
@@ -22,7 +25,9 @@ import sys
 sys.path.append('../')
 
 
-def train_one():
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+def main():
     """
     train an agent
     """
@@ -123,3 +128,7 @@ def train_one():
     perf_stats_all = backtest_stats(account_value=df_account_value, value_col_name = 'total_assets')
     perf_stats_all = pd.DataFrame(perf_stats_all)
     perf_stats_all.to_csv("./" + config.RESULTS_DIR + "/perf_stats_all_" + now + ".csv")
+    
+
+if __name__ == "__main__":
+    main()
