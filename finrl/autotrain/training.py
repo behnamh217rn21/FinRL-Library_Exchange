@@ -121,8 +121,8 @@ def main():
                                                           )
     
     now = datetime.datetime.now().strftime("%Y%m%d-%Hh%M")
-    df_account_value.to_csv("./" + config.RESULTS_DIR + "/_df_account_value_" + now + ".csv")
-    df_actions.to_csv("./" + config.RESULTS_DIR + "/_df_actions_" + now + ".csv")
+    df_account_value.to_csv("./" + config.RESULTS_DIR + "/_df_account_value" + now + ".csv")
+    df_actions.to_csv("./" + config.RESULTS_DIR + "/_df_actions" + now + ".csv")
 
     print("==============Get Backtest Results===========")
     perf_stats_all = backtest_stats(account_value=df_account_value, value_col_name = 'total_assets')
