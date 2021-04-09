@@ -2,10 +2,6 @@ from __future__ import division, absolute_import, print_function
 import numpy as np
 import pandas as pd
 import datetime
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-# Append path for main project folder
-import sys
-sys.path.append('../')
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 from finrl.config import config
