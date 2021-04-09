@@ -2,8 +2,17 @@ from __future__ import division, absolute_import, print_function
 import numpy as np
 import pandas as pd
 import datetime
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+# Append path for main project folder
+import sys
+sys.path.append('../')
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+from finrl.config import config
 
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 def load_dataset(*, file_name: str) -> pd.DataFrame:
     """
     load csv dataset from path
