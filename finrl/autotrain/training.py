@@ -33,7 +33,7 @@ def main():
     train an agent
     """
     print("==============Start Fetching Data===========")
-    df = load_dataset(file_name="mt4_dataset.csv")
+    df = load_dataset(file_name="mt4_dataset_o.csv")
     
     print("==============Start Feature Engineering===========")
     fe = FeatureEngineer(
