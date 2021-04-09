@@ -4,6 +4,7 @@ imgaug==0.2.5
 folium==0.2.1
 umap-learn==0.3.7
 numpy==1.17
+Pillow<=7.2.0
 
 # data handling
 pandas>=1.1.5
