@@ -1,5 +1,12 @@
+TensorFlow_Probability==0.7
+gast==0.2.2
+tensorflow==1.15
+imgaug==0.2.5
+folium==0.2.1
+umap-learn==0.3.7
+numpy==1.17
+
 # data handling
-numpy
 pandas>=1.1.5
 stockstats
 yfinance
