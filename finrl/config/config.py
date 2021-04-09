@@ -9,14 +9,14 @@
 # PACKAGE_ROOT = pathlib.Path(finrl.__file__).resolve().parent
 # PACKAGE_ROOT = pathlib.Path().resolve().parent
 
-DATA_SAVE_DIR = f"data_information"
-DATASET_DIR = f"dataset"
+DATA_SAVE_DIR = f"finrl/data_information"
+DATASET_DIR = f"finrl/dataset"
 
 # now = datetime.datetime.now()
 # TRAINED_MODEL_DIR = f"trained_models/{now}"
-TRAINED_MODEL_DIR = f"trained_models"
-TENSORBOARD_LOG_DIR = f"tensorboard_log"
-RESULTS_DIR = f"results"
+TRAINED_MODEL_DIR = f"finrl/trained_models"
+TENSORBOARD_LOG_DIR = f"finrl/tensorboard_log"
+RESULTS_DIR = f"finrl/results"
 
 ## time_fmt = '%Y-%m-%d %H:%M:00'
 START_DATE = "2020-02-05 18:30:00"; END_DATE = "2021-04-07 18:30:00"
