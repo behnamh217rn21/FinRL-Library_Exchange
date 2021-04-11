@@ -19,7 +19,6 @@ def build_parser():
     )
     return parser
 
-
 def main():
     parser = build_parser()
     options = parser.parse_args()
