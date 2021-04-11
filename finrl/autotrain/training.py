@@ -113,11 +113,6 @@ def main():
 
     model.save("trained_models/DDPG.model")
     
-    logs_base_dir = f"{config.TENSORBOARD_LOG_DIR}/{model_name}"
-    os.makedirs(logs_base_dir, exist_ok=True)
-    %load_ext tensorboard
-    %tensorboard --logdir {logs_base_dir}
-    
     print("==============Start Trading===========")
     df_account_value, df_actions = DRLAgent.DRL_prediction(model=trained_ddpg, 
                                                            environment = e_trade_gym
