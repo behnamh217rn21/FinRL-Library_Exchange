@@ -44,7 +44,6 @@ def main():
     )
 
     processed = fe.preprocess_data(df)
-    
     processed['log_volume'] = np.log(processed.volume*processed.close)
     processed['change'] = (processed.close-processed.open)/processed.close
     processed['daily_variance'] = (processed.high-processed.low)/processed.close
@@ -105,9 +104,11 @@ def main():
                             verbose = 0
                            )
 
-    trained_ddpg = agent.train_model(
-        model=model, tb_log_name="ddpg", total_timesteps=80000, log_interval=1
-    )
+    trained_ddpg = agent.train_model(model=model, 
+                                     tb_log_name="ddpg", 
+                                     total_timesteps=80000, 
+                                     log_interval=1
+                                    )
 
     model.save("trained_models/DDPG.model")
     
