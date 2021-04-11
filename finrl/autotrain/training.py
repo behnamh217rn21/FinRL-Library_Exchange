@@ -4,11 +4,11 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use("Agg")
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+#############################################################################
 from sklearn import preprocessing
 import datetime
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+#############################################################################
 from finrl.config import config
 from finrl.marketdata.yahoodownloader import YahooDownloader
 from finrl.preprocessing.preprocessors import FeatureEngineer
@@ -17,7 +17,7 @@ from finrl.env.env_stocktrading_stoploss import StockTradingEnvStopLoss
 from finrl.model.models import DRLAgent
 from finrl.trade.backtest import backtest_plot, backtest_stats
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+#############################################################################
 import multiprocessing
 
 # Append path for main project folder
@@ -26,8 +26,8 @@ sys.path.append('../../..')
 sys.path.append("./FinRL-Library_Exchange")
 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+#############################################################################
+#############################################################################
 def main():
     """
     train an agent
