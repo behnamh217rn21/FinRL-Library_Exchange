@@ -45,8 +45,8 @@ def main():
     )
 
     processed = fe.preprocess_data(df)
-    processed['log_volume'] = np.log(processed.volume*processed.close)
     processed['change'] = (processed.close-processed.open)/processed.close
+    processed['log_volume'] = np.log(processed.volume*processed.close)
     processed['daily_variance'] = (processed.high-processed.low)/processed.close
 
     # Training & Trading data split
