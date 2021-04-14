@@ -115,11 +115,18 @@ class StockTradingEnvStopLoss(gym.Env):
         self.cache_indicator_data = cache_indicator_data
         self.cached_data = None
         self.cash_penalty_proportion = cash_penalty_proportion
+        
+        self.Err_TOF = False
+        self.Err_Cnt = 1
         if self.cache_indicator_data:
             print("caching data")
-            self.cached_data = [
-                self.get_date_vector(i) for i, _ in enumerate(self.dates)
-            ]
+            self.cached_data = [self.get_date_vector(0)]
+            i = 1
+            while i <= len(self.dates):
+                self.cached_data.append(self.get_date_vector(i))
+                if self.Err_TOF = True:
+                    i = self.Err_Cnt
+                i += 1
             print("data cached!")
             
     def seed(self, seed=None):
@@ -164,18 +171,25 @@ class StockTradingEnvStopLoss(gym.Env):
         self.state_memory.append(init_state)
         return init_state
     
-    def get_date_vector(self, date, cols=None):
+    def get_date_vector(self, date_cnt, cols=None):
         if (cols is None) and (self.cached_data is not None):
-            return self.cached_data[date]
+            return self.cached_data[date_cnt]
         else:
-            date = self.dates[date]
+            date = self.dates[date_cnt]
             if cols is None:
                 cols = self.daily_information_cols
             trunc_df = self.df.loc[[date]]
             v = []
             for a in self.assets:
-                subset = trunc_df[trunc_df[self.stock_col] == a]
-                v += subset.loc[date, cols].tolist()
+                try:
+                    subset = trunc_df[trunc_df[self.stock_col] == a]
+                    v += subset.loc[date, cols].tolist()
+                except:
+                    print("this date will be removed")
+                    self.Err_TOF = True
+                    i = date_cnt + 1
+                    self.Err_Cnt = i
+                    return get_date_vector(i)     
             assert len(v) == len(self.assets) * len(cols)
             return v
         
