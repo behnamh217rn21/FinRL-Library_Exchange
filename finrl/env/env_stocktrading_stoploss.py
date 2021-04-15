@@ -113,23 +113,14 @@ class StockTradingEnvStopLoss(gym.Env):
         self.episode_history = []
         self.printed_header = False
         self.cache_indicator_data = cache_indicator_data
-        self.cached_data = []
+        self.cached_data = None
         self.cash_penalty_proportion = cash_penalty_proportion
-        
-        self.t_cached_data = []
-        self.cached = False
-        self.Err_NO = False
         if self.cache_indicator_data:
             print("caching data")
-            i = 0
-            while i < len(self.dates):
-                self.Err_NO = False
-                self.t_cached_data = []
-                self.t_cached_data.append(self.get_date_vector(i))
-                if not(self.Err_NO):
-                    self.cached_data.append(self.t_cached_data)
-                i += 1
-            self.cached = True
+            self.cached_data = [
+                self.get_date_vector(i) for i, _ in enumerate(self.dates)
+            ]
+            self.cached_data = list(filter(None, self.cached_data))
             print("data cached!")
             
     def seed(self, seed=None):
@@ -174,12 +165,11 @@ class StockTradingEnvStopLoss(gym.Env):
         self.state_memory.append(init_state)
         return init_state
     
-    def get_date_vector(self, date_cnt, cols=None):
-        if (cols is None) and self.cached:
-            return self.cached_data[date_cnt]
+    def get_date_vector(self, date, cols=None):
+        if (cols is None) and (self.cached_data is not None):
+            return self.cached_data[date]
         else:
-            date = self.dates[date_cnt]
-            date = pd.Timestamp(np.datetime64(date))
+            date = self.dates[date]
             if cols is None:
                 cols = self.daily_information_cols
             trunc_df = self.df.loc[[date]]
@@ -187,10 +177,10 @@ class StockTradingEnvStopLoss(gym.Env):
             for a in self.assets:
                 try:
                     subset = trunc_df[trunc_df[self.stock_col] == a]
-                    v += subset.loc[date, cols].values.tolist()
+                    v += subset.loc[date, cols].tolist()
                 except:
                     print("Date {} will be deleted".format(date))
-                    self.Err_NO = True
+                    v = []
                     return v
             assert len(v) == len(self.assets) * len(cols)
             return v
