@@ -114,17 +114,19 @@ class StockTradingEnvStopLoss(gym.Env):
         self.printed_header = False
         self.cache_indicator_data = cache_indicator_data
         self.cached_data = []
-        self.cached = False
         self.cash_penalty_proportion = cash_penalty_proportion
         
-        self.Err_TOF = False
         self.t_cached_data = []
+        self.cached = False
+        self.Err_NO = False
         if self.cache_indicator_data:
             print("caching data")
             i = 0
             while i < len(self.dates):
-                self.t_cached_data = self.get_date_vector(i)
-                if self.Err_TOF != True:
+                self.Err_NO = False
+                self.t_cached_data = []
+                self.t_cached_data.append(self.get_date_vector(i))
+                if not(self.Err_NO):
                     self.cached_data.append(self.t_cached_data)
                 i += 1
             self.cached = True
@@ -177,6 +179,7 @@ class StockTradingEnvStopLoss(gym.Env):
             return self.cached_data[date_cnt]
         else:
             date = self.dates[date_cnt]
+            date = pd.Timestamp(np.datetime64(date))
             if cols is None:
                 cols = self.daily_information_cols
             trunc_df = self.df.loc[[date]]
@@ -184,11 +187,11 @@ class StockTradingEnvStopLoss(gym.Env):
             for a in self.assets:
                 try:
                     subset = trunc_df[trunc_df[self.stock_col] == a]
-                    v += subset.loc[date, cols].tolist()
+                    v += subset.loc[date, cols].values.tolist()
                 except:
                     print("Date {} will be deleted".format(date))
-                    self.Err_TOF = True
-                    return v   
+                    self.Err_NO = True
+                    return v
             assert len(v) == len(self.assets) * len(cols)
             return v
         
