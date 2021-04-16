@@ -48,37 +48,29 @@ def main():
     processed['change'] = (processed.close-processed.open)/processed.close
     processed['log_volume'] = np.log(processed.volume*processed.close)
     processed['daily_variance'] = (processed.high-processed.low)/processed.close
+    processed.to_csv("./" + config.DATA_SAVE_DIR + "/Dataframe/data_df.csv")
 
     # Training & Trading data split
     train = data_split(processed, config.START_DATE, config.START_TRADE_DATE)
     trade = data_split(processed, config.START_TRADE_DATE, config.END_DATE)
-    
     print(StockTradingEnvStopLoss.__doc__)
-    information_cols = ["daily_variance", "change", "log_volume", "close", 
-                        "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma"]
-    env_train_kwargs = {
-        'initial_amount': 10000,
-        'hmax': 100, 
-        'cache_indicator_data': True,
-        'cash_penalty_proportion': 0.2, 
-        'daily_information_cols': information_cols, 
-        'print_verbosity': 500, 
-        'random_start': True ,
-        'discrete_actions': True
-    }
-    e_train_gym = StockTradingEnvStopLoss(df = train, **env_train_kwargs)
     
-    env_trade_kwargs = {
-        'initial_amount': 10000,
-        'hmax': 100, 
-        'cache_indicator_data': True,
-        'cash_penalty_proportion': 0.2, 
-        'daily_information_cols': information_cols, 
-        'print_verbosity': 500, 
-        'random_start': False,
-        'discrete_actions': True
-    }
-    e_trade_gym = StockTradingEnvStopLoss(df = trade, **env_trade_kwargs)
+    information_cols = ["close", "macd", "boll_ub",	"boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
+    env_train_kwargs = {'initial_amount': 20000,
+                        'hmax': 100, 
+                        'cache_indicator_data': True,
+                        'daily_information_cols': information_cols,
+                        'print_verbosity': 500, 
+                        'discrete_actions': True}
+    e_train_gym = StockTradingEnvStopLoss(df = train, **env_train_kwargs)
+
+    env_trade_kwargs = {'initial_amount': initial_amount,
+                        'hmax': 100,
+                        'daily_information_cols': information_cols, 
+                        'print_verbosity': 500, 
+                        'random_start': False,
+                        'discrete_actions': True}
+    e_trade_gym = StockTradingEnvStopLoss_online(df = trade, **env_trade_kwargs)
     
     # for this example, let's do multiprocessing with n_cores-2
     n_cores = multiprocessing.cpu_count() - 2
@@ -92,36 +84,31 @@ def main():
 
     agent = DRLAgent(env=env_train)
     print("==============Model Training===========")
-    ddpg_params ={'actor_lr': 5e-06,
-                  'critic_lr': 5e-06,
-                  'gamma': 0.99,
-                  'batch_size': 1024,
-                  'eval_env': env_trade,
-                  'nb_eval_steps': 50
-                 }
-    model_name = "ddpg"
-    model = agent.get_model(model_name,  
-                            model_kwargs = ddpg_params, 
-                            verbose = 0
-                           )
+    ddpg_params ={"actor_lr": 5e-06,
+                  "critic_lr": 5e-06,
+                  "gamma": 0.99,
+                  "batch_size": 1024}
+    
+    model = agent.get_model("ddpg",
+                            "eval_env": env_trade,
+                            model_kwargs = ddpg_params,
+                            verose = 0)
 
     trained_ddpg = agent.train_model(model=model, 
                                      tb_log_name="ddpg", 
                                      total_timesteps=80000, 
-                                     log_interval=1
-                                    )
+                                     log_interval=1)
 
-    model.save("trained_models/DDPG.model")
+    trained_ddpg.save("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
     
     print("==============Start Trading===========")
     df_account_value, df_actions = DRLAgent.DRL_prediction(model=trained_ddpg, 
-                                                           environment = e_trade_gym
-                                                          )
+                                                           environment = e_trade_gym)
     
     now = datetime.datetime.now().strftime("%Y%m%d-%Hh%M")
     df_account_value.to_csv("./" + config.RESULTS_DIR + "/_df_account_value" + now + ".csv")
     df_actions.to_csv("./" + config.RESULTS_DIR + "/_df_actions" + now + ".csv")
-
+    
     print("==============Get Backtest Results===========")
     perf_stats_all = backtest_stats(account_value=df_account_value, value_col_name = 'total_assets')
     perf_stats_all = pd.DataFrame(perf_stats_all)
