@@ -23,11 +23,11 @@ sys.path.append("./FinRL-Library_Master")
 #############################################################################
 def Data_Downloader(_symbols):
     # creates object with a predefined configuration
-    print('\nrunning rates_historic process ...')
+    print('running rates_historic process ...')
     func = MT4_Data_Downloader.rates_historic(_instruments=_symbols)
     func.run()
     # Waits example termination
-    print('\nWaiting rates_historic process termination...\n')
+    print('Waiting rates_historic process termination...\n')
     while not func.isFinished():
         sleep(1)
         
