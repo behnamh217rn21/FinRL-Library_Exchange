@@ -38,12 +38,10 @@ def main():
     print(df.head())
     
     print("****Start Feature Engineering****")
-    fe = FeatureEngineer(
-        use_technical_indicator=True,
-        tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
-        use_turbulence=True,
-        user_defined_feature=False,
-    )
+    fe = FeatureEngineer(use_technical_indicator=True,
+                         tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
+                         use_turbulence=True,
+                         user_defined_feature=False)
     processed = fe.preprocess_data(df)
     np.seterr(divide = 'ignore')
     processed['log_volume'] = np.where((processed.volume*processed.close)>0, np.log(processed.volume*processed.close), 0)
