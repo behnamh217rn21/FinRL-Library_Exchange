@@ -35,7 +35,7 @@ def main():
     """
     train an agent
     """ 
-    print("==============Start Trading===========")
+    print("==============Start Training===========")
     print("****Start Fetching Data****")
     #df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, ticker_list=ticker, interval_period="30m").fetch_data()   
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
