@@ -19,8 +19,8 @@ TENSORBOARD_LOG_DIR = f"finrl/tensorboard_log"
 RESULTS_DIR = f"finrl/results"
 
 ## time_fmt = '%Y-%m-%d %H:%M:00'
-START_DATE = "2020-02-05 18:30:00"; END_DATE = "2021-04-07 18:30:00"
-START_TRADE_DATE = "2021-03-07 18:30:00"
+START_DATE = "2004-04-12 01:00:00"; END_DATE = "2021-04-12 02:00:00"
+START_TRADE_DATE = "2020-01-31 23:00:00"
 
 ## dataset default columns
 DEFAULT_DATA_COLUMNS = ["date", "tic", "close"]
