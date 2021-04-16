@@ -15,7 +15,7 @@ import multiprocessing
 #############################################################################
 # Append path for main project folder
 import sys
-sys.path.append("../FinRL-Library_Exchange")
+sys.path.append("../FinRL-Library_Master")
 
 
 #############################################################################
@@ -42,8 +42,9 @@ def main():
     _symbols_i1 = []
     for i in range(0, len(_symbols)):
         _symbols_i1.append(_symbols[i][1])
-    #Data_Downloader(_symbols_i1)
-    df = load_dataset(file_name="data.csv", train=True)
+    Data_Downloader(_symbols_i1)
+    #df = load_dataset(file_name="mt4_dataset.csv")
+    df = load_dataset(file_name="data.csv")
     print(df.head())
 
     print("****Start Feature Engineering****")
