@@ -41,13 +41,15 @@ def main():
     print("****Environment Document****")
     print(StockTradingEnvStopLoss_online.__doc__)
     
-    print("****rates subscriptions process****')
+    print("****rates subscriptions process & Fetching Data****')
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
     process = multiprocessing.Process(target=rates_subscriptions(), args=(_symbols,))
     process.start()
     sleep(60)
-
+    df = load_dataset(file_name="data.csv", train=False)
+    print(df.head())
+          
     print("****Build Trade Environment****")
     file = open("./" + config.DATA_SAVE_DIR + "/balance.txt","r+") 
     initial_amount = file.read()
