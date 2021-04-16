@@ -48,12 +48,10 @@ def main():
     print(df.head())
 
     print("****Start Feature Engineering****")
-    fe = FeatureEngineer(
-        use_technical_indicator=True,
-        tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
-        use_turbulence=True,
-        user_defined_feature=False,
-    )
+    fe = FeatureEngineer(use_technical_indicator=True,
+                         tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
+                         use_turbulence=True,
+                         user_defined_feature=False)
     processed = fe.preprocess_data(df)
     np.seterr(divide = 'ignore')
     processed['log_volume'] = np.where((processed.volume*processed.close)>0, np.log(processed.volume*processed.close), 0)
@@ -75,7 +73,7 @@ def main():
     initial_amount = file.read()
     file.close()
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
-    env_trade_kwargs = {'initial_amount': initial_amount,
+    env_trade_kwargs = {'initial_amount': initial_amount*500,
                         'hmax': 100, 
                         'cache_indicator_data': True,
                         'daily_information_cols': information_cols,
