@@ -27,56 +27,54 @@ sys.path.append("./FinRL-Library_Master")
 #############################################################################
 def rates_subscriptions(_symbols):
     # creates object with a predefined configuration
-    print('\nrunning rates subscriptions process ...')
+    print('running rates subscriptions process ...')
     func = rates_subscriptions_v1.rates_subscriptions(_instruments=_symbols)
     func.run()
     # Waits example termination
-    print('\nWaiting rates subscriptions process termination...\n')
+    print('Waiting rates subscriptions process termination...\n')
     while not func.isFinished():
         sleep(1)
                   
 def main():
+    print("==============Start Trading===========")
     trained_ddpg = model.load("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
+    
+    print("****Environment Document****")
     print(StockTradingEnvStopLoss_online.__doc__)
     
+    print("****rates subscriptions process****')
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
     process = multiprocessing.Process(target=rates_subscriptions(), args=(_symbols,))
     process.start()
     sleep(60)
 
+    print("****Build Trade Environment****")
     file = open("./" + config.DATA_SAVE_DIR + "/balance.txt","r+") 
     initial_amount = file.read()
     file.close()
-        
-    env_trade_kwargs = {
-        initial_amount = initial_amount,
-        hmax = 5000, 
-        turbulence_threshold = None, 
-        currency='$',
-        buy_cost_pct=3e-3,
-        sell_cost_pct=3e-3,
-        cash_penalty_proportion=0.2,
-        cache_indicator_data=True,
-        daily_information_cols = information_cols, 
-        print_verbosity = 500, 
-        random_start = True
-    }
-    e_trade_gym = StockTradingEnvStopLoss_online(turbulence_threshold=250, **env_kwargs)
-    
+    information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
+    env_trade_kwargs = {'initial_amount': initial_amount,
+                        'hmax': 100,
+                        'daily_information_cols': information_cols, 
+                        'print_verbosity': 500, 
+                        'random_start': False,
+                        'discrete_actions': True}
+    e_trade_gym = StockTradingEnvStopLoss_online(df = trade, **env_trade_kwargs)
     # this is our observation environment. It allows full diagnostics
-    env_trade, _ = e_train_gym.get_sb_env()
+    env_trade, _ = e_trade_gym.get_sb_env()
     
     print("==============Start Trading===========")
+    print("****Model Prediction****")
     df_account_value, df_actions = DRLAgent.DRL_prediction(model=trained_ddpg, 
-                                                           environment = e_trade_gym
-                                                          )
+                                                           environment = e_trade_gym)
     
+    print("****Prediction Resault Saving****")
     now = datetime.datetime.now().strftime("%Y%m%d-%Hh%M")
     df_account_value.to_csv("./" + config.RESULTS_DIR + "/_df_account_value" + now + ".csv")
     df_actions.to_csv("./" + config.RESULTS_DIR + "/_df_actions" + now + ".csv")
     
-    print("==============Get Backtest Results===========")
+    print("****Get Backtest Results****")
     perf_stats_all = backtest_stats(account_value=df_account_value, value_col_name = 'total_assets')
     perf_stats_all = pd.DataFrame(perf_stats_all)
     perf_stats_all.to_csv("./" + config.RESULTS_DIR + "/_perf_stats_all" + now + ".csv")
