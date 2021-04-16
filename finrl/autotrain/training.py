@@ -33,7 +33,7 @@ def main():
     """ 
     print("==============Start Training===========")
     print("****Start Fetching Data****")
-    df = load_dataset(file_name="mt4_dataset_o.csv")
+    df = load_dataset(file_name="data.csv")
     print(df.head())
     
     print("****Start Feature Engineering****")
