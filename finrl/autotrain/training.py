@@ -32,7 +32,7 @@ def main():
     """
     train an agent
     """ 
-    print("==============Start Trading===========")
+    print("==============Start Training===========")
     print("****Start Fetching Data****")
     df = load_dataset(file_name="mt4_dataset_o.csv")
     print(df.head())
