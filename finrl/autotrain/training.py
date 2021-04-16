@@ -78,6 +78,9 @@ def main():
     #env_train, _ = e_train_gym.get_sb_env()
     
     print("****Build Trade Environment****")
+    file = open("./" + config.DATA_SAVE_DIR + "/balance.txt","r+") 
+    initial_amount = file.read()
+    file.close()
     env_trade_kwargs = {'initial_amount': initial_amount,
                         'hmax': 100,
                         'daily_information_cols': information_cols, 
