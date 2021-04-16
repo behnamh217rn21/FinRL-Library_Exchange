@@ -5,21 +5,34 @@ import datetime
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 from finrl.config import config
+from yahoofinancials import YahooFinancials
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-def load_dataset(*, file_name: str, train: bool) -> pd.DataFrame:
+def adjusted_prices(asset, close_p):
+    yahoo_financials = YahooFinancials(asset)
+    statistics_data = yahoo_financials.get_key_statistics_data()
+    
+    SplitFactor_str = statistics_data[asset]['lastSplitFactor']
+    y, x = SplitFactor_str.split(':')
+    XY = int(x)*int(y)
+        
+    adj_close = (1/XY)*close_p       
+    return adj_close
+    
+def load_dataset(*, file_name: str) -> pd.DataFrame:
     """
     load csv dataset from path
     :return: (df) pandas dataframe
     """
-    if train:
-        _data = pd.read_csv("./" + config.DATASET_DIR + "/" + file_name, sep=',', low_memory=False, index_col=[0])
-    else:
-        _data = pd.read_csv("./" + config.DATA_SAVE_DIR + "/" + file_name, sep=',', low_memory=False, index_col=[0])
-    
+    # _data = pd.read_csv(f"{config.DATASET_DIR}/{file_name}")
+    _data = pd.read_csv("./" + config.DATASET_DIR + "/" + file_name, sep=',', low_memory=False, index_col=[0])
+    """"
+    for i in range(0, len(df)):
+        _data.loc[i, "close"] = adjusted_prices(_data.loc[i, "tic"], _data.loc[i, "close"])
     return _data
+    """"
 
 def data_split(df, start, end):
     """
