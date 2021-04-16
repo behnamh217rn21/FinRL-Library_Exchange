@@ -96,7 +96,7 @@ def main():
 
     trained_ddpg = agent.train_model(model=model, 
                                      tb_log_name="ddpg", 
-                                     total_timesteps=80000, 
+                                     total_timesteps=32600000, 
                                      log_interval=1)
 
     trained_ddpg.save("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
