@@ -19,8 +19,7 @@ from time import sleep
 #############################################################################
 # Append path for main project folder
 import sys
-sys.path.append('../../..')
-sys.path.append("./FinRL-Library_Master")
+sys.path.append("../FinRL-Library_Exchange")
 
 
 #############################################################################
