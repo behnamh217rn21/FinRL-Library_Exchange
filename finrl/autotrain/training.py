@@ -44,7 +44,6 @@ def main():
         use_turbulence=True,
         user_defined_feature=False,
     )
-
     processed = fe.preprocess_data(df)
     processed['change'] = (processed.close-processed.open)/processed.close
     processed['log_volume'] = np.log(processed.volume*processed.close)
