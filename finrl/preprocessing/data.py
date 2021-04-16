@@ -9,13 +9,15 @@ from finrl.config import config
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-def load_dataset(*, file_name: str) -> pd.DataFrame:
+def load_dataset(*, file_name: str, train: bool) -> pd.DataFrame:
     """
     load csv dataset from path
     :return: (df) pandas dataframe
     """
-    # _data = pd.read_csv(f"{config.DATASET_DIR}/{file_name}")
-    _data = pd.read_csv("./" + config.DATASET_DIR + "/" + file_name, sep=',', low_memory=False, index_col=[0])
+    if train:
+        _data = pd.read_csv("./" + config.DATASET_DIR + "/" + file_name, sep=',', low_memory=False, index_col=[0])
+    else:
+        _data = pd.read_csv("./" + config.DATA_SAVE_DIR + "/" + file_name, sep=',', low_memory=False, index_col=[0])
     return _data
 
 def data_split(df, start, end):
