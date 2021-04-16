@@ -19,7 +19,7 @@ from time import sleep
 #############################################################################
 # Append path for main project folder
 import sys
-sys.path.append("../FinRL-Library_Exchange")
+sys.path.append("../FinRL-Library_Master")
 
 
 #############################################################################
@@ -41,15 +41,13 @@ def main():
     print("****Environment Document****")
     print(StockTradingEnvStopLoss_online.__doc__)
     
-    print("****rates subscriptions process & Fetching Data****')
+    print("****rates subscriptions process****')
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
     process = multiprocessing.Process(target=rates_subscriptions(), args=(_symbols,))
     process.start()
     sleep(60)
-    df = load_dataset(file_name="data.csv", train=False)
-    print(df.head())
-          
+
     print("****Build Trade Environment****")
     file = open("./" + config.DATA_SAVE_DIR + "/balance.txt","r+") 
     initial_amount = file.read()
@@ -61,7 +59,7 @@ def main():
                         'print_verbosity': 500, 
                         'random_start': False,
                         'discrete_actions': True}
-    e_trade_gym = StockTradingEnvStopLoss_online(df = trade, **env_trade_kwargs)
+    e_trade_gym = StockTradingEnvStopLoss_online(**env_trade_kwargs)
     # this is our observation environment. It allows full diagnostics
     env_trade, _ = e_trade_gym.get_sb_env()
     
@@ -82,4 +80,4 @@ def main():
 
     
 if __name__ == "__main__":
-    main()
+    main()  
