@@ -95,7 +95,6 @@ def main():
                             verose = 0)
 
     trained_ddpg = agent.train_model(model=model, 
-                                     tb_log_name="ddpg", 
                                      total_timesteps=32600000, 
                                      log_interval=1)
 
