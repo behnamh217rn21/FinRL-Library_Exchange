@@ -1,6 +1,9 @@
 import os
 import numpy as np
 
+import warnings
+warnings.filterwarnings('ignore')
+
 from finrl.config import config
 from finrl.marketdata.yahoodownloader import YahooDownloader
 from finrl.preprocessing.preprocessors import FeatureEngineer
