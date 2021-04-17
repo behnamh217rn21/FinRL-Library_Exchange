@@ -87,7 +87,7 @@ def main():
                         'print_verbosity': 500, 
                         'random_start': False,
                         'discrete_actions': True}
-    e_trade_gym = StockTradingEnvStopLoss_online(df = trade, **env_trade_kwargs)
+    e_trade_gym = StockTradingEnvStopLoss(df = trade, **env_trade_kwargs)
     # this is our observation environment. It allows full diagnostics
     env_trade, _ = e_trade_gym.get_sb_env()
 
