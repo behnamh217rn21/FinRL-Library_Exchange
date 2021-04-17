@@ -41,7 +41,7 @@ def main():
     print("****Environment Document****")
     print(StockTradingEnvStopLoss_online.__doc__)
     
-    print("****rates subscriptions process****')
+    print("****rates subscriptions process****")
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
     process = multiprocessing.Process(target=rates_subscriptions(), args=(_symbols,))
