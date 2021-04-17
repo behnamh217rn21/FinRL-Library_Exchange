@@ -4,6 +4,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use("Agg")
 
+import warnings
+warnings.filterwarnings('ignore')
+
 #############################################################################
 from sklearn import preprocessing
 import datetime
