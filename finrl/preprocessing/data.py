@@ -31,8 +31,9 @@ def load_dataset(*, file_name: str) -> pd.DataFrame:
     """
     for i in range(0, len(df)):
         _data.loc[i, "close"] = adjusted_prices(_data.loc[i, "tic"], _data.loc[i, "close"])
-    return _data
     """
+    return _data
+    
 
 def data_split(df, start, end):
     """
