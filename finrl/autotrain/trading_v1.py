@@ -19,7 +19,7 @@ from time import sleep
 #############################################################################
 # Append path for main project folder
 import sys
-sys.path.append("../FinRL-Library_Master")
+sys.path.append("..\\FinRL-Library_Master")
 
 
 #############################################################################
@@ -36,20 +36,20 @@ def rates_subscriptions(_symbols):
                   
 def main():
     print("==============Start Trading===========")
-    trained_ddpg = model.load("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
+    trained_ddpg = model.load(".\\" + config.TRAINED_MODEL_DIR + "\\DDPG.model")
     
     print("****Environment Document****")
     print(StockTradingEnvStopLoss_online.__doc__)
     
     print("****rates subscriptions process****")
-    with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
+    with open(".\\" + config.DATA_SAVE_DIR + "\\symbols.txt", "r") as file:
         _symbols = eval(file.readline())
     process = multiprocessing.Process(target=rates_subscriptions(), args=(_symbols,))
     process.start()
     sleep(60)
 
     print("****Build Trade Environment****")
-    file = open("./" + config.DATA_SAVE_DIR + "/balance.txt","r+") 
+    file = open(".\\" + config.DATA_SAVE_DIR + "\\balance.txt","r+") 
     initial_amount = file.read()
     file.close()
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
@@ -70,14 +70,14 @@ def main():
     
     print("****Prediction Resault Saving****")
     now = datetime.datetime.now().strftime("%Y%m%d-%Hh%M")
-    df_account_value.to_csv("./" + config.RESULTS_DIR + "/_df_account_value" + now + ".csv")
-    df_actions.to_csv("./" + config.RESULTS_DIR + "/_df_actions" + now + ".csv")
+    df_account_value.to_csv(".\\" + config.RESULTS_DIR + "\\_df_account_value" + now + ".csv")
+    df_actions.to_csv(".\\" + config.RESULTS_DIR + "\\_df_actions" + now + ".csv")
     
     print("****Get Backtest Results****")
     perf_stats_all = backtest_stats(account_value=df_account_value, value_col_name = 'total_assets')
     perf_stats_all = pd.DataFrame(perf_stats_all)
-    perf_stats_all.to_csv("./" + config.RESULTS_DIR + "/_perf_stats_all" + now + ".csv")
+    perf_stats_all.to_csv(".\\" + config.RESULTS_DIR + "\\_perf_stats_all" + now + ".csv")
 
     
 if __name__ == "__main__":
-    main()
+    main()  
