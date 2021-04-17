@@ -1,7 +1,10 @@
 import pandas as pd
+import datetime
 import matplotlib
 matplotlib.use("Agg")
-import datetime
+
+import warnings
+warnings.filterwarnings('ignore')
 
 #############################################################################
 from finrl.config import config
