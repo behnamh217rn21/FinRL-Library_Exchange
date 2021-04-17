@@ -15,7 +15,7 @@ import multiprocessing
 #############################################################################
 # Append path for main project folder
 import sys
-sys.path.append("../FinRL-Library_Master")
+sys.path.append("..\\FinRL-Library_Master")
 
 
 #############################################################################
@@ -37,7 +37,7 @@ def main():
     print("==============Start Training===========")
     print("****Start Fetching Data****")
     #df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, ticker_list=ticker, interval_period="30m").fetch_data()   
-    with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
+    with open(".\\" + config.DATA_SAVE_DIR + "\\symbols.txt", "r") as file:
         _symbols = eval(file.readline())
     _symbols_i1 = []
     for i in range(0, len(_symbols)):
@@ -58,7 +58,7 @@ def main():
     processed['change'] = (processed.close-processed.open)/processed.close
     processed['daily_variance'] = (processed.high-processed.low)/processed.close
     print(processed.head())
-    processed.to_csv("./" + config.DATA_SAVE_DIR + "/Dataframe/data_df.csv")
+    processed.to_csv(".\\" + config.DATA_SAVE_DIR + "\\Dataframe\\data_df.csv")
         
     print("****Training & Trading data split****")
     # Training data split
@@ -69,7 +69,7 @@ def main():
     print(StockTradingEnvStopLoss.__doc__)
     
     print("****Build Train Environment****")
-    file = open("./" + config.DATA_SAVE_DIR + "/balance.txt","r+") 
+    file = open(".\\" + config.DATA_SAVE_DIR + "\\balance.txt","r+") 
     initial_amount = file.read()
     file.close()
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
@@ -111,7 +111,7 @@ def main():
                                      log_interval=1)
     
     print("****Model Saving****")
-    trained_ddpg.save("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
+    trained_ddpg.save(".\\" + config.TRAINED_MODEL_DIR + "\\DDPG.model")
     
     
 if __name__ == "__main__":
