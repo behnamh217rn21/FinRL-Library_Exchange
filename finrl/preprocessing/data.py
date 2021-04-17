@@ -26,8 +26,8 @@ def load_dataset(*, file_name: str) -> pd.DataFrame:
     load csv dataset from path
     :return: (df) pandas dataframe
     """
-    # _data = pd.read_csv(f"{config.DATASET_DIR}/{file_name}")
-    _data = pd.read_csv("./" + config.DATASET_DIR + "/" + file_name, sep=',', low_memory=False, index_col=[0])
+    # _data = pd.read_csv(f"{config.DATASET_DIR}\\{file_name}")
+    _data = pd.read_csv(".\\" + config.DATASET_DIR + "\\" + file_name, sep=',', low_memory=False, index_col=[0])
     """
     for i in range(0, len(df)):
         _data.loc[i, "close"] = adjusted_prices(_data.loc[i, "tic"], _data.loc[i, "close"])
