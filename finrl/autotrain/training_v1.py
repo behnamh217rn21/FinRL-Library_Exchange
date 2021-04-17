@@ -63,7 +63,7 @@ def main():
     print("****Training & Trading data split****")
     # Training data split
     train = data_split(processed, config.START_DATE, config.END_DATE)
-    print("train dataset length: {}".format(str(len(train)))
+    print("train dataset length: {}".format(str(len(train))))
 
     print("****Environment Document****")
     print(StockTradingEnvStopLoss.__doc__)
@@ -92,14 +92,14 @@ def main():
     ddpg_params ={"actor_lr": 5e-06,
                   "critic_lr": 5e-06,
                   "gamma": 0.99,
-                  "batch_size": 1024}  
+                  "batch_size": 1024,
+                  "eval_env": env_trade}  
     
     policy_kwargs = {"net_arch": ["lstm", "lstm", dict(pi=[dict(lstm_L1=24, dropout_L2=0.2, lstm_L3=24, dropout_L4=0.2)], \
                                                        vf=[dict(dense_L1=64, dense_L2=16)])],
                      "n_lstm": 10}
     
     model = agent.get_model("ddpg",
-                            "eval_env": env_trade,
                             policy="LstmLstmPolicy",
                             model_kwargs = ddpg_params,
                             policy_kwargs = policy_kwargs,   
