@@ -12,8 +12,8 @@
 DATA_SAVE_DIR = f"finrl\\data_information"
 DATASET_DIR = f"finrl\\dataset"
 
-# now = datetime.datetime.now()
-# TRAINED_MODEL_DIR = f"trained_models\\{now}"
+# _now = datetime.datetime.now()
+# TRAINED_MODEL_DIR = f"trained_models\\{_now}"
 TRAINED_MODEL_DIR = f"finrl\\trained_models"
 TENSORBOARD_LOG_DIR = f"finrl\\tensorboard_log"
 RESULTS_DIR = f"finrl\\results"
