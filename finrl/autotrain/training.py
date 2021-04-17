@@ -51,9 +51,9 @@ def main():
     print("****Training & Trading data split****")
     # Training & Trading data split
     train = data_split(processed, config.START_DATE, config.START_TRADE_DATE)
-    print("train dataset length: {}".format(str(len(train)))
+    print("train dataset length: {}".format(str(len(train))))
     trade = data_split(processed, config.START_TRADE_DATE, config.END_DATE)
-    print("trade dataset length: {}".format(str(len(trade)))
+    print("trade dataset length: {}".format(str(len(trade))))
     
     print("****Environment Document****")
     print(StockTradingEnvStopLoss.__doc__)
@@ -93,10 +93,10 @@ def main():
     ddpg_params = {"actor_lr": 5e-06,
                    "critic_lr": 5e-06,
                    "gamma": 0.99,
-                   "batch_size": 1024}
+                   "batch_size": 1024,
+                   "eval_env": env_trade}
 
     model = agent.get_model("ddpg",
-                            "eval_env": env_trade,
                             model_kwargs = ddpg_params,
                             verose = 0)
     
