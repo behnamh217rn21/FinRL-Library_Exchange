@@ -29,7 +29,6 @@ from stable_baselines.common.noise import (
 )
 from stable_baselines import SAC
 
-
 MODELS = {"a2c": A2C, "ddpg": DDPG, "td3": TD3, "sac": SAC, "ppo2": PPO2}
 MODEL_KWARGS = {x: config.__dict__[f"{x.upper()}_PARAMS"] for x in MODELS.keys()}
 NOISE = {
@@ -40,26 +39,18 @@ NOISE = {
 
 class DRLAgent:
     """Provides implementations for DRL algorithms
-
     Attributes
     ----------
         env: gym environment class
             user-defined class
-
     Methods
     -------
-        train_PPO2()
-            the implementation for PPO2 algorithm
-        train_A2C()
-            the implementation for A2C algorithm
-        train_DDPG()
-            the implementation for DDPG algorithm
-        train_TD3()
-            the implementation for TD3 algorithm
-        train_SAC()
-            the implementation for SAC algorithm
-        DRL_prediction()
-            make a prediction in a test dataset and get results
+        train_DDPG(); the implementation for DDPG algorithm
+        train_PPO2(); the implementation for PPO2 algorithm
+        train_A2C(); the implementation for A2C algorithm
+        train_TD3(); the implementation for TD3 algorithm
+        train_SAC(); the implementation for SAC algorithm
+        DRL_prediction(); make a prediction in a test dataset and get results
     """
     @staticmethod
     def DRL_prediction(model, environment):
