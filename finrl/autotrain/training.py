@@ -78,8 +78,7 @@ def main():
     n_cores = multiprocessing.cpu_count() - 2
     print(f"using {n_cores} cores")   
     # this is our training env. It allows multiprocessing
-    env_train, _ = e_train_gym.get_multiproc_env(n = n_cores)
-    #env_train, _ = e_train_gym.get_sb_env()
+    env_train, _ = e_train_gym.get_sb_env()
     
     print("****Build Trade Environment****")
     env_trade_kwargs = {'initial_amount': initial_amount*500,
@@ -90,7 +89,7 @@ def main():
                         'discrete_actions': True}
     e_trade_gym = StockTradingEnvStopLoss(df = trade, **env_trade_kwargs)
     # this is our observation environment. It allows full diagnostics
-    #env_trade, _ = e_trade_gym.get_sb_env()
+    env_trade, _ = e_trade_gym.get_sb_env()
 
     print("****Implement DRL Algorithms****")
     agent = DRLAgent(env=env_train)
@@ -98,7 +97,7 @@ def main():
                    "critic_lr": 5e-06,
                    "gamma": 0.99,
                    "batch_size": 1024,
-                   "eval_env": e_trade_gym}
+                   "eval_env": env_trade}
 
     model = agent.get_model("ddpg",
                             model_kwargs = ddpg_params,
