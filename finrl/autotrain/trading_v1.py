@@ -71,7 +71,7 @@ def main():
                                                            environment = e_trade_gym)
     
     print("****Prediction Resault Saving****")
-    now = datetime.datetime.now().strftime("%Y%m%d-%Hh%M")
+    now = datetime.datetime.now().strftime("%Y-%m-%d-%HH%MM")
     df_account_value.to_csv("./" + config.RESULTS_DIR + "/_df_account_value" + now + ".csv")
     df_actions.to_csv("./" + config.RESULTS_DIR + "/_df_actions" + now + ".csv")
     
