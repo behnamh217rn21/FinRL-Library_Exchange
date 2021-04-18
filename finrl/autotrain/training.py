@@ -103,7 +103,7 @@ def main():
 
     model = agent.get_model("ddpg",
                             model_kwargs = ddpg_params,
-                            verose = 0)
+                            verbose = 0)
     
     print("****Train_Model****")
     model = agent.train_model(model=model, 
