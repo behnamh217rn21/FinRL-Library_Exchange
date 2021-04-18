@@ -64,6 +64,7 @@ def main():
     print("****Build Train Environment****")
     file = open("./" + config.DATA_SAVE_DIR + "/balance.txt","r+") 
     initial_amount = file.read()
+    initial_amount = float(initial_amount)
     file.close()
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     env_train_kwargs = {'initial_amount': initial_amount*500,
@@ -89,6 +90,7 @@ def main():
                         'discrete_actions': True}
     e_trade_gym = StockTradingEnvStopLoss(df = trade, **env_trade_kwargs)
     # this is our observation environment. It allows full diagnostics
+    #env_trade, _ = e_trade_gym.get_multiproc_env(n = n_cores)
     env_trade, _ = e_trade_gym.get_sb_env()
 
     print("****Implement DRL Algorithms****")
