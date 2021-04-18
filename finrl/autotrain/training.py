@@ -101,7 +101,7 @@ def main():
                                  verbose = 0)
     
     print("****Train_Model****")
-    DDPG_model = agent.train_model(model=model, 
+    DDPG_model = agent.train_model(model=DDPG_model, 
                                    total_timesteps=32600000, 
                                    log_interval=1)
     
