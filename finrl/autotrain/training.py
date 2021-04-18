@@ -74,9 +74,6 @@ def main():
                         'print_verbosity': 500, 
                         'discrete_actions': True}
     e_train_gym = StockTradingEnvStopLoss(df = train, **env_train_kwargs)
-    # for this example, let's do multiprocessing with n_cores-2
-    n_cores = multiprocessing.cpu_count() - 2
-    print(f"using {n_cores} cores")   
     # this is our training env. It allows multiprocessing
     env_train, _ = e_train_gym.get_sb_env()
     
