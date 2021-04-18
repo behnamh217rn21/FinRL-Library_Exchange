@@ -96,21 +96,21 @@ def main():
                    "batch_size": 1024,
                    "eval_env": env_trade}
 
-    model = agent.get_model("ddpg",
-                            model_kwargs = ddpg_params,
-                            verbose = 0)
+    DDPG_model = agent.get_model("ddpg",
+                                 model_kwargs = ddpg_params,
+                                 verbose = 0)
     
     print("****Train_Model****")
-    model = agent.train_model(model=model, 
-                              total_timesteps=32600000, 
-                              log_interval=1)
+    DDPG_model = agent.train_model(model=model, 
+                                   total_timesteps=32600000, 
+                                   log_interval=1)
     
     print("****Model Saving****")
-    model.save("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
+    DDPG_model.save("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
     
     print("==============Start Trading===========")
     print("****Model Prediction****")
-    df_account_value, df_actions = DRLAgent.DRL_prediction(model=model, 
+    df_account_value, df_actions = DRLAgent.DRL_prediction(model=DDPG_model, 
                                                            environment = e_trade_gym)
     
     print("****Prediction Resault Saving****")
