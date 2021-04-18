@@ -53,10 +53,10 @@ def main():
 
     print("****Training & Trading data split****")
     # Training & Trading data split
-    train = data_split(processed, config.START_DATE, config.START_TRADE_DATE)
-    print("train dataset length: {}".format(str(len(train))))
-    trade = data_split(processed, config.START_TRADE_DATE, config.END_DATE)
-    print("trade dataset length: {}".format(str(len(trade))))
+    train_df = data_split(processed, config.START_DATE, config.START_TRADE_DATE)
+    print("train dataset length: {}".format(str(len(train_df))))
+    trade_df = data_split(processed, config.START_TRADE_DATE, config.END_DATE)
+    print("trade dataset length: {}".format(str(len(trade_df))))
     
     print("****Environment Document****")
     print(StockTradingEnvStopLoss.__doc__)
@@ -73,7 +73,7 @@ def main():
                         'daily_information_cols': information_cols,
                         'print_verbosity': 500, 
                         'discrete_actions': True}
-    e_train_gym = StockTradingEnvStopLoss(df = train, **env_train_kwargs)
+    e_train_gym = StockTradingEnvStopLoss(df = train_df, **env_train_kwargs)
     # this is our training env. It allows multiprocessing
     env_train, _ = e_train_gym.get_sb_env()
     
@@ -84,7 +84,7 @@ def main():
                         'print_verbosity': 500, 
                         'random_start': False,
                         'discrete_actions': True}
-    e_trade_gym = StockTradingEnvStopLoss(df = trade, **env_trade_kwargs)
+    e_trade_gym = StockTradingEnvStopLoss(df = trade_df, **env_trade_kwargs)
     # this is our observation environment. It allows full diagnostics
     env_trade, _ = e_trade_gym.get_sb_env()
 
