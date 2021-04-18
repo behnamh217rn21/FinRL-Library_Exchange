@@ -65,7 +65,7 @@ def main():
                         'discrete_actions': True}
     e_trade_gym = StockTradingEnvStopLoss_online(**env_trade_kwargs)
     # this is our observation environment. It allows full diagnostics
-    env_trade, _ = e_trade_gym.get_sb_env()
+    #env_trade, _ = e_trade_gym.get_sb_env()
     
     print("==============Start Trading===========")
     print("****Model Prediction****")
