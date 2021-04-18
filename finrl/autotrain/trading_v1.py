@@ -54,6 +54,7 @@ def main():
     print("****Build Trade Environment****")
     file = open(".\\" + config.DATA_SAVE_DIR + "\\balance.txt","r+") 
     initial_amount = file.read()
+    initial_amount = float(initial_amount)
     file.close()
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     env_trade_kwargs = {'initial_amount': initial_amount*500,
