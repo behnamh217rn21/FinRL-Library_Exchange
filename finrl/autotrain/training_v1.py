@@ -90,6 +90,17 @@ def main():
     # this is our training env. It allows multiprocessing
     env_train, _ = e_train_gym.get_multiproc_env(n = n_cores)
     #env_train, _ = e_train_gym.get_sb_env()
+       
+    print("****Build Trade Environment****")
+    env_trade_kwargs = {'initial_amount': initial_amount*500,
+                        'hmax': 100,
+                        'daily_information_cols': information_cols, 
+                        'print_verbosity': 500, 
+                        'random_start': False,
+                        'discrete_actions': True}
+    e_trade_gym = StockTradingEnvStopLoss(df = trade, **env_trade_kwargs)
+    # this is our observation environment. It allows full diagnostics
+    env_trade, _ = e_trade_gym.get_sb_env()
     
     print("****Implement DRL Algorithms****")
     agent = DRLAgent(env=env_train)
@@ -97,7 +108,7 @@ def main():
                   "critic_lr": 5e-06,
                   "gamma": 0.99,
                   "batch_size": 1024,
-                  "eval_env": env_trade}  
+                  "eval_env": e_trade_gym}  
     
     policy_kwargs = {"net_arch": ["lstm", "lstm", dict(pi=[dict(lstm_L1=24, dropout_L2=0.2, lstm_L3=24, dropout_L4=0.2)], \
                                                        vf=[dict(dense_L1=64, dense_L2=16)])],
