@@ -262,31 +262,22 @@ class StockTradingEnvStopLoss(gym.Env):
             
             holdings = self.state_memory[-1][1 : len(self.assets) + 1]
             
-            neg_closing_diff_avg_buy = np.clip(self.closing_diff_avg_buy, 
-                                               -np.inf, 
-                                               0)
-            neg_profit_sell_diff_avg_buy = np.clip(self.profit_sell_diff_avg_buy,
-                                                   -np.inf, 
-                                                   0)
-            pos_profit_sell_diff_avg_buy = np.clip(self.profit_sell_diff_avg_buy, 
-                                                   0, 
-                                                   np.inf)
+            neg_closing_diff_avg_buy = np.clip(self.closing_diff_avg_buy, -np.inf, 0)
+            neg_profit_sell_diff_avg_buy = np.clip(self.profit_sell_diff_avg_buy, -np.inf, 0)
+            pos_profit_sell_diff_avg_buy = np.clip(self.profit_sell_diff_avg_buy, 0, np.inf)
 
             cash_penalty = max(0, (total_assets * self.cash_penalty_proportion - cash))
             
             if self.current_step > 1:
                 prev_holdings = self.state_memory[-2][1 : len(self.assets) + 1]
-                stop_loss_penalty = -1 * np.dot(np.array(prev_holdings), 
-                                                neg_closing_diff_avg_buy)
+                stop_loss_penalty = -1 * np.dot(np.array(prev_holdings), neg_closing_diff_avg_buy)
             else:
                 stop_loss_penalty = 0
                 
-            low_profit_penalty = -1 * np.dot(np.array(holdings), 
-                                             neg_profit_sell_diff_avg_buy)
+            low_profit_penalty = -1 * np.dot(np.array(holdings), neg_profit_sell_diff_avg_buy)
             total_penalty = cash_penalty + stop_loss_penalty + low_profit_penalty
             
-            additional_reward = np.dot(np.array(holdings), 
-                                       pos_profit_sell_diff_avg_buy)
+            additional_reward = np.dot(np.array(holdings), pos_profit_sell_diff_avg_buy)
 
             reward = ((total_assets - total_penalty + additional_reward) / self.initial_amount) - 1
             reward /= self.current_step 
@@ -418,14 +409,10 @@ class StockTradingEnvStopLoss(gym.Env):
                                                      closings - (self.min_profit_penalty * self.avg_buy_price),
                                                      0)
             
-            if any(np.clip(self.profit_sell_diff_avg_buy, 
-                           -np.inf, 
-                           0) < 0):
+            if any(np.clip(self.profit_sell_diff_avg_buy, -np.inf, 0) < 0):
                 self.log_step(reason="LOW PROFIT")
             else:
-                if any(np.clip(self.profit_sell_diff_avg_buy, 
-                               0, 
-                               np.inf) > 0):
+                if any(np.clip(self.profit_sell_diff_avg_buy, 0, np.inf) > 0):
                     self.log_step(reason="HIGH PROFIT")
 
             # verify we didn't do anything impossible here
