@@ -180,7 +180,12 @@ class StockTradingEnvStopLoss(gym.Env):
                     subset = trunc_df[trunc_df[self.stock_col] == a]
                     v += subset.loc[date, cols].tolist()
                 except:
-                    print(date)
+                    print("111111111111111111")
+                    print(type(date))
+                    print("222222222222222222")
+                    print(type(self.df.loc[date, cols])
+                    print("333333333333333333")
+                    print(self.df.loc[date, cols])
                     print("Date {} will be deleted".format(date))
                     self.df.drop([date], inplace=True)
                     v = []
