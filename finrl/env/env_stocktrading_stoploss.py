@@ -123,6 +123,7 @@ class StockTradingEnvStopLoss(gym.Env):
             ]
             self.cached_data = list(filter(None, self.cached_data))
             self.df = self.data
+            self.df = self.df.set_index(date_col_name)
             print("data cached!")
             
     def seed(self, seed=None):
