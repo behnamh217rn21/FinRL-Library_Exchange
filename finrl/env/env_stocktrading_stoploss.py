@@ -182,7 +182,7 @@ class StockTradingEnvStopLoss(gym.Env):
                 except:
                     print(date)
                     print("Date {} will be deleted".format(date))
-                    self.df.drop([date], inplace=True, ignore_index=True)
+                    self.df.drop([date], inplace=True)
                     v = []
                     return v
             assert len(v) == len(self.assets) * len(cols)
