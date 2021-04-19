@@ -122,8 +122,14 @@ class StockTradingEnvStopLoss(gym.Env):
                 self.get_date_vector(i) for i, _ in enumerate(self.dates)
             ]
             self.cached_data = list(filter(None, self.cached_data))
+            print("111111111111111111111111")
+            print(self.df)
+            print("222222222222222222222222")
+            print(self.data)
             self.df = self.data
             self.df = self.df.set_index(date_col_name)
+            print("333333333333333333333333")
+            print(self.df)
             print("data cached!")
             
     def seed(self, seed=None):
