@@ -59,29 +59,27 @@ class StockTradingEnvStopLoss(gym.Env):
         after reset, static strategy should result in same metrics
         given no change in prices, no change in asset values
     """
-    
     metadata = {"render.modes": ["human"]}
-    def __init__(
-        self,
-        df,
-        buy_cost_pct=3e-3,
-        sell_cost_pct=3e-3,
-        date_cn="date",
-        hmax=10,
-        discrete_actions=False,
-        shares_increment=1,
-        stoploss_penalty=0.9,
-        profit_loss_ratio=2,
-        turbulence_threshold=None,
-        print_verbosity=10,
-        initial_amount=1e6,
-        daily_information_cols=["open", "close", "high", "low", "volume"],
-        cache_indicator_data=True,
-        cash_penalty_proportion=0.1,
-        random_start=True,
-        patient=False,
-        currency="$",
-    ):
+    def __init__(self,
+                 df,
+                 buy_cost_pct=3e-3,
+                 sell_cost_pct=3e-3,
+                 date_cn="date",
+                 hmax=10,
+                 discrete_actions=False,
+                 shares_increment=1,
+                 stoploss_penalty=0.9,
+                 profit_loss_ratio=2,
+                 turbulence_threshold=None,
+                 print_verbosity=10,
+                 initial_amount=1e6,
+                 daily_information_cols=["open", "close", "high", "low", "volume"],
+                 cache_indicator_data=True,
+                 cash_penalty_proportion=0.1,
+                 random_start=True,
+                 patient=False,
+                 currency="$",
+                ):
         self.df = df
         self.symbol = "tic"
         self.assets = df[self.symbol].unique()
