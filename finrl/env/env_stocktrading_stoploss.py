@@ -122,6 +122,9 @@ class StockTradingEnvStopLoss(gym.Env):
                 self.get_date_vector(i) for i, _ in enumerate(self.dates)
             ]
             self.cached_data = list(filter(None, self.cached_data))
+            self.df.reset_index(inplace=True)
+            self.dates = self.df[date_col_name].sort_values().unique()
+            self.df = self.df.set_index(date_col_name)
             print("data cached!")
             
     def seed(self, seed=None):
