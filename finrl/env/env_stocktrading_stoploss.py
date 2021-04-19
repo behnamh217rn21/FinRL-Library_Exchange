@@ -66,7 +66,7 @@ class StockTradingEnvStopLoss(gym.Env):
         df,
         buy_cost_pct=3e-3,
         sell_cost_pct=3e-3,
-        date_col_name="date",
+        date_cn="date",
         hmax=10,
         discrete_actions=False,
         shares_increment=1,
@@ -85,12 +85,12 @@ class StockTradingEnvStopLoss(gym.Env):
         self.df = df
         self.symbol = "tic"
         self.assets = df[self.symbol].unique()
-        self.dates = df[date_col_name].sort_values().unique()
+        self.dates = df[date_cn].sort_values().unique()
         self.random_start = random_start
         self.discrete_actions = discrete_actions
         self.patient = patient
         self.currency = currency
-        self.df = self.df.set_index(date_col_name)
+        self.df = self.df.set_index(date_cn)
         self.shares_increment = shares_increment
         self.hmax = hmax
         self.initial_amount = initial_amount
@@ -123,8 +123,8 @@ class StockTradingEnvStopLoss(gym.Env):
             ]
             self.cached_data = list(filter(None, self.cached_data))
             self.df.reset_index(inplace=True)
-            self.dates = self.df[date_col_name].sort_values().unique()
-            self.df = self.df.set_index(date_col_name)
+            self.dates = self.df[date_cn].sort_values().unique()
+            self.df = self.df.set_index(date_cn)
             print("data cached!")
             
     def seed(self, seed=None):
