@@ -164,9 +164,9 @@ class StockTradingEnvStopLoss(gym.Env):
                                     "total_assets": [],
                                     "reward": [],
                                    }
-        init_state = np.array([self.initial_amount] + 
-                              [0] * len(self.assets) + 
-                              self.get_date_vector(self.date_index))
+        init_state = np.array([self.initial_amount] 
+                              + [0] * len(self.assets) 
+                              + self.get_date_vector(self.date_index))
         self.state_memory.append(init_state)
         return init_state
     
