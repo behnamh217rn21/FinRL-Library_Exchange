@@ -115,21 +115,13 @@ class StockTradingEnvStopLoss(gym.Env):
         self.cache_indicator_data = cache_indicator_data
         self.cached_data = None
         self.cash_penalty_proportion = cash_penalty_proportion
-        self.data = pd.DataFrame(columns = self.daily_information_cols)
+
         if self.cache_indicator_data:
             print("caching data")
             self.cached_data = [
                 self.get_date_vector(i) for i, _ in enumerate(self.dates)
             ]
             self.cached_data = list(filter(None, self.cached_data))
-            print("111111111111111111111111")
-            print(self.df)
-            print("222222222222222222222222")
-            print(self.data)
-            self.df = self.data
-            self.df = self.df.set_index(date_col_name)
-            print("333333333333333333333333")
-            print(self.df)
             print("data cached!")
             
     def seed(self, seed=None):
@@ -187,9 +179,9 @@ class StockTradingEnvStopLoss(gym.Env):
                 try:
                     subset = trunc_df[trunc_df[self.stock_col] == a]
                     v += subset.loc[date, cols].tolist()
-                    self.data.append(subset)
                 except:
                     print("Date {} will be deleted".format(date))
+                    self.df.drop(date)
                     v = []
                     return v
             assert len(v) == len(self.assets) * len(cols)
