@@ -182,7 +182,7 @@ class StockTradingEnvStopLoss(gym.Env):
                 except:
                     print("Date {} will be deleted".format(date))
                     dt = pd.Timestamp(np.datetime64(date))
-                    self.df.drop(str(dt), inplace=True)
+                    self.df.drop(dt, inplace=True)
                     v = []
                     return v
             assert len(v) == len(self.assets) * len(cols)
