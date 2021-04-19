@@ -203,32 +203,17 @@ class StockTradingEnvStopLoss(gym.Env):
         
         # Add outputs to logger interface
         gl_pct = self.account_information["total_assets"][-1] / self.initial_amount
-        logger.logkv("environment/GainLoss_pct",
-                     (gl_pct - 1)*100)
-        logger.logkv("environment/total_assets",
-                     int(self.account_information["total_assets"][-1]),
-                    )
+        logger.logkv("environment/GainLoss_pct", (gl_pct - 1)*100)
+        logger.logkv("environment/total_assets", int(self.account_information["total_assets"][-1]), )
         reward_pct = self.account_information["total_assets"][-1] / self.initial_amount
-        logger.logkv("environment/total_reward_pct", 
-                     (reward_pct - 1) * 100)
-        logger.logkv("environment/total_trades", 
-                     self.sum_trades)
-        logger.logkv("environment/actual_num_trades",
-                     self.actual_num_trades,
-                    )
-        logger.logkv("environment/avg_daily_trades",
-                     self.sum_trades / (self.current_step),
-                    )
-        logger.logkv("environment/avg_daily_trades_per_asset",
-                     self.sum_trades / (self.current_step) / len(self.assets),
-                    )
-        logger.logkv("environment/completed_steps", 
-                     self.current_step)
-        logger.logkv("environment/sum_rewards", 
-                     np.sum(self.account_information["reward"]))
-        logger.logkv("environment/cash_proportion", 
-                     self.account_information["cash"][-1] / self.account_information["total_assets"][-1],
-                    )
+        logger.logkv("environment/total_reward_pct", (reward_pct - 1) * 100)
+        logger.logkv("environment/total_trades", self.sum_trades)
+        logger.logkv("environment/actual_num_trades", self.actual_num_trades, )
+        logger.logkv("environment/avg_daily_trades", self.sum_trades / (self.current_step), )
+        logger.logkv("environment/avg_daily_trades_per_asset", self.sum_trades / (self.current_step) / len(self.assets), )
+        logger.logkv("environment/completed_steps", self.current_step)
+        logger.logkv("environment/sum_rewards", np.sum(self.account_information["reward"]))
+        logger.logkv("environment/cash_proportion", self.account_information["cash"][-1] / self.account_information["total_assets"][-1], )
         return state, reward, True, {}
     
     
@@ -278,24 +263,30 @@ class StockTradingEnvStopLoss(gym.Env):
             holdings = self.state_memory[-1][1 : len(self.assets) + 1]
             
             neg_closing_diff_avg_buy = np.clip(self.closing_diff_avg_buy, 
-                                               -np.inf, 0)
+                                               -np.inf, 
+                                               0)
             neg_profit_sell_diff_avg_buy = np.clip(self.profit_sell_diff_avg_buy,
-                                                   -np.inf, 0)
+                                                   -np.inf, 
+                                                   0)
             pos_profit_sell_diff_avg_buy = np.clip(self.profit_sell_diff_avg_buy, 
-                                                   0, np.inf)
+                                                   0, 
+                                                   np.inf)
 
             cash_penalty = max(0, (total_assets * self.cash_penalty_proportion - cash))
             
             if self.current_step > 1:
                 prev_holdings = self.state_memory[-2][1 : len(self.assets) + 1]
-                stop_loss_penalty = -1 * np.dot(np.array(prev_holdings), neg_closing_diff_avg_buy)
+                stop_loss_penalty = -1 * np.dot(np.array(prev_holdings), 
+                                                neg_closing_diff_avg_buy)
             else:
                 stop_loss_penalty = 0
                 
-            low_profit_penalty = -1 * np.dot(np.array(holdings), neg_profit_sell_diff_avg_buy)
+            low_profit_penalty = -1 * np.dot(np.array(holdings), 
+                                             neg_profit_sell_diff_avg_buy)
             total_penalty = cash_penalty + stop_loss_penalty + low_profit_penalty
             
-            additional_reward = np.dot(np.array(holdings), pos_profit_sell_diff_avg_buy)
+            additional_reward = np.dot(np.array(holdings), 
+                                       pos_profit_sell_diff_avg_buy)
 
             reward = ((total_assets - total_penalty + additional_reward) / self.initial_amount) - 1
             reward /= self.current_step 
@@ -344,7 +335,8 @@ class StockTradingEnvStopLoss(gym.Env):
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, 
-                               actions, 0)
+                               actions, 
+                               0)
             
             if self.turbulence_threshold is not None:
                 # if turbulence goes over threshold, just clear out all positions
@@ -356,14 +348,17 @@ class StockTradingEnvStopLoss(gym.Env):
             if self.discrete_actions:
                 # convert into integer because we can't buy fraction of shares
                 actions = np.where(closings > 0, 
-                                   actions // closings, 0)
+                                   actions // closings, 
+                                   0)
                 actions = actions.astype(int)
                 # round down actions to the nearest multiplies of shares_increment
                 actions = np.where(actions >= 0,
-                                   (actions // self.shares_increment) * self.shares_increment, ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
+                                   (actions // self.shares_increment) * self.shares_increment, 
+                                   ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
             else:
                 actions = np.where(closings > 0, 
-                                   actions / closings, 0)
+                                   actions / closings, 
+                                   0)
 
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
@@ -372,19 +367,26 @@ class StockTradingEnvStopLoss(gym.Env):
             if begin_cash >= self.stoploss_penalty * self.initial_amount:
                 # clear out position if stop-loss criteria is met
                 actions = np.where(self.closing_diff_avg_buy < 0, 
-                                   -np.array(holdings), actions)
+                                   -np.array(holdings), 
+                                   actions)
                 
-                if any(np.clip(self.closing_diff_avg_buy, -np.inf, 0) < 0):
+                if any(np.clip(self.closing_diff_avg_buy, 
+                               -np.inf, 
+                               0) < 0):
                     self.log_step(reason="STOP LOSS")
 
             # compute our proceeds from sells, and add to cash
-            sells = -np.clip(actions, -np.inf, 0)
+            sells = -np.clip(actions, 
+                             -np.inf,
+                             0)
             proceeds = np.dot(sells, closings)
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             
             # compute the cost of our buys
-            buys = np.clip(actions, 0, np.inf)
+            buys = np.clip(actions, 
+                           0, 
+                           np.inf)
             spend = np.dot(buys, closings)
             costs += spend * self.buy_cost_pct
             
@@ -394,7 +396,8 @@ class StockTradingEnvStopLoss(gym.Env):
                     # ... just don't buy anything until we got additional cash
                     self.log_step(reason="CASH SHORTAGE")
                     actions = np.where(actions>0, 
-                                       0, actions)
+                                       0, 
+                                       actions)
                     spend = 0
                     costs = 0
                 else:
@@ -405,17 +408,24 @@ class StockTradingEnvStopLoss(gym.Env):
 
             # get profitable sell actions
             sell_closing_price = np.where(sells>0, 
-                                          closings, 0) # get closing price of assets that we sold
+                                          closings, 
+                                          0) # get closing price of assets that we sold
             profit_sell = np.where(sell_closing_price - self.avg_buy_price > 0, 
-                                   1, 0) # mark the one which is profitable
+                                   1, 
+                                   0) # mark the one which is profitable
 
             self.profit_sell_diff_avg_buy = np.where(profit_sell==1, 
-                                                     closings - (self.min_profit_penalty * self.avg_buy_price), 0)
+                                                     closings - (self.min_profit_penalty * self.avg_buy_price),
+                                                     0)
             
-            if any(np.clip(self.profit_sell_diff_avg_buy, -np.inf, 0) < 0):
+            if any(np.clip(self.profit_sell_diff_avg_buy, 
+                           -np.inf, 
+                           0) < 0):
                 self.log_step(reason="LOW PROFIT")
             else:
-                if any(np.clip(self.profit_sell_diff_avg_buy, 0, np.inf) > 0):
+                if any(np.clip(self.profit_sell_diff_avg_buy, 
+                               0, 
+                               np.inf) > 0):
                     self.log_step(reason="HIGH PROFIT")
 
             # verify we didn't do anything impossible here
@@ -432,13 +442,15 @@ class StockTradingEnvStopLoss(gym.Env):
             buys = np.sign(buys)
             self.n_buys += buys
             self.avg_buy_price = np.where(buys > 0, 
-                                          self.avg_buy_price + ((closings - self.avg_buy_price) / self.n_buys), self.avg_buy_price) # incremental average
+                                          self.avg_buy_price + ((closings - self.avg_buy_price) / self.n_buys), 
+                                          self.avg_buy_price) # incremental average
             
             # set as zero when we don't have any holdings anymore
             self.n_buys = np.where(holdings_updated > 0, 
                                    self.n_buys, 0)
             self.avg_buy_price = np.where(holdings_updated > 0, 
-                                          self.avg_buy_price, 0) 
+                                          self.avg_buy_price, 
+                                          0) 
             
             self.date_index += 1
             if self.turbulence_threshold is not None:
