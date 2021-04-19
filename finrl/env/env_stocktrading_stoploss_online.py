@@ -141,9 +141,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 self.get_date_vector(i) for i, _ in enumerate(self.dates)
             ]
             self.cached_data = list(filter(None, self.cached_data))
-            self.df.reset_index(inplace=True)
-            self.dates = self.df[date_cn].sort_values().unique()
-            self.df = self.df.set_index(date_cn)
             print("data cached!")
                 
                 
@@ -183,9 +180,9 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                     "total_assets": [],
                                     "reward": [],
                                    }
-        init_state = np.array([self.initial_amount] + 
-                              [0] * len(self.assets) + 
-                              self.get_date_vector(self.date_index))
+        init_state = np.array([self.initial_amount] 
+                              + [0] * len(self.assets) 
+                              + self.get_date_vector(self.date_index))
         self.state_memory.append(init_state)
         return init_state
 
@@ -220,16 +217,9 @@ class StockTradingEnvStopLossOnline(gym.Env):
             trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
             v = []
             for a in self.assets:
-                try:
-                    subset = trunc_df[trunc_df[self.stock_col] == a]
-                    subset["close"] = adjusted_prices(a, subset["close"])
-                    v += subset.loc[date, cols].tolist()
-                except:
-                    print("Date {} will be deleted".format(date))
-                    dt = pd.Timestamp(np.datetime64(date))
-                    self.df.drop(dt, inplace=True)
-                    v = []
-                    return v
+                subset = trunc_df[trunc_df[self.stock_col] == a]
+                subset["close"] = adjusted_prices(a, subset["close"])
+                v += subset.loc[date, cols].tolist()
             assert len(v) == len(self.assets) * len(cols)
             return v
         
