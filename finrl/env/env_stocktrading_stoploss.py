@@ -361,23 +361,17 @@ class StockTradingEnvStopLoss(gym.Env):
                                    -np.array(holdings), 
                                    actions)
                 
-                if any(np.clip(self.closing_diff_avg_buy, 
-                               -np.inf, 
-                               0) < 0):
+                if any(np.clip(self.closing_diff_avg_buy, -np.inf, 0) < 0):
                     self.log_step(reason="STOP LOSS")
 
             # compute our proceeds from sells, and add to cash
-            sells = -np.clip(actions, 
-                             -np.inf,
-                             0)
+            sells = -np.clip(actions, -np.inf, 0)
             proceeds = np.dot(sells, closings)
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             
             # compute the cost of our buys
-            buys = np.clip(actions, 
-                           0, 
-                           np.inf)
+            buys = np.clip(actions, 0, np.inf)
             spend = np.dot(buys, closings)
             costs += spend * self.buy_cost_pct
             
