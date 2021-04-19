@@ -78,9 +78,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
     metadata = {"render.modes": ["human"]}
     def __init__(
         self,
+        df,
         buy_cost_pct=3e-3,
         sell_cost_pct=3e-3,
-        date_col_name="date",
+        date_cn="date",
         hmax=10,
         discrete_actions=False,
         shares_increment=1,
@@ -96,7 +97,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
         patient=False,
         currency="$",
     ):
-        
         with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
             self._symbols = eval(file.readline())
 
@@ -105,12 +105,12 @@ class StockTradingEnvStopLossOnline(gym.Env):
         for i in range(0, len(_symbols)):
             self.assets.append(_symbols[i][1])
             
-        self.dates = df[date_col_name].sort_values().unique()
+        self.dates = df[date_cn].sort_values().unique()
         self.random_start = random_start
         self.discrete_actions = discrete_actions
         self.patient = patient
         self.currency = currency
-        self.df = self.df.set_index(date_col_name)
+        self.df = self.df.set_index(date_cn)
         self.shares_increment = shares_increment
         self.hmax = hmax
         self.initial_amount = initial_amount
@@ -135,26 +135,27 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.cache_indicator_data = cache_indicator_data
         self.cached_data = None
         self.cash_penalty_proportion = cash_penalty_proportion
+        
         if self.cache_indicator_data:
             print("caching data")
             self.cached_data = [
                 self.get_date_vector(i) for i, _ in enumerate(self.dates)
             ]
             self.cached_data = list(filter(None, self.cached_data))
+            self.df.reset_index(inplace=True)
+            self.dates = self.df[date_cn].sort_values().unique()
+            self.df = self.df.set_index(date_cn)
             print("data cached!")
                  
-
     def seed(self, seed=None):
         if seed is None:
             seed = int(round(time.time() * 1000))
-        random.seed(seed)
-        
+        random.seed(seed)  
 
     @property
     def current_step(self):
         return self.date_index - self.starting_point
     
-
     def reset(self):
         self.seed()
         self.sum_trades = 0
@@ -189,7 +190,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.state_memory.append(init_state)
         return init_state
 
-    
     def adjusted_prices(asset, close_p):
         yahoo_financials = YahooFinancials(asset)
         statistics_data = yahoo_financials.get_key_statistics_data()
@@ -218,7 +218,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
             sleep_t = self.f_fetch_t - now_t
             sleep(sleep_t)
             trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
-            
             v = []
             for a in self.assets:
                 try:
@@ -227,12 +226,13 @@ class StockTradingEnvStopLossOnline(gym.Env):
                     v += subset.loc[date, cols].tolist()
                 except:
                     print("Date {} will be deleted".format(date))
+                    dt = pd.Timestamp(np.datetime64(date))
+                    self.df.drop(dt, inplace=True)
                     v = []
                     return v
             assert len(v) == len(self.assets) * len(cols)
             return v
         
-
     def return_terminal(self, reason="Last Date", reward=0):
         state = self.state_memory[-1]
         self.log_step(reason=reason, terminal_reward=reward)
@@ -269,7 +269,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
         )
         return state, reward, True, {}
     
-
     def log_step(self, reason, terminal_reward=None):
         if terminal_reward is None:
             terminal_reward = self.account_information["reward"][-1]
@@ -291,7 +290,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.episode_history.append(rec)
         print(self.template.format(*rec))
         
-
     def log_header(self):
         self.template = "{0:7}|{1:5}|{2:15}|{3:15}|{4:15}|{5:20}|{6:12}|{7:15}"
         print(
@@ -308,7 +306,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
         )
         self.printed_header = True
         
-
     def get_reward(self):
         if self.current_step == 0:
             return 0
