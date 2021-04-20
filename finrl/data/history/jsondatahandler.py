@@ -13,12 +13,10 @@ from finrl.data.converter import trades_dict_to_list
 
 from .idatahandler import IDataHandler
 
-
 logger = logging.getLogger(__name__)
 
 
 class JsonDataHandler(IDataHandler):
-
     _use_zip = False
     _columns = DEFAULT_DATAFRAME_COLUMNS
 
@@ -34,6 +32,7 @@ class JsonDataHandler(IDataHandler):
         return [(match[1].replace('_', '/'), match[2]) for match in _tmp
                 if match and len(match.groups()) > 1]
 
+    
     @classmethod
     def ohlcv_get_pairs(cls, datadir: Path, timeframe: str) -> List[str]:
         """
@@ -43,12 +42,12 @@ class JsonDataHandler(IDataHandler):
         :param timeframe: Timeframe to search pairs for
         :return: List of Pairs
         """
-
         _tmp = [re.search(r'^(\S+)(?=\-' + timeframe + '.json)', p.name)
                 for p in datadir.glob(f"*{timeframe}.{cls._get_file_extension()}")]
         # Check if regex found something and only return these results
         return [match[0].replace('_', '/') for match in _tmp if match]
 
+    
     def ohlcv_store(self, pair: str, timeframe: str, data: DataFrame) -> None:
         """
         Store data in json format "values".
@@ -69,9 +68,9 @@ class JsonDataHandler(IDataHandler):
             filename, orient="values",
             compression='gzip' if self._use_zip else None)
 
+        
     def _ohlcv_load(self, pair: str, timeframe: str,
-                    timerange: Optional[TimeRange] = None,
-                    ) -> DataFrame:
+                    timerange: Optional[TimeRange] = None, ) -> DataFrame:
         """
         Internal method used to load data for one pair from disk.
         Implements the loading and conversion to a Pandas dataframe.
@@ -96,6 +95,7 @@ class JsonDataHandler(IDataHandler):
                                        infer_datetime_format=True)
         return pairdata
 
+    
     def ohlcv_purge(self, pair: str, timeframe: str) -> bool:
         """
         Remove data for this pair
@@ -109,6 +109,7 @@ class JsonDataHandler(IDataHandler):
             return True
         return False
 
+    
     def ohlcv_append(self, pair: str, timeframe: str, data: DataFrame) -> None:
         """
         Append data to existing data structures
@@ -118,6 +119,7 @@ class JsonDataHandler(IDataHandler):
         """
         raise NotImplementedError()
 
+        
     @classmethod
     def trades_get_pairs(cls, datadir: Path) -> List[str]:
         """
@@ -130,6 +132,7 @@ class JsonDataHandler(IDataHandler):
         # Check if regex found something and only return these results to avoid exceptions.
         return [match[0].replace('_', '/') for match in _tmp if match]
 
+    
     def trades_store(self, pair: str, data: TradeList) -> None:
         """
         Store trades data (list of Dicts) to file
@@ -140,6 +143,7 @@ class JsonDataHandler(IDataHandler):
         filename = self._pair_trades_filename(self._datadir, pair)
         misc.file_dump_json(filename, data, is_zip=self._use_zip)
 
+        
     def trades_append(self, pair: str, data: TradeList):
         """
         Append data to existing files
@@ -149,6 +153,7 @@ class JsonDataHandler(IDataHandler):
         """
         raise NotImplementedError()
 
+        
     def _trades_load(self, pair: str, timerange: Optional[TimeRange] = None) -> TradeList:
         """
         Load a pair from file, either .json.gz or .json
@@ -159,7 +164,6 @@ class JsonDataHandler(IDataHandler):
         """
         filename = self._pair_trades_filename(self._datadir, pair)
         tradesdata = misc.file_load_json(filename)
-
         if not tradesdata:
             return []
 
@@ -170,6 +174,7 @@ class JsonDataHandler(IDataHandler):
             pass
         return tradesdata
 
+    
     def trades_purge(self, pair: str) -> bool:
         """
         Remove data for this pair
@@ -178,20 +183,22 @@ class JsonDataHandler(IDataHandler):
         """
         filename = self._pair_trades_filename(self._datadir, pair)
         if filename.exists():
-            filename.unlink()
-            return True
+            filename.unlink(); return True
         return False
 
+    
     @classmethod
     def _pair_data_filename(cls, datadir: Path, pair: str, timeframe: str) -> Path:
         pair_s = misc.pair_to_filename(pair)
         filename = datadir.joinpath(f'{pair_s}-{timeframe}.{cls._get_file_extension()}')
         return filename
 
+    
     @classmethod
     def _get_file_extension(cls):
         return "json.gz" if cls._use_zip else "json"
 
+    
     @classmethod
     def _pair_trades_filename(cls, datadir: Path, pair: str) -> Path:
         pair_s = misc.pair_to_filename(pair)
@@ -200,5 +207,4 @@ class JsonDataHandler(IDataHandler):
 
 
 class JsonGzDataHandler(JsonDataHandler):
-
     _use_zip = True
