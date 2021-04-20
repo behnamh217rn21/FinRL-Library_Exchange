@@ -19,19 +19,25 @@ from finrl.exchange import timeframe_to_minutes
 from finrl.resolvers import ExchangeResolver
 from finrl.state import RunMode
 
-
 logger = logging.getLogger(__name__)
 
 
 def start_download_cryptodata(args: Dict[str, Any]) -> None:
     """
     Parameters:
-      ARGS_DOWNLOAD_DATA = {'config': ['config.json'], 'datadir': None, 
-                        'user_data_dir': None, 'pairs': None, 'pairs_file': None, 
-                        'days': 160, 'timerange': None, 
-                        'download_trades': False, 'exchange': 'binance', 
-                        'timeframes': ['1d'], 'erase': False, 
-                        'dataformat_ohlcv': None, 'dataformat_trades': None}
+      ARGS_DOWNLOAD_DATA = {'config': ['config.json'], 
+                            'datadir': None, 
+                            'user_data_dir': None, 
+                            'pairs': None, 
+                            'pairs_file': None, 
+                            'days': 160, 
+                            'timerange': None, 
+                            'download_trades': False,
+                            'exchange': 'binance', 
+                            'timeframes': ['1d'],
+                            'erase': False, 
+                            'dataformat_ohlcv': None, 
+                            'dataformat_trades': None}
     
     Returns:
       Json files in user_data/data/exchange/*.json
@@ -52,9 +58,8 @@ def start_download_cryptodata(args: Dict[str, Any]) -> None:
     config['stake_currency'] = ''
 
     if 'pairs' not in config:
-        raise OperationalException(
-            "Downloading data requires a list of pairs. "
-            "Please check the documentation on how to configure this.")
+        raise OperationalException("Downloading data requires a list of pairs. "
+                                   "Please check the documentation on how to configure this.")
 
     logger.info(f"About to download pairs: {config['pairs']}, "
                 f"intervals: {config['timeframes']} to {config['datadir']}")
@@ -76,12 +81,14 @@ def start_download_cryptodata(args: Dict[str, Any]) -> None:
                 data_format=config['dataformat_trades'])
 
             # Convert downloaded trade data to different timeframes
-            convert_trades_to_ohlcv(
-                pairs=config['pairs'], timeframes=config['timeframes'],
-                datadir=config['datadir'], timerange=timerange, erase=bool(config.get('erase')),
-                data_format_ohlcv=config['dataformat_ohlcv'],
-                data_format_trades=config['dataformat_trades'],
-                )
+            convert_trades_to_ohlcv(pairs=config['pairs'],
+                                    timeframes=config['timeframes'],
+                                    datadir=config['datadir'], 
+                                    timerange=timerange,
+                                    erase=bool(config.get('erase')),
+                                    data_format_ohlcv=config['dataformat_ohlcv'],
+                                    data_format_trades=config['dataformat_trades'],
+                                   )
         else:
             pairs_not_available = refresh_backtest_ohlcv_data(
                 exchange, pairs=config['pairs'], timeframes=config['timeframes'],
@@ -96,6 +103,7 @@ def start_download_cryptodata(args: Dict[str, Any]) -> None:
             logger.info(f"Pairs [{','.join(pairs_not_available)}] not available "
                         f"on exchange {exchange.name}.")
 
+                
 def start_download_stockdata(args: Dict[str, Any]) -> None:
     """Fetches data from Yahoo API
     
@@ -132,20 +140,18 @@ def start_download_stockdata(args: Dict[str, Any]) -> None:
         data_df = pd.DataFrame()
         for tic in config['ticker_list']:
             temp_df = yf.download(tic, start=start, end=end)
-            temp_df.columns = [
-                "open",
-                "high",
-                "low",
-                "close",
-                "adjcp",
-                "volume",
-            ]
+            temp_df.columns = ["open",
+                               "high",
+                               "low",
+                               "close",
+                               "adjcp",
+                               "volume",
+                              ]
             temp_df["close"] = temp_df["adjcp"]
             temp_df = temp_df.drop(["adjcp"], axis=1)
             temp_df.to_json(f'{os.getcwd()}/{config["datadir"]}/{tic}.json')
     except KeyboardInterrupt:
         sys.exit("Interrupt received, aborting ...")
-
 
 
 def start_convert_data(args: Dict[str, Any], ohlcv: bool = True) -> None:
