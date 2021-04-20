@@ -11,7 +11,6 @@ from typing import Any, Dict, Iterator, List, Optional, Tuple, Type, Union
 
 from finrl.exceptions import OperationalException
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -42,6 +41,7 @@ class IResolver:
 
         return abs_paths
 
+    
     @classmethod
     def _get_valid_object(cls, module_path: Path, object_name: Optional[str],
                           enum_failed: bool = False) -> Iterator[Any]:
@@ -54,7 +54,6 @@ class IResolver:
         :return: generator containing tuple of matching objects
              Tuple format: [Object, source]
         """
-
         # Generate spec based on absolute path
         # Pass object_name as first argument to have logging print a reasonable name.
         spec = importlib.util.spec_from_file_location(object_name or "", str(module_path))
@@ -67,18 +66,17 @@ class IResolver:
             if enum_failed:
                 return iter([None])
 
-        valid_objects_gen = (
-            (obj, inspect.getsource(module)) for
-            name, obj in inspect.getmembers(
-                module, inspect.isclass) if ((object_name is None or object_name == name)
-                                             and issubclass(obj, cls.object_type)
-                                             and obj is not cls.object_type)
-        )
+        valid_objects_gen = ((obj, inspect.getsource(module)) for name, obj in inspect.getmembers(module, 
+                                                                                                  inspect.isclass) if ((object_name is None or object_name == name)
+                                                                                                                       and issubclass(obj, cls.object_type)
+                                                                                                                       and obj is not cls.object_type)
+                            )
         return valid_objects_gen
 
+    
     @classmethod
-    def _search_object(cls, directory: Path, *, object_name: str, add_source: bool = False
-                       ) -> Union[Tuple[Any, Path], Tuple[None, None]]:
+    def _search_object(cls, directory: Path, *, object_name: str, 
+                       add_source: bool = False) -> Union[Tuple[Any, Path], Tuple[None, None]]:
         """
         Search for the objectname in the given directory
         :param directory: relative or absolute directory path
@@ -94,7 +92,6 @@ class IResolver:
             module_path = entry.resolve()
 
             obj = next(cls._get_valid_object(module_path, object_name), None)
-
             if obj:
                 obj[0].__file__ = str(entry)
                 if add_source:
@@ -102,28 +99,25 @@ class IResolver:
                 return (obj[0], module_path)
         return (None, None)
 
+    
     @classmethod
     def _load_object(cls, paths: List[Path], *, object_name: str, add_source: bool = False,
                      kwargs: dict = {}) -> Optional[Any]:
         """
         Try to load object from path list.
         """
-
         for _path in paths:
             try:
-                (module, module_path) = cls._search_object(directory=_path,
-                                                           object_name=object_name,
-                                                           add_source=add_source)
+                (module, module_path) = cls._search_object(directory=_path, object_name=object_name, add_source=add_source)
                 if module:
-                    logger.info(
-                        f"Using resolved {cls.object_type.__name__.lower()[1:]} {object_name} "
-                        f"from '{module_path}'...")
+                    logger.info(f"Using resolved {cls.object_type.__name__.lower()[1:]} {object_name} "
+                                f"from '{module_path}'...")
                     return module(**kwargs)
             except FileNotFoundError:
                 logger.warning('Path "%s" does not exist.', _path.resolve())
-
         return None
 
+    
     @classmethod
     def load_object(cls, object_name: str, config: dict, *, kwargs: dict,
                     extra_dir: Optional[str] = None) -> Any:
@@ -135,20 +129,15 @@ class IResolver:
         :raises: OperationalException if the class is invalid or does not exist.
         :return: Object instance or None
         """
-
-        abs_paths = cls.build_search_paths(config,
-                                           user_subdir=cls.user_subdir,
-                                           extra_dir=extra_dir)
-
-        found_object = cls._load_object(paths=abs_paths, object_name=object_name,
-                                        kwargs=kwargs)
+        abs_paths = cls.build_search_paths(config, user_subdir=cls.user_subdir, extra_dir=extra_dir)
+        found_object = cls._load_object(paths=abs_paths, object_name=object_name, kwargs=kwargs)
         if found_object:
             return found_object
-        raise OperationalException(
-            f"Impossible to load {cls.object_type_str} '{object_name}'. This class does not exist "
-            "or contains Python code errors."
-        )
+        raise OperationalException(f"Impossible to load {cls.object_type_str} '{object_name}'. This class does not exist "
+                                   "or contains Python code errors."
+                                  )
 
+        
     @classmethod
     def search_all_objects(cls, directory: Path,
                            enum_failed: bool) -> List[Dict[str, Any]]:
@@ -168,11 +157,9 @@ class IResolver:
                 continue
             module_path = entry.resolve()
             logger.debug(f"Path {module_path}")
-            for obj in cls._get_valid_object(module_path, object_name=None,
-                                             enum_failed=enum_failed):
-                objects.append(
-                    {'name': obj[0].__name__ if obj is not None else '',
-                     'class': obj[0] if obj is not None else None,
-                     'location': entry,
-                     })
+            for obj in cls._get_valid_object(module_path, object_name=None, enum_failed=enum_failed):
+                objects.append({'name': obj[0].__name__ if obj is not None else '',
+                                'class': obj[0] if obj is not None else None,
+                                'location': entry,
+                               })
         return objects
