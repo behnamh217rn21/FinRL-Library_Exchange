@@ -24,19 +24,18 @@ class FeatureEngineer:
         main method to do the feature engineering
 
     """
-
-    def __init__(
-        self,
-        use_technical_indicator=True,
-        tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
-        use_turbulence=False,
-        user_defined_feature=False,
-    ):
+    def __init__(self,
+                 use_technical_indicator=True,
+                 tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
+                 use_turbulence=False,
+                 user_defined_feature=False,
+                ):
         self.use_technical_indicator = use_technical_indicator
         self.tech_indicator_list = tech_indicator_list
         self.use_turbulence = use_turbulence
         self.user_defined_feature = user_defined_feature
 
+        
     def preprocess_data(self, df):
         """main method to do the feature engineering
         @:param config: source dataframe
@@ -62,6 +61,7 @@ class FeatureEngineer:
         df = df.fillna(method="bfill").fillna(method="ffill")
         return df
 
+    
     def add_technical_indicator(self, data):
         """
         calcualte technical indicators
@@ -79,14 +79,13 @@ class FeatureEngineer:
                 try:
                     temp_indicator = stock[stock.tic == unique_ticker[i]][indicator]
                     temp_indicator = pd.DataFrame(temp_indicator)
-                    indicator_df = indicator_df.append(
-                        temp_indicator, ignore_index=True
-                    )
+                    indicator_df = indicator_df.append(temp_indicator, ignore_index=True)
                 except Exception as e:
                     print(e)
             df[indicator] = indicator_df
         return df
 
+    
     def add_user_defined_feature(self, data):
         """
          add user defined features
@@ -101,6 +100,7 @@ class FeatureEngineer:
         # df['return_lag_4']=df.close.pct_change(5)
         return df
 
+    
     def add_turbulence(self, data):
         """
         add turbulence index from a precalcualted dataframe
@@ -113,6 +113,7 @@ class FeatureEngineer:
         df = df.sort_values(["date", "tic"]).reset_index(drop=True)
         return df
 
+    
     def calculate_turbulence(self, data):
         """calculate turbulence index based on dow 30"""
         # can add other market assets
@@ -130,18 +131,14 @@ class FeatureEngineer:
         for i in range(start, len(unique_date)):
             current_price = df_price_pivot[df_price_pivot.index == unique_date[i]]
             # use one year rolling window to calcualte covariance
-            hist_price = df_price_pivot[
-                (df_price_pivot.index < unique_date[i])
-                & (df_price_pivot.index >= unique_date[i - 252])
-            ]
+            hist_price = df_price_pivot[(df_price_pivot.index < unique_date[i]) & 
+                                        (df_price_pivot.index >= unique_date[i - 252])]
             # Drop tickers which has number missing values more than the "oldest" ticker
             filtered_hist_price = hist_price.iloc[hist_price.isna().sum().min():].dropna(axis=1)
 
             cov_temp = filtered_hist_price.cov()
             current_temp = current_price[[x for x in filtered_hist_price]] - np.mean(filtered_hist_price, axis=0)
-            temp = current_temp.values.dot(np.linalg.pinv(cov_temp)).dot(
-                current_temp.values.T
-            )
+            temp = current_temp.values.dot(np.linalg.pinv(cov_temp)).dot(current_temp.values.T)
             if temp > 0:
                 count += 1
                 if count > 2:
@@ -153,7 +150,5 @@ class FeatureEngineer:
                 turbulence_temp = 0
             turbulence_index.append(turbulence_temp)
 
-        turbulence_index = pd.DataFrame(
-            {"date": df_price_pivot.index, "turbulence": turbulence_index}
-        )
+        turbulence_index = pd.DataFrame({"date": df_price_pivot.index, "turbulence": turbulence_index})
         return turbulence_index
