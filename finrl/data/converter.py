@@ -12,7 +12,6 @@ from pandas import DataFrame, to_datetime
 
 from finrl.constants import DEFAULT_DATAFRAME_COLUMNS, DEFAULT_TRADES_COLUMNS, TradeList
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -38,8 +37,7 @@ def ohlcv_to_dataframe(ohlcv: list, timeframe: str, pair: str, *,
     # Some exchanges return int values for Volume and even for OHLC.
     # Convert them since TA-LIB indicators used in the strategy assume floats
     # and fail with exception...
-    df = df.astype(dtype={'open': 'float', 'high': 'float', 'low': 'float', 'close': 'float',
-                          'volume': 'float'})
+    df = df.astype(dtype={'open': 'float', 'high': 'float', 'low': 'float', 'close': 'float', 'volume': 'float'})
     return clean_ohlcv_dataframe(df, timeframe, pair,
                                  fill_missing=fill_missing,
                                  drop_incomplete=drop_incomplete)
@@ -62,13 +60,12 @@ def clean_ohlcv_dataframe(data: DataFrame, timeframe: str, pair: str, *,
     :return: DataFrame
     """
     # group by index and aggregate results to eliminate duplicate ticks
-    data = data.groupby(by='date', as_index=False, sort=True).agg({
-        'open': 'first',
-        'high': 'max',
-        'low': 'min',
-        'close': 'last',
-        'volume': 'max',
-    })
+    data = data.groupby(by='date', as_index=False, sort=True).agg({'open': 'first',
+                                                                   'high': 'max',
+                                                                   'low': 'min',
+                                                                   'close': 'last',
+                                                                   'volume': 'max',
+                                                                  })
     # eliminate partial candle
     if drop_incomplete:
         data.drop(data.tail(1).index, inplace=True)
@@ -88,13 +85,12 @@ def ohlcv_fill_up_missing_data(dataframe: DataFrame, timeframe: str, pair: str) 
     """
     from freqtrade.exchange import timeframe_to_minutes
 
-    ohlcv_dict = {
-        'open': 'first',
-        'high': 'max',
-        'low': 'min',
-        'close': 'last',
-        'volume': 'sum'
-    }
+    ohlcv_dict = {'open': 'first',
+                  'high': 'max',
+                  'low': 'min',
+                  'close': 'last',
+                  'volume': 'sum'
+                 }
     timeframe_minutes = timeframe_to_minutes(timeframe)
     # Resample to create "NAN" values
     df = dataframe.resample(f'{timeframe_minutes}min', on='date').agg(ohlcv_dict)
@@ -104,8 +100,7 @@ def ohlcv_fill_up_missing_data(dataframe: DataFrame, timeframe: str, pair: str) 
     # Use close for "open, high, low"
     df.loc[:, ['open', 'high', 'low']] = df[['open', 'high', 'low']].fillna(
         value={'open': df['close'],
-               'high': df['close'],
-               'low': df['close'],
+               'high': df['close'], 'low': df['close'],
                })
     df.reset_index(inplace=True)
     len_before = len(dataframe)
@@ -190,8 +185,7 @@ def trades_to_ohlcv(trades: TradeList, timeframe: str) -> DataFrame:
     if not trades:
         raise ValueError('Trade-list empty.')
     df = pd.DataFrame(trades, columns=DEFAULT_TRADES_COLUMNS)
-    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms',
-                                     utc=True,)
+    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms', utc=True,)
     df = df.set_index('timestamp')
 
     df_new = df['price'].resample(f'{timeframe_minutes}min').ohlc()
@@ -245,8 +239,7 @@ def convert_ohlcv_format(config: Dict[str, Any], convert_from: str, convert_to: 
         config['pairs'] = []
         # Check timeframes or fall back to timeframe.
         for timeframe in timeframes:
-            config['pairs'].extend(src.ohlcv_get_pairs(config['datadir'],
-                                                       timeframe))
+            config['pairs'].extend(src.ohlcv_get_pairs(config['datadir'], timeframe))
     logger.info(f"Converting candle (OHLCV) data for {config['pairs']}")
 
     for timeframe in timeframes:
