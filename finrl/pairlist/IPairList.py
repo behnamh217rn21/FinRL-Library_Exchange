@@ -11,7 +11,6 @@ from cachetools import TTLCache, cached
 from finrl.exceptions import OperationalException
 from finrl.exchange import market_is_active
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -38,6 +37,7 @@ class IPairList(ABC):
         self._last_refresh = 0
         self._log_cache: TTLCache = TTLCache(maxsize=1024, ttl=self.refresh_period)
 
+            
     @property
     def name(self) -> str:
         """
@@ -46,6 +46,7 @@ class IPairList(ABC):
         """
         return self.__class__.__name__
 
+    
     def log_on_refresh(self, logmethod, message: str) -> None:
         """
         Logs message - not more often than "refresh_period" to avoid log spamming
@@ -54,7 +55,6 @@ class IPairList(ABC):
         :param message: String containing the message to be sent to the function.
         :return: None.
         """
-
         @cached(cache=self._log_cache)
         def _log_on_refresh(message: str):
             logmethod(message)
@@ -64,6 +64,7 @@ class IPairList(ABC):
         # Call hidden function.
         _log_on_refresh(message)
 
+        
     @abstractproperty
     def needstickers(self) -> bool:
         """
@@ -72,6 +73,7 @@ class IPairList(ABC):
         as tickers argument to filter_pairlist
         """
 
+        
     @abstractmethod
     def short_desc(self) -> str:
         """
@@ -79,6 +81,7 @@ class IPairList(ABC):
         -> Please overwrite in subclasses
         """
 
+        
     def _validate_pair(self, ticker) -> bool:
         """
         Check one pair against Pairlist Handler's specific conditions.
@@ -91,6 +94,7 @@ class IPairList(ABC):
         """
         raise NotImplementedError()
 
+        
     def gen_pairlist(self, cached_pairlist: List[str], tickers: Dict) -> List[str]:
         """
         Generate the pairlist.
@@ -109,6 +113,7 @@ class IPairList(ABC):
         raise OperationalException("This Pairlist Handler should not be used "
                                    "at the first position in the list of Pairlist Handlers.")
 
+        
     def filter_pairlist(self, pairlist: List[str], tickers: Dict) -> List[str]:
         """
         Filters and sorts pairlist and returns the whitelist again.
@@ -116,10 +121,8 @@ class IPairList(ABC):
         Called on each bot iteration - please use internal caching if necessary
         This generic implementation calls self._validate_pair() for each pair
         in the pairlist.
-
         Some Pairlist Handlers override this generic implementation and employ
         own filtration.
-
         :param pairlist: pairlist to filter or sort
         :param tickers: Tickers (from exchange.get_tickers()). May be cached.
         :return: new whitelist
@@ -133,6 +136,7 @@ class IPairList(ABC):
 
         return pairlist
 
+    
     def verify_blacklist(self, pairlist: List[str], logmethod) -> List[str]:
         """
         Proxy method to verify_blacklist for easy access for child classes.
@@ -142,6 +146,7 @@ class IPairList(ABC):
         """
         return self._pairlistmanager.verify_blacklist(pairlist, logmethod)
 
+    
     def _whitelist_for_active_markets(self, pairlist: List[str]) -> List[str]:
         """
         Check available markets and remove pair from whitelist if necessary
@@ -151,8 +156,7 @@ class IPairList(ABC):
         """
         markets = self._exchange.markets
         if not markets:
-            raise OperationalException(
-                    'Markets not loaded. Make sure that exchange is initialized correctly.')
+            raise OperationalException('Markets not loaded. Make sure that exchange is initialized correctly.')
 
         sanitized_whitelist: List[str] = []
         for pair in pairlist:
