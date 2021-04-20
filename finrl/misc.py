@@ -11,7 +11,6 @@ from typing.io import IO
 import numpy as np
 import rapidjson
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -25,7 +24,6 @@ def shorten_date(_date: str) -> str:
     new_date = re.sub('days?', 'd', new_date)
     new_date = re.sub('^an?', '1', new_date)
     return new_date
-
 
 ############################################
 # Used by scripts                          #
@@ -48,13 +46,11 @@ def file_dump_json(filename: Path, data: Any, is_zip: bool = False, log: bool = 
     :param data: JSON Data to save
     :return:
     """
-
     if is_zip:
         if filename.suffix != '.gz':
             filename = filename.with_suffix('.gz')
         if log:
             logger.info(f'dumping json to "{filename}"')
-
         with gzip.open(filename, 'w') as fpz:
             rapidjson.dump(data, fpz, default=str, number_mode=rapidjson.NM_NATIVE)
     else:
@@ -76,7 +72,6 @@ def json_load(datafile: IO) -> Any:
 
 
 def file_load_json(file):
-
     if file.suffix != ".gz":
         gzipfile = file.with_suffix(file.suffix + '.gz')
     else:
@@ -125,7 +120,6 @@ def deep_merge_dicts(source, destination):
             deep_merge_dicts(value, node)
         else:
             destination[key] = value
-
     return destination
 
 
@@ -155,7 +149,6 @@ def safe_value_fallback2(dict1: dict, dict2: dict, key1: str, key2: str, default
     Search a value in dict1, return this if it's not None.
     Fall back to dict2 - return key2 from dict2 if it's not None.
     Else falls back to None.
-
     """
     if key1 in dict1 and dict1[key1] is not None:
         return dict1[key1]
@@ -170,13 +163,9 @@ def plural(num: float, singular: str, plural: str = None) -> str:
 
 
 def render_template(templatefile: str, arguments: dict = {}) -> str:
-
     from jinja2 import Environment, PackageLoader, select_autoescape
-
-    env = Environment(
-        loader=PackageLoader('finrl', 'templates'),
-        autoescape=select_autoescape(['html', 'xml'])
-    )
+    env = Environment(loader=PackageLoader('finrl', 'templates'),
+                      autoescape=select_autoescape(['html', 'xml']))
     template = env.get_template(templatefile)
     return template.render(**arguments)
 
