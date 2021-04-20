@@ -19,43 +19,35 @@ from pandas import DataFrame
 
 from finrl.constants import ListPairsWithTimeframes
 from finrl.data.converter import ohlcv_to_dataframe, trades_dict_to_list
-from finrl.exceptions import (DDosProtection, ExchangeError, InsufficientFundsError,
-                                  InvalidOrderException, OperationalException, RetryableOrderError,
-                                  TemporaryError)
-from finrl.exchange.common import (API_FETCH_ORDER_RETRY_COUNT, BAD_EXCHANGES, retrier,
-                                       retrier_async)
+from finrl.exceptions import (DDosProtection, ExchangeError, InsufficientFundsError, InvalidOrderException, 
+                              OperationalException, RetryableOrderError, TemporaryError)
+from finrl.exchange.common import (API_FETCH_ORDER_RETRY_COUNT, BAD_EXCHANGES, retrier, retrier_async)
 from finrl.misc import deep_merge_dicts, safe_value_fallback2
 
-
 CcxtModuleType = Any
-
 
 logger = logging.getLogger(__name__)
 
 
 class Exchange:
-
     _config: Dict = {}
-
     # Parameters to add directly to ccxt sync/async initialization.
     _ccxt_config: Dict = {}
-
     # Parameters to add directly to buy/sell calls (like agreeing to trading agreement)
     _params: Dict = {}
-
+      
     # Dict to specify which options each exchange implements
     # This defines defaults, which can be selectively overridden by subclasses using _ft_has
     # or by specifying them in the configuration.
-    _ft_has_default: Dict = {
-        "stoploss_on_exchange": False,
-        "order_time_in_force": ["gtc"],
-        "ohlcv_candle_limit": 500,
-        "ohlcv_partial_candle": True,
-        "trades_pagination": "time",  # Possible are "time" or "id"
-        "trades_pagination_arg": "since",
-        "l2_limit_range": None,
-    }
-    _ft_has: Dict = {}
+    _ft_has_default: Dict = {"stoploss_on_exchange": False,
+                             "order_time_in_force": ["gtc"],
+                             "ohlcv_candle_limit": 500,
+                             "ohlcv_partial_candle": True,
+                             "trades_pagination": "time",  # Possible are "time" or "id"
+                             "trades_pagination_arg": "since",
+                             "l2_limit_range": None,
+                            }
+      _ft_has: Dict = {}
 
     def __init__(self, config: Dict[str, Any], validate: bool = True) -> None:
         """
@@ -65,7 +57,6 @@ class Exchange:
         """
         self._api: ccxt.Exchange = None
         self._api_async: ccxt_async.Exchange = None
-
         self._config.update(config)
 
         # Holds last candle refreshed time of each pair
@@ -87,8 +78,7 @@ class Exchange:
         # Deep merge ft_has with default ft_has options
         self._ft_has = deep_merge_dicts(self._ft_has, deepcopy(self._ft_has_default))
         if exchange_config.get('_ft_has_params'):
-            self._ft_has = deep_merge_dicts(exchange_config.get('_ft_has_params'),
-                                            self._ft_has)
+            self._ft_has = deep_merge_dicts(exchange_config.get('_ft_has_params'), self._ft_has)
             logger.info("Overriding exchange._ft_has with config params, result: %s", self._ft_has)
 
         # Assign this directly for easy access
@@ -106,12 +96,9 @@ class Exchange:
         self._api = self._init_ccxt(exchange_config, ccxt_kwargs=ccxt_config)
 
         ccxt_async_config = self._ccxt_config.copy()
-        ccxt_async_config = deep_merge_dicts(exchange_config.get('ccxt_config', {}),
-                                             ccxt_async_config)
-        ccxt_async_config = deep_merge_dicts(exchange_config.get('ccxt_async_config', {}),
-                                             ccxt_async_config)
-        self._api_async = self._init_ccxt(
-            exchange_config, ccxt_async, ccxt_kwargs=ccxt_async_config)
+        ccxt_async_config = deep_merge_dicts(exchange_config.get('ccxt_config', {}), ccxt_async_config)
+        ccxt_async_config = deep_merge_dicts(exchange_config.get('ccxt_async_config', {}), ccxt_async_config)
+        self._api_async = self._init_ccxt(exchange_config, ccxt_async, ccxt_kwargs=ccxt_async_config)
 
         logger.info('Using Exchange "%s"', self.name)
 
@@ -131,9 +118,9 @@ class Exchange:
             self.validate_required_startup_candles(config.get('startup_candle_count', 0))
 
         # Converts the interval provided in minutes in config to seconds
-        self.markets_refresh_interval: int = exchange_config.get(
-            "markets_refresh_interval", 60) * 60
+        self.markets_refresh_interval: int = exchange_config.get("markets_refresh_interval", 60) * 60
 
+          
     def __del__(self):
         """
         Destructor - clean up async stuff
@@ -142,6 +129,7 @@ class Exchange:
         if self._api_async and inspect.iscoroutinefunction(self._api_async.close):
             asyncio.get_event_loop().run_until_complete(self._api_async.close())
 
+            
     def _init_ccxt(self, exchange_config: Dict[str, Any], ccxt_module: CcxtModuleType = ccxt,
                    ccxt_kwargs: dict = None) -> ccxt.Exchange:
         """
@@ -154,17 +142,16 @@ class Exchange:
         if not is_exchange_known_ccxt(name, ccxt_module):
             raise OperationalException(f'Exchange {name} is not supported by ccxt')
 
-        ex_config = {
-            'apiKey': exchange_config.get('key'),
-            'secret': exchange_config.get('secret'),
-            'password': exchange_config.get('password'),
-            'uid': exchange_config.get('uid', ''),
-        }
+        ex_config = {'apiKey': exchange_config.get('key'),
+                     'secret': exchange_config.get('secret'),
+                     'password': exchange_config.get('password'),
+                     'uid': exchange_config.get('uid', ''),
+                    }
         if ccxt_kwargs:
             logger.info('Applying additional ccxt config: %s', ccxt_kwargs)
             ex_config.update(ccxt_kwargs)
+        
         try:
-
             api = getattr(ccxt_module, name.lower())(ex_config)
         except (KeyError, AttributeError) as e:
             raise OperationalException(f'Exchange {name} is not supported') from e
@@ -175,6 +162,7 @@ class Exchange:
 
         return api
 
+      
     @property
     def name(self) -> str:
         """exchange Name (from ccxt)"""
@@ -229,6 +217,7 @@ class Exchange:
             markets = {k: v for k, v in markets.items() if market_is_active(v)}
         return markets
 
+      
     def get_quote_currencies(self) -> List[str]:
         """
         Return a list of supported quote currencies
@@ -236,18 +225,21 @@ class Exchange:
         markets = self.markets
         return sorted(set([x['quote'] for _, x in markets.items()]))
 
+      
     def get_pair_quote_currency(self, pair: str) -> str:
         """
         Return a pair's quote currency
         """
         return self.markets.get(pair, {}).get('quote', '')
 
+      
     def get_pair_base_currency(self, pair: str) -> str:
         """
         Return a pair's quote currency
         """
         return self.markets.get(pair, {}).get('base', '')
 
+      
     def market_is_tradable(self, market: Dict[str, Any]) -> bool:
         """
         Check if the market symbol is tradable by Freqtrade.
@@ -259,29 +251,30 @@ class Exchange:
                 len(symbol_parts[1]) > 0 and
                 symbol_parts[0] == market.get('base') and
                 symbol_parts[1] == market.get('quote')
-                )
+               )
 
+      
     def klines(self, pair_interval: Tuple[str, str], copy: bool = True) -> DataFrame:
         if pair_interval in self._klines:
             return self._klines[pair_interval].copy() if copy else self._klines[pair_interval]
         else:
             return DataFrame()
 
+          
     def set_sandbox(self, api: ccxt.Exchange, exchange_config: dict, name: str) -> None:
         if exchange_config.get('sandbox'):
             if api.urls.get('test'):
                 api.urls['api'] = api.urls['test']
                 logger.info("Enabled Sandbox API on %s", name)
             else:
-                logger.warning(
-                    f"No Sandbox URL in CCXT for {name}, exiting. Please check your config.json")
+                logger.warning(f"No Sandbox URL in CCXT for {name}, exiting. Please check your config.json")
                 raise OperationalException(f'Exchange {name} does not provide a sandbox api')
 
+                
     def _load_async_markets(self, reload: bool = False) -> None:
         try:
             if self._api_async:
-                asyncio.get_event_loop().run_until_complete(
-                    self._api_async.load_markets(reload=reload))
+                asyncio.get_event_loop().run_until_complete(self._api_async.load_markets(reload=reload))
 
         except (asyncio.TimeoutError, ccxt.BaseError) as e:
             logger.warning('Could not load async markets. Reason: %s', e)
@@ -299,9 +292,7 @@ class Exchange:
     def reload_markets(self) -> None:
         """Reload markets both sync and async if refresh interval has passed """
         # Check whether markets have to be reloaded
-        if (self._last_markets_refresh > 0) and (
-                self._last_markets_refresh + self.markets_refresh_interval
-                > arrow.utcnow().int_timestamp):
+        if (self._last_markets_refresh > 0) and (self._last_markets_refresh + self.markets_refresh_interval > arrow.utcnow().int_timestamp):
             return None
         logger.debug("Performing scheduled market reload..")
         try:
@@ -312,6 +303,7 @@ class Exchange:
         except ccxt.BaseError:
             logger.exception("Could not reload markets.")
 
+            
     def validate_stakecurrency(self, stake_currency: str) -> None:
         """
         Checks stake-currency against available currencies on the exchange.
@@ -320,10 +312,10 @@ class Exchange:
         """
         quote_currencies = self.get_quote_currencies()
         if stake_currency not in quote_currencies:
-            raise OperationalException(
-                f"{stake_currency} is not available as stake on {self.name}. "
-                f"Available currencies are: {', '.join(quote_currencies)}")
+            raise OperationalException(f"{stake_currency} is not available as stake on {self.name}. "
+                                       f"Available currencies are: {', '.join(quote_currencies)}")
 
+                                       
     def validate_pairs(self, pairs: List[str]) -> None:
         """
         Checks if all given pairs are tradable on the current exchange.
@@ -331,7 +323,6 @@ class Exchange:
         :raise: OperationalException if one pair is not available
         :return: None
         """
-
         if not self.markets:
             logger.warning('Unable to validate pairs (assuming they are correct).')
             return
@@ -360,11 +351,12 @@ class Exchange:
             if (self._config['stake_currency'] and
                     self.get_pair_quote_currency(pair) != self._config['stake_currency']):
                 invalid_pairs.append(pair)
+                                       
         if invalid_pairs:
-            raise OperationalException(
-                f"Stake-currency '{self._config['stake_currency']}' not compatible with "
-                f"pair-whitelist. Please remove the following pairs: {invalid_pairs}")
+            raise OperationalException(f"Stake-currency '{self._config['stake_currency']}' not compatible with "
+                                       f"pair-whitelist. Please remove the following pairs: {invalid_pairs}")
 
+                                       
     def get_valid_pair_combination(self, curr_1: str, curr_2: str) -> str:
         """
         Get valid pair combination of curr_1 and curr_2 by trying both combinations.
@@ -374,6 +366,7 @@ class Exchange:
                 return pair
         raise ExchangeError(f"Could not combine {curr_1} and {curr_2} to get a valid pair.")
 
+                                       
     def validate_timeframes(self, timeframe: Optional[str]) -> None:
         """
         Check if timeframe from config is a supported timeframe on the exchange
@@ -382,52 +375,46 @@ class Exchange:
             # If timeframes attribute is missing (or is None), the exchange probably
             # has no fetchOHLCV method.
             # Therefore we also show that.
-            raise OperationalException(
-                f"The ccxt library does not provide the list of timeframes "
-                f"for the exchange \"{self.name}\" and this exchange "
-                f"is therefore not supported. ccxt fetchOHLCV: {self.exchange_has('fetchOHLCV')}")
+            raise OperationalException(f"The ccxt library does not provide the list of timeframes "
+                                       f"for the exchange \"{self.name}\" and this exchange "
+                                       f"is therefore not supported. ccxt fetchOHLCV: {self.exchange_has('fetchOHLCV')}")
 
         if timeframe and (timeframe not in self.timeframes):
-            raise OperationalException(
-                f"Invalid timeframe '{timeframe}'. This exchange supports: {self.timeframes}")
-
+            raise OperationalException(f"Invalid timeframe '{timeframe}'. This exchange supports: {self.timeframes}")
         if timeframe and timeframe_to_minutes(timeframe) < 1:
             raise OperationalException("Timeframes < 1m are currently not supported by Freqtrade.")
 
+                                       
     def validate_ordertypes(self, order_types: Dict) -> None:
         """
         Checks if order-types configured in strategy/config are supported
         """
         if any(v == 'market' for k, v in order_types.items()):
             if not self.exchange_has('createMarketOrder'):
-                raise OperationalException(
-                    f'Exchange {self.name} does not support market orders.')
+                raise OperationalException(f'Exchange {self.name} does not support market orders.')
 
-        if (order_types.get("stoploss_on_exchange")
-                and not self._ft_has.get("stoploss_on_exchange", False)):
-            raise OperationalException(
-                f'On exchange stoploss is not supported for {self.name}.'
-            )
+        if (order_types.get("stoploss_on_exchange") and not self._ft_has.get("stoploss_on_exchange", False)):
+            raise OperationalException(f'On exchange stoploss is not supported for {self.name}.')
 
+                                       
     def validate_order_time_in_force(self, order_time_in_force: Dict) -> None:
         """
         Checks if order time in force configured in strategy/config are supported
         """
-        if any(v not in self._ft_has["order_time_in_force"]
-               for k, v in order_time_in_force.items()):
-            raise OperationalException(
-                f'Time in force policies are not supported for {self.name} yet.')
+        if any(v not in self._ft_has["order_time_in_force"] for k, v in order_time_in_force.items()):
+            raise OperationalException(f'Time in force policies are not supported for {self.name} yet.')
 
+                                       
     def validate_required_startup_candles(self, startup_candles: int) -> None:
         """
         Checks if required startup_candles is more than ohlcv_candle_limit.
         Requires a grace-period of 5 candles - so a startup-period up to 494 is allowed by default.
         """
         if startup_candles + 5 > self._ft_has['ohlcv_candle_limit']:
-            raise OperationalException(
-                f"This strategy requires {startup_candles} candles to start. "
-                f"{self.name} only provides {self._ft_has['ohlcv_candle_limit']}.")
+            raise OperationalException(f"This strategy requires {startup_candles} candles to start. "
+                                       f"{self.name} only provides {self._ft_has['ohlcv_candle_limit']}.")
 
+                                       
     def exchange_has(self, endpoint: str) -> bool:
         """
         Checks if exchange implements a specific API endpoint.
@@ -437,6 +424,7 @@ class Exchange:
         """
         return endpoint in self._api.has and self._api.has[endpoint]
 
+                                       
     def amount_to_precision(self, pair: str, amount: float) -> float:
         '''
         Returns the amount to buy or sell to a precision the Exchange accepts
@@ -447,10 +435,12 @@ class Exchange:
             amount = float(decimal_to_precision(amount, rounding_mode=TRUNCATE,
                                                 precision=self.markets[pair]['precision']['amount'],
                                                 counting_mode=self.precisionMode,
-                                                ))
+                                               )
+                          )
 
         return amount
 
+                                       
     def price_to_precision(self, pair: str, price: float) -> float:
         '''
         Returns the price rounded up to the precision the Exchange accepts.
@@ -464,7 +454,8 @@ class Exchange:
             # price = float(decimal_to_precision(price, rounding_mode=ROUND,
             #                                    precision=self.markets[pair]['precision']['price'],
             #                                    counting_mode=self.precisionMode,
-            #                                    ))
+            #                                    )
+                                      )
             if self.precisionMode == TICK_SIZE:
                 precision = self.markets[pair]['precision']['price']
                 missing = price % precision
@@ -476,6 +467,7 @@ class Exchange:
                 price = ceil(big_price) / pow(10, symbol_prec)
         return price
 
+                                       
     def price_get_one_pip(self, pair: str, price: float) -> float:
         """
         Get's the "1 pip" value for this pair.
@@ -487,103 +479,92 @@ class Exchange:
         else:
             return 1 / pow(10, precision)
 
+                                       
     def dry_run_order(self, pair: str, ordertype: str, side: str, amount: float,
                       rate: float, params: Dict = {}) -> Dict[str, Any]:
         order_id = f'dry_run_{side}_{datetime.now().timestamp()}'
         _amount = self.amount_to_precision(pair, amount)
-        dry_order = {
-            'id': order_id,
-            'symbol': pair,
-            'price': rate,
-            'average': rate,
-            'amount': _amount,
-            'cost': _amount * rate,
-            'type': ordertype,
-            'side': side,
-            'remaining': _amount,
-            'datetime': arrow.utcnow().isoformat(),
-            'timestamp': int(arrow.utcnow().int_timestamp * 1000),
-            'status': "closed" if ordertype == "market" else "open",
-            'fee': None,
-            'info': {}
-        }
+        dry_order = {'id': order_id,
+                     'symbol': pair,
+                     'price': rate,
+                     'average': rate,
+                     'amount': _amount,
+                     'cost': _amount * rate,
+                     'type': ordertype,
+                     'side': side,
+                     'remaining': _amount,
+                     'datetime': arrow.utcnow().isoformat(),
+                     'timestamp': int(arrow.utcnow().int_timestamp * 1000),
+                     'status': "closed" if ordertype == "market" else "open",
+                     'fee': None,
+                     'info': {}
+                    }
         self._store_dry_order(dry_order, pair)
         # Copy order and close it - so the returned order is open unless it's a market order
         return dry_order
 
+                                       
     def _store_dry_order(self, dry_order: Dict, pair: str) -> None:
         closed_order = dry_order.copy()
         if closed_order['type'] in ["market", "limit"]:
-            closed_order.update({
-                'status': 'closed',
-                'filled': closed_order['amount'],
-                'remaining': 0,
-                'fee': {
-                    'currency': self.get_pair_quote_currency(pair),
-                    'cost': dry_order['cost'] * self.get_fee(pair),
-                    'rate': self.get_fee(pair)
-                }
-            })
+            closed_order.update({'status': 'closed',
+                                 'filled': closed_order['amount'],
+                                 'remaining': 0,
+                                 'fee': {'currency': self.get_pair_quote_currency(pair),
+                                         'cost': dry_order['cost'] * self.get_fee(pair),
+                                         'rate': self.get_fee(pair)
+                                        }
+                                })
         if closed_order["type"] in ["stop_loss_limit", "stop-loss-limit"]:
             closed_order["info"].update({"stopPrice": closed_order["price"]})
         self._dry_run_open_orders[closed_order["id"]] = closed_order
 
-    def create_order(self, pair: str, ordertype: str, side: str, amount: float,
-                     rate: float, params: Dict = {}) -> Dict:
+                                       
+    def create_order(self, pair: str, ordertype: str, side: str, amount: float, rate: float, params: Dict = {}) -> Dict:
         try:
             # Set the precision for amount and price(rate) as accepted by the exchange
             amount = self.amount_to_precision(pair, amount)
             needs_price = (ordertype != 'market'
                            or self._api.options.get("createMarketBuyOrderRequiresPrice", False))
             rate_for_order = self.price_to_precision(pair, rate) if needs_price else None
-
-            return self._api.create_order(pair, ordertype, side,
-                                          amount, rate_for_order, params)
-
+            return self._api.create_order(pair, ordertype, side, amount, rate_for_order, params)
         except ccxt.InsufficientFunds as e:
-            raise InsufficientFundsError(
-                f'Insufficient funds to create {ordertype} {side} order on market {pair}. '
-                f'Tried to {side} amount {amount} at rate {rate}.'
-                f'Message: {e}') from e
+            raise InsufficientFundsError(f'Insufficient funds to create {ordertype} {side} order on market {pair}. '
+                                         f'Tried to {side} amount {amount} at rate {rate}.'
+                                         f'Message: {e}') from e
         except ccxt.InvalidOrder as e:
-            raise ExchangeError(
-                f'Could not create {ordertype} {side} order on market {pair}. '
-                f'Tried to {side} amount {amount} at rate {rate}. '
-                f'Message: {e}') from e
+            raise ExchangeError(f'Could not create {ordertype} {side} order on market {pair}. '
+                                f'Tried to {side} amount {amount} at rate {rate}. '
+                                f'Message: {e}') from e
         except ccxt.DDoSProtection as e:
             raise DDosProtection(e) from e
         except (ccxt.NetworkError, ccxt.ExchangeError) as e:
-            raise TemporaryError(
-                f'Could not place {side} order due to {e.__class__.__name__}. Message: {e}') from e
+            raise TemporaryError(f'Could not place {side} order due to {e.__class__.__name__}. Message: {e}') from e
         except ccxt.BaseError as e:
             raise OperationalException(e) from e
 
+                                       
     def buy(self, pair: str, ordertype: str, amount: float,
             rate: float, time_in_force: str) -> Dict:
-
         if self._config['dry_run']:
             dry_order = self.dry_run_order(pair, ordertype, "buy", amount, rate)
             return dry_order
-
         params = self._params.copy()
         if time_in_force != 'gtc' and ordertype != 'market':
             params.update({'timeInForce': time_in_force})
-
         return self.create_order(pair, ordertype, 'buy', amount, rate, params)
 
-    def sell(self, pair: str, ordertype: str, amount: float,
-             rate: float, time_in_force: str = 'gtc') -> Dict:
-
+                                       
+    def sell(self, pair: str, ordertype: str, amount: float, rate: float, time_in_force: str = 'gtc') -> Dict:
         if self._config['dry_run']:
             dry_order = self.dry_run_order(pair, ordertype, "sell", amount, rate)
             return dry_order
-
         params = self._params.copy()
         if time_in_force != 'gtc' and ordertype != 'market':
             params.update({'timeInForce': time_in_force})
-
         return self.create_order(pair, ordertype, 'sell', amount, rate, params)
 
+                                       
     def stoploss_adjust(self, stop_loss: float, order: Dict) -> bool:
         """
         Verify stop_loss against stoploss-order value (limit or price)
@@ -591,6 +572,7 @@ class Exchange:
         """
         raise OperationalException(f"stoploss is not implemented for {self.name}.")
 
+                                       
     def stoploss(self, pair: str, amount: float, stop_price: float, order_types: Dict) -> Dict:
         """
         creates a stoploss order.
@@ -601,27 +583,24 @@ class Exchange:
         starting the bot in validate_ordertypes()
         Note: Changes to this interface need to be applied to all sub-classes too.
         """
-
         raise OperationalException(f"stoploss is not implemented for {self.name}.")
-
+                                       
+                                       
     @retrier
     def get_balance(self, currency: str) -> float:
         if self._config['dry_run']:
             return self._config['dry_run_wallet']
-
         # ccxt exception is already handled by get_balances
         balances = self.get_balances()
         balance = balances.get(currency)
         if balance is None:
-            raise TemporaryError(
-                f'Could not get {currency} balance due to malformed exchange response: {balances}')
+            raise TemporaryError(f'Could not get {currency} balance due to malformed exchange response: {balances}')
         return balance['free']
 
     @retrier
     def get_balances(self) -> dict:
         if self._config['dry_run']:
             return {}
-
         try:
             balances = self._api.fetch_balance()
             # Remove additional info from ccxt results
@@ -629,13 +608,11 @@ class Exchange:
             balances.pop("free", None)
             balances.pop("total", None)
             balances.pop("used", None)
-
             return balances
         except ccxt.DDoSProtection as e:
             raise DDosProtection(e) from e
         except (ccxt.NetworkError, ccxt.ExchangeError) as e:
-            raise TemporaryError(
-                f'Could not get balance due to {e.__class__.__name__}. Message: {e}') from e
+            raise TemporaryError(f'Could not get balance due to {e.__class__.__name__}. Message: {e}') from e
         except ccxt.BaseError as e:
             raise OperationalException(e) from e
 
@@ -644,14 +621,12 @@ class Exchange:
         try:
             return self._api.fetch_tickers()
         except ccxt.NotSupported as e:
-            raise OperationalException(
-                f'Exchange {self._api.name} does not support fetching tickers in batch. '
-                f'Message: {e}') from e
+            raise OperationalException(f'Exchange {self._api.name} does not support fetching tickers in batch. '
+                                       f'Message: {e}') from e
         except ccxt.DDoSProtection as e:
             raise DDosProtection(e) from e
         except (ccxt.NetworkError, ccxt.ExchangeError) as e:
-            raise TemporaryError(
-                f'Could not load tickers due to {e.__class__.__name__}. Message: {e}') from e
+            raise TemporaryError(f'Could not load tickers due to {e.__class__.__name__}. Message: {e}') from e
         except ccxt.BaseError as e:
             raise OperationalException(e) from e
 
@@ -670,6 +645,7 @@ class Exchange:
         except ccxt.BaseError as e:
             raise OperationalException(e) from e
 
+                                       
     def get_historic_ohlcv(self, pair: str, timeframe: str,
                            since_ms: int) -> List:
         """
@@ -682,8 +658,7 @@ class Exchange:
         :return: List with candle (OHLCV) data
         """
         return asyncio.get_event_loop().run_until_complete(
-            self._async_get_historic_ohlcv(pair=pair, timeframe=timeframe,
-                                           since_ms=since_ms))
+            self._async_get_historic_ohlcv(pair=pair, timeframe=timeframe, since_ms=since_ms))
 
     def get_historic_ohlcv_as_df(self, pair: str, timeframe: str,
                                  since_ms: int) -> DataFrame:
@@ -695,26 +670,19 @@ class Exchange:
         :return: OHLCV DataFrame
         """
         ticks = self.get_historic_ohlcv(pair, timeframe, since_ms=since_ms)
-        return ohlcv_to_dataframe(ticks, timeframe, pair=pair, fill_missing=True,
-                                  drop_incomplete=self._ohlcv_partial_candle)
+        return ohlcv_to_dataframe(ticks, timeframe, pair=pair, fill_missing=True, drop_incomplete=self._ohlcv_partial_candle)
 
-    async def _async_get_historic_ohlcv(self, pair: str,
-                                        timeframe: str,
-                                        since_ms: int) -> List:
+    async def _async_get_historic_ohlcv(self, pair: str, timeframe: str, since_ms: int) -> List:
         """
         Download historic ohlcv
         """
-
         one_call = timeframe_to_msecs(timeframe) * self._ohlcv_candle_limit
-        logger.debug(
-            "one_call: %s msecs (%s)",
-            one_call,
-            arrow.utcnow().shift(seconds=one_call // 1000).humanize(only_distance=True)
-        )
-        input_coroutines = [self._async_get_candle_history(
-            pair, timeframe, since) for since in
-            range(since_ms, arrow.utcnow().int_timestamp * 1000, one_call)]
-
+        logger.debug("one_call: %s msecs (%s)",
+                     one_call,
+                     arrow.utcnow().shift(seconds=one_call // 1000).humanize(only_distance=True)
+                    )
+        input_coroutines = [self._async_get_candle_history(pair, timeframe, since) for since in
+                            range(since_ms, arrow.utcnow().int_timestamp * 1000, one_call)]
         results = await asyncio.gather(*input_coroutines, return_exceptions=True)
 
         # Combine gathered results
@@ -732,6 +700,7 @@ class Exchange:
         logger.info("Downloaded data for %s with length %s.", pair, len(data))
         return data
 
+                                       
     def refresh_latest_ohlcv(self, pair_list: ListPairsWithTimeframes) -> List[Tuple[str, List]]:
         """
         Refresh in-memory OHLCV asynchronously and set `_klines` with the result
@@ -741,22 +710,15 @@ class Exchange:
         :return: TODO: return value is only used in the tests, get rid of it
         """
         logger.debug("Refreshing candle (OHLCV) data for %d pairs", len(pair_list))
-
         input_coroutines = []
 
         # Gather coroutines to run
         for pair, timeframe in set(pair_list):
-            if (not ((pair, timeframe) in self._klines)
-                    or self._now_is_time_to_refresh(pair, timeframe)):
+            if (not((pair, timeframe) in self._klines) or self._now_is_time_to_refresh(pair, timeframe)):
                 input_coroutines.append(self._async_get_candle_history(pair, timeframe))
             else:
-                logger.debug(
-                    "Using cached candle (OHLCV) data for pair %s, timeframe %s ...",
-                    pair, timeframe
-                )
-
-        results = asyncio.get_event_loop().run_until_complete(
-            asyncio.gather(*input_coroutines, return_exceptions=True))
+                logger.debug("Using cached candle (OHLCV) data for pair %s, timeframe %s ...", pair, timeframe)
+        results = asyncio.get_event_loop().run_until_complete(asyncio.gather(*input_coroutines, return_exceptions=True))
 
         # handle caching
         for res in results:
@@ -772,19 +734,16 @@ class Exchange:
             self._klines[(pair, timeframe)] = ohlcv_to_dataframe(
                 ticks, timeframe, pair=pair, fill_missing=True,
                 drop_incomplete=self._ohlcv_partial_candle)
-
         return results
 
+                                       
     def _now_is_time_to_refresh(self, pair: str, timeframe: str) -> bool:
         # Timeframe in seconds
         interval_in_sec = timeframe_to_seconds(timeframe)
-
-        return not ((self._pairs_last_refresh_time.get((pair, timeframe), 0)
-                     + interval_in_sec) >= arrow.utcnow().int_timestamp)
+        return not ((self._pairs_last_refresh_time.get((pair, timeframe), 0) + interval_in_sec) >= arrow.utcnow().int_timestamp)
 
     @retrier_async
-    async def _async_get_candle_history(self, pair: str, timeframe: str,
-                                        since_ms: Optional[int] = None) -> Tuple[str, str, List]:
+    async def _async_get_candle_history(self, pair: str, timeframe: str, since_ms: Optional[int] = None) -> Tuple[str, str, List]:
         """
         Asynchronously get candle history data using fetch_ohlcv
         returns tuple: (pair, timeframe, ohlcv_list)
@@ -792,13 +751,10 @@ class Exchange:
         try:
             # Fetch OHLCV asynchronously
             s = '(' + arrow.get(since_ms // 1000).isoformat() + ') ' if since_ms is not None else ''
-            logger.debug(
-                "Fetching pair %s, interval %s, since %s %s...",
-                pair, timeframe, since_ms, s
-            )
-
-            data = await self._api_async.fetch_ohlcv(pair, timeframe=timeframe,
-                                                     since=since_ms)
+            logger.debug("Fetching pair %s, interval %s, since %s %s...",
+                         pair, timeframe, since_ms, s
+                        )
+            data = await self._api_async.fetch_ohlcv(pair, timeframe=timeframe, since=since_ms)
 
             # Some exchanges sort OHLCV in ASC order and others in DESC.
             # Ex: Bittrex returns the list of OHLCV in ASC order (oldest first, newest last)
@@ -812,11 +768,9 @@ class Exchange:
                 return pair, timeframe, []
             logger.debug("Done fetching pair %s, interval %s ...", pair, timeframe)
             return pair, timeframe, data
-
         except ccxt.NotSupported as e:
-            raise OperationalException(
-                f'Exchange {self._api.name} does not support fetching historical '
-                f'candle (OHLCV) data. Message: {e}') from e
+            raise OperationalException(f'Exchange {self._api.name} does not support fetching historical '
+                                       f'candle (OHLCV) data. Message: {e}') from e
         except ccxt.DDoSProtection as e:
             raise DDosProtection(e) from e
         except (ccxt.NetworkError, ccxt.ExchangeError) as e:
@@ -827,9 +781,9 @@ class Exchange:
             raise OperationalException(f'Could not fetch historical candle (OHLCV) data '
                                        f'for pair {pair}. Message: {e}') from e
 
+                                       
     @retrier_async
-    async def _async_fetch_trades(self, pair: str,
-                                  since: Optional[int] = None,
+    async def _async_fetch_trades(self, pair: str, since: Optional[int] = None,
                                   params: Optional[dict] = None) -> List[List]:
         """
         Asyncronously gets trade history using fetch_trades.
@@ -844,17 +798,15 @@ class Exchange:
                 logger.debug("Fetching trades for pair %s, params: %s ", pair, params)
                 trades = await self._api_async.fetch_trades(pair, params=params, limit=1000)
             else:
-                logger.debug(
-                    "Fetching trades for pair %s, since %s %s...",
-                    pair,  since,
-                    '(' + arrow.get(since // 1000).isoformat() + ') ' if since is not None else ''
-                )
+                logger.debug("Fetching trades for pair %s, since %s %s...",
+                             pair,  since,
+                             '(' + arrow.get(since // 1000).isoformat() + ') ' if since is not None else ''
+                            )
                 trades = await self._api_async.fetch_trades(pair, since=since, limit=1000)
             return trades_dict_to_list(trades)
         except ccxt.NotSupported as e:
-            raise OperationalException(
-                f'Exchange {self._api.name} does not support fetching historical trade data.'
-                f'Message: {e}') from e
+            raise OperationalException(f'Exchange {self._api.name} does not support fetching historical trade data.'
+                                       f'Message: {e}') from e
         except ccxt.DDoSProtection as e:
             raise DDosProtection(e) from e
         except (ccxt.NetworkError, ccxt.ExchangeError) as e:
@@ -863,6 +815,7 @@ class Exchange:
         except ccxt.BaseError as e:
             raise OperationalException(f'Could not fetch trade data. Msg: {e}') from e
 
+                                       
     async def _async_get_trade_history_id(self, pair: str,
                                           until: int,
                                           since: Optional[int] = None,
@@ -876,9 +829,7 @@ class Exchange:
         :param from_id: Download data starting with ID (if id is known). Ignores "since" if set.
         returns tuple: (pair, trades-list)
         """
-
         trades: List[List] = []
-
         if not from_id:
             # Fetch first elements using timebased method to get an ID to paginate on
             # Depending on the Exchange, this can introduce a drift at the start of the interval
@@ -891,8 +842,7 @@ class Exchange:
             from_id = t[-1][1]
             trades.extend(t[:-1])
         while True:
-            t = await self._async_fetch_trades(pair,
-                                               params={self._trades_pagination_arg: from_id})
+            t = await self._async_fetch_trades(pair, params={self._trades_pagination_arg: from_id})
             if len(t):
                 # Skip last id since its the key for the next call
                 trades.extend(t[:-1])
@@ -902,13 +852,12 @@ class Exchange:
                     # Reached the end of the defined-download period - add last trade as well.
                     trades.extend(t[-1:])
                     break
-
                 from_id = t[-1][1]
             else:
                 break
-
         return (pair, trades)
 
+                                       
     async def _async_get_trade_history_time(self, pair: str, until: int,
                                             since: Optional[int] = None) -> Tuple[str, List[List]]:
         """
@@ -919,7 +868,6 @@ class Exchange:
         :param until: Until as integer timestamp in milliseconds
         returns tuple: (pair, trades-list)
         """
-
         trades: List[List] = []
         # DEFAULT_TRADES_COLUMNS: 0 -> timestamp
         # DEFAULT_TRADES_COLUMNS: 1 -> id
@@ -930,14 +878,13 @@ class Exchange:
                 trades.extend(t)
                 # Reached the end of the defined-download period
                 if until and t[-1][0] > until:
-                    logger.debug(
-                        f"Stopping because until was reached. {t[-1][0]} > {until}")
+                    logger.debug(f"Stopping because until was reached. {t[-1][0]} > {until}")
                     break
             else:
                 break
-
         return (pair, trades)
 
+                                       
     async def _async_get_trade_history(self, pair: str,
                                        since: Optional[int] = None,
                                        until: Optional[int] = None,
@@ -945,10 +892,8 @@ class Exchange:
         """
         Async wrapper handling downloading trades using either time or id based methods.
         """
-
         logger.debug(f"_async_get_trade_history(), pair: {pair}, "
                      f"since: {since}, until: {until}, from_id: {from_id}")
-
         if until is None:
             until = ccxt.Exchange.milliseconds()
             logger.debug(f"Exchange milliseconds: {until}")
@@ -964,6 +909,7 @@ class Exchange:
             raise OperationalException(f"Exchange {self.name} does use neither time, "
                                        f"nor id based pagination")
 
+                                       
     def get_historic_trades(self, pair: str,
                             since: Optional[int] = None,
                             until: Optional[int] = None,
@@ -980,11 +926,10 @@ class Exchange:
         """
         if not self.exchange_has("fetchTrades"):
             raise OperationalException("This exchange does not suport downloading Trades.")
+        return asyncio.get_event_loop().run_until_complete(self._async_get_trade_history(pair=pair, since=since,
+                                                                                         until=until, from_id=from_id))
 
-        return asyncio.get_event_loop().run_until_complete(
-            self._async_get_trade_history(pair=pair, since=since,
-                                          until=until, from_id=from_id))
-
+                                       
     def check_order_canceled_empty(self, order: Dict) -> bool:
         """
         Verify if an order has been cancelled without being partially filled
@@ -993,6 +938,7 @@ class Exchange:
         """
         return order.get('status') in ('closed', 'canceled') and order.get('filled') == 0.0
 
+                                       
     @retrier
     def cancel_order(self, order_id: str, pair: str) -> Dict:
         if self._config['dry_run']:
@@ -1002,7 +948,6 @@ class Exchange:
                 return order
             else:
                 return {}
-
         try:
             return self._api.cancel_order(order_id, pair)
         except ccxt.InvalidOrder as e:
@@ -1015,17 +960,17 @@ class Exchange:
                 f'Could not cancel order due to {e.__class__.__name__}. Message: {e}') from e
         except ccxt.BaseError as e:
             raise OperationalException(e) from e
-
     # Assign method to cancel_stoploss_order to allow easy overriding in other classes
     cancel_stoploss_order = cancel_order
 
+                                       
     def is_cancel_order_result_suitable(self, corder) -> bool:
         if not isinstance(corder, dict):
             return False
-
         required = ('fee', 'status', 'amount')
         return all(k in corder for k in required)
 
+                                       
     def cancel_order_with_result(self, order_id: str, pair: str, amount: float) -> Dict:
         """
         Cancel order returning a result.
@@ -1047,9 +992,9 @@ class Exchange:
         except InvalidOrderException:
             logger.warning(f"Could not fetch cancelled order {order_id}.")
             order = {'fee': {}, 'status': 'canceled', 'amount': amount, 'info': {}}
-
         return order
 
+                                       
     @retrier(retries=API_FETCH_ORDER_RETRY_COUNT)
     def fetch_order(self, order_id: str, pair: str) -> Dict:
         if self._config['dry_run']:
@@ -1058,29 +1003,26 @@ class Exchange:
                 return order
             except KeyError as e:
                 # Gracefully handle errors with dry-run orders.
-                raise InvalidOrderException(
-                    f'Tried to get an invalid dry-run-order (id: {order_id}). Message: {e}') from e
+                raise InvalidOrderException(f'Tried to get an invalid dry-run-order (id: {order_id}). Message: {e}') from e
+                                       
         try:
             return self._api.fetch_order(order_id, pair)
         except ccxt.OrderNotFound as e:
-            raise RetryableOrderError(
-                f'Order not found (pair: {pair} id: {order_id}). Message: {e}') from e
+            raise RetryableOrderError(f'Order not found (pair: {pair} id: {order_id}). Message: {e}') from e
         except ccxt.InvalidOrder as e:
-            raise InvalidOrderException(
-                f'Tried to get an invalid order (pair: {pair} id: {order_id}). Message: {e}') from e
+            raise InvalidOrderException(f'Tried to get an invalid order (pair: {pair} id: {order_id}). Message: {e}') from e
         except ccxt.DDoSProtection as e:
             raise DDosProtection(e) from e
         except (ccxt.NetworkError, ccxt.ExchangeError) as e:
-            raise TemporaryError(
-                f'Could not get order due to {e.__class__.__name__}. Message: {e}') from e
+            raise TemporaryError(f'Could not get order due to {e.__class__.__name__}. Message: {e}') from e
         except ccxt.BaseError as e:
             raise OperationalException(e) from e
 
     # Assign method to fetch_stoploss_order to allow easy overriding in other classes
     fetch_stoploss_order = fetch_order
 
-    def fetch_order_or_stoploss_order(self, order_id: str, pair: str,
-                                      stoploss_order: bool = False) -> Dict:
+                                       
+    def fetch_order_or_stoploss_order(self, order_id: str, pair: str, stoploss_order: bool = False) -> Dict:
         """
         Simple wrapper calling either fetch_order or fetch_stoploss_order depending on
         the stoploss_order parameter
@@ -1090,6 +1032,7 @@ class Exchange:
             return self.fetch_stoploss_order(order_id, pair)
         return self.fetch_order(order_id, pair)
 
+                                       
     @staticmethod
     def get_next_limit_in_list(limit: int, limit_range: Optional[List[int]]):
         """
@@ -1100,6 +1043,7 @@ class Exchange:
             return limit
         return min([x for x in limit_range if limit <= x] + [max(limit_range)])
 
+                                       
     @retrier
     def fetch_l2_order_book(self, pair: str, limit: int = 100) -> dict:
         """
@@ -1110,7 +1054,6 @@ class Exchange:
         """
         limit1 = self.get_next_limit_in_list(limit, self._ft_has['l2_limit_range'])
         try:
-
             return self._api.fetch_l2_order_book(pair, limit1)
         except ccxt.NotSupported as e:
             raise OperationalException(
@@ -1124,6 +1067,7 @@ class Exchange:
         except ccxt.BaseError as e:
             raise OperationalException(e) from e
 
+                                       
     @retrier
     def get_trades_for_order(self, order_id: str, pair: str, since: datetime) -> List:
         """
@@ -1152,7 +1096,6 @@ class Exchange:
             my_trades = self._api.fetch_my_trades(
                 pair, int((since.replace(tzinfo=timezone.utc).timestamp() - 5) * 1000))
             matched_trades = [trade for trade in my_trades if trade['order'] == order_id]
-
             return matched_trades
         except ccxt.DDoSProtection as e:
             raise DDosProtection(e) from e
@@ -1162,6 +1105,7 @@ class Exchange:
         except ccxt.BaseError as e:
             raise OperationalException(e) from e
 
+                                       
     @retrier
     def get_fee(self, symbol: str, type: str = '', side: str = '', amount: float = 1,
                 price: float = 1, taker_or_maker: str = 'maker') -> float:
@@ -1169,17 +1113,16 @@ class Exchange:
             # validate that markets are loaded before trying to get fee
             if self._api.markets is None or len(self._api.markets) == 0:
                 self._api.load_markets()
-
             return self._api.calculate_fee(symbol=symbol, type=type, side=side, amount=amount,
                                            price=price, takerOrMaker=taker_or_maker)['rate']
         except ccxt.DDoSProtection as e:
             raise DDosProtection(e) from e
         except (ccxt.NetworkError, ccxt.ExchangeError) as e:
-            raise TemporaryError(
-                f'Could not get fee info due to {e.__class__.__name__}. Message: {e}') from e
+            raise TemporaryError(f'Could not get fee info due to {e.__class__.__name__}. Message: {e}') from e
         except ccxt.BaseError as e:
             raise OperationalException(e) from e
 
+                                       
     @staticmethod
     def order_has_fee(order: Dict) -> bool:
         """
@@ -1194,8 +1137,9 @@ class Exchange:
                 and (order['fee'].keys() >= {'currency', 'cost'})
                 and order['fee']['currency'] is not None
                 and order['fee']['cost'] is not None
-                )
+               )
 
+                                       
     def calculate_fee_rate(self, order: Dict) -> Optional[float]:
         """
         Calculate fee rate if it's not given by the exchange.
@@ -1207,8 +1151,7 @@ class Exchange:
         # Calculate fee based on order details
         if fee_curr in self.get_pair_base_currency(order['symbol']):
             # Base currency - divide by amount
-            return round(
-                order['fee']['cost'] / safe_value_fallback2(order, order, 'filled', 'amount'), 8)
+            return round(order['fee']['cost'] / safe_value_fallback2(order, order, 'filled', 'amount'), 8)
         elif fee_curr in self.get_pair_quote_currency(order['symbol']):
             # Quote currency - divide by cost
             return round(order['fee']['cost'] / order['cost'], 8) if order['cost'] else None
@@ -1220,12 +1163,12 @@ class Exchange:
             try:
                 comb = self.get_valid_pair_combination(fee_curr, self._config['stake_currency'])
                 tick = self.fetch_ticker(comb)
-
                 fee_to_quote_rate = safe_value_fallback2(tick, tick, 'last', 'ask')
                 return round((order['fee']['cost'] * fee_to_quote_rate) / order['cost'], 8)
             except ExchangeError:
                 return None
 
+                                       
     def extract_cost_curr_rate(self, order: Dict) -> Tuple[float, str, Optional[float]]:
         """
         Extract tuple of cost, currency, rate.
@@ -1301,9 +1244,7 @@ def timeframe_to_prev_date(timeframe: str, date: datetime = None) -> datetime:
     """
     if not date:
         date = datetime.now(timezone.utc)
-
-    new_timestamp = ccxt.Exchange.round_timeframe(timeframe, date.timestamp() * 1000,
-                                                  ROUND_DOWN) // 1000
+    new_timestamp = ccxt.Exchange.round_timeframe(timeframe, date.timestamp() * 1000, ROUND_DOWN) // 1000
     return datetime.fromtimestamp(new_timestamp, tz=timezone.utc)
 
 
@@ -1316,8 +1257,7 @@ def timeframe_to_next_date(timeframe: str, date: datetime = None) -> datetime:
     """
     if not date:
         date = datetime.now(timezone.utc)
-    new_timestamp = ccxt.Exchange.round_timeframe(timeframe, date.timestamp() * 1000,
-                                                  ROUND_UP) // 1000
+    new_timestamp = ccxt.Exchange.round_timeframe(timeframe, date.timestamp() * 1000, ROUND_UP) // 1000
     return datetime.fromtimestamp(new_timestamp, tz=timezone.utc)
 
 
