@@ -16,7 +16,6 @@ from finrl.loggers import setup_logging
 from finrl.misc import deep_merge_dicts, json_load
 from finrl.state import NON_UTIL_MODES, TRADING_MODES, RunMode
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -25,24 +24,23 @@ class Configuration:
     Class to read and init the bot configuration
     Reuse this class for the bot, backtesting, hyperopt and every script that required configuration
     """
-
     def __init__(self, args: Dict[str, Any], runmode: RunMode = None) -> None:
         self.args = args
         self.config: Optional[Dict[str, Any]] = None
         self.runmode = runmode
 
+        
     def get_config(self) -> Dict[str, Any]:
         """
-        Return the config. Use this method to get the bot config
-        
+        Return the config. Use this method to get the bot config 
         return: 
             Dict: Bot config
         """
         if self.config is None:
             self.config = self.load_config()
-
         return self.config
 
+    
     @staticmethod
     def from_files(files: List[str]) -> Dict[str, Any]:
         """
@@ -52,18 +50,16 @@ class Configuration:
         override the same parameter from an earlier file (last definition wins).
         Runs through the whole Configuration initialization, so all expected config entries
         are available to interactive environments.
-        
         param files: 
             List of file paths
-            
         return: 
             configuration dictionary
         """
         c = Configuration({'config': files}, RunMode.OTHER)
         return c.get_config()
 
+    
     def load_from_files(self, files: List[str]) -> Dict[str, Any]:
-
         # Keep this method as staticmethod, so it can be used from interactive environments
         config: Dict[str, Any] = {}
 
@@ -73,7 +69,6 @@ class Configuration:
         # We expect here a list of config filenames
         for path in files:
             logger.info(f'Using config: {path} ...')
-
             # Merge config options, overwriting old values
             config = deep_merge_dicts(load_config_file(path), config)
 
@@ -84,12 +79,11 @@ class Configuration:
         # experimental settings
         if 'ask_strategy' not in config:
             config['ask_strategy'] = {}
-
         if 'pairlists' not in config:
             config['pairlists'] = []
-
         return config
 
+    
     def load_config(self) -> Dict[str, Any]:
         """
         Extract information for sys.argv and load the bot configuration
@@ -102,18 +96,15 @@ class Configuration:
         config['original_config'] = deepcopy(config)
 
         self._process_logging_options(config)
-
         self._process_runmode(config)
-
         self._process_optimize_options(config)
 
         # Check if the exchange set by the user is supported
         check_exchange(config, config.get('experimental', {}).get('block_bad_exchanges', True))
-
         self._resolve_pairs_list(config)
-
         return config
 
+    
     def _process_logging_options(self, config: Dict[str, Any]) -> None:
         """
         Extract information for sys.argv and load logging configuration:
@@ -121,10 +112,8 @@ class Configuration:
         """
         # Log level
         config.update({'verbosity': self.args.get('verbosity', 0)})
-
         if 'logfile' in self.args and self.args['logfile']:
             config.update({'logfile': self.args['logfile']})
-
         setup_logging(config)
 
 
@@ -159,11 +148,10 @@ class Configuration:
                                  logstring='Storing backtest results to {} ...')
             config['exportfilename'] = Path(config['exportfilename'])
         else:
-            config['exportfilename'] = (config['user_data_dir']
-                                        / 'backtest_results')
+            config['exportfilename'] = (config['user_data_dir'] / 'backtest_results')
 
+                        
     def _process_optimize_options(self, config: Dict[str, Any]) -> None:
-
         # This will override the strategy configuration
         self._args_to_config(config, argname='timeframes',
                              logstring='Parameter -i/--timeframes detected ... '
@@ -182,8 +170,8 @@ class Configuration:
         self._args_to_config(config, argname='timeframes',
                              logstring='Overriding timeframe with Command line argument')
 
+                        
     def _process_runmode(self, config: Dict[str, Any]) -> None:
-
         self._args_to_config(config, argname='dry_run',
                              logstring='Parameter --dry-run detected, '
                              'overriding dry_run to: {} ...')
@@ -194,28 +182,24 @@ class Configuration:
 
         config.update({'runmode': self.runmode})
 
+                        
     def _args_to_config(self, config: Dict[str, Any], argname: str,
                         logstring: str, logfun: Optional[Callable] = None,
                         deprecated_msg: Optional[str] = None) -> None:
         """
         param config: 
             Configuration dictionary
-            
         param argname: 
-            Argumentname in self.args - will be copied to config dict.
-            
+            Argumentname in self.args - will be copied to config dict.       
         param logstring: 
-            Logging String
-            
+            Logging String        
         param logfun: 
             logfun is applied to the configuration entry before passing
             that entry to the log string using .format().
             sample: logfun=len (prints the length of the found
             configuration instead of the content)
         """
-        if (argname in self.args and self.args[argname] is not None
-           and self.args[argname] is not False):
-
+        if (argname in self.args and self.args[argname] is not None and self.args[argname] is not False):
             config.update({argname: self.args[argname]})
             if logfun:
                 logger.info(logstring.format(logfun(config[argname])))
@@ -224,6 +208,7 @@ class Configuration:
             if deprecated_msg:
                 warnings.warn(f"DEPRECATED: {deprecated_msg}", DeprecationWarning)
 
+                        
     def _resolve_pairs_list(self, config: Dict[str, Any]) -> None:
         """
         Helper for download script.
@@ -232,7 +217,6 @@ class Configuration:
         * --pairs-file
         * whitelist from config
         """
-
         if "pairs" in config:
             return
 
