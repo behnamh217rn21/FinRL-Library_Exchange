@@ -6,8 +6,8 @@ from finrl.exchange import (available_exchanges, get_exchange_bad_reason, is_exc
                                 is_exchange_known_ccxt, is_exchange_officially_supported)
 from finrl.state import RunMode
 
-
 logger = logging.getLogger(__name__)
+
 
 
 def remove_credentials(config: Dict[str, Any]) -> None:
@@ -44,24 +44,23 @@ def check_exchange(config: Dict[str, Any], check_for_bad: bool = True) -> bool:
 
     exchange = config.get('exchange', {}).get('name').lower()
     if not exchange:
-        raise OperationalException(
-            f'This command requires a configured exchange. You should either use '
-            f'`--exchange <exchange_name>` or specify a configuration file via `--config`.\n'
-            f'The following exchanges are available for: '
-            f'{", ".join(available_exchanges())}'
-        )
+        raise OperationalException(f'This command requires a configured exchange. You should either use '
+                                   f'`--exchange <exchange_name>` or specify a configuration file via `--config`.\n'
+                                   f'The following exchanges are available for: '
+                                   f'{", ".join(available_exchanges())}'
+                                  )
 
     if not is_exchange_known_ccxt(exchange):
-        raise OperationalException(
-                f'Exchange "{exchange}" is not known to the ccxt library '
-                f'and therefore not available for the bot.\n'
-                f'The following exchanges are available: '
-                f'{", ".join(available_exchanges())}'
-        )
+        raise OperationalException(f'Exchange "{exchange}" is not known to the ccxt library '
+                                   f'and therefore not available for the bot.\n'
+                                   f'The following exchanges are available: '
+                                   f'{", ".join(available_exchanges())}'
+                                  )
 
     if check_for_bad and is_exchange_bad(exchange):
         raise OperationalException(f'Exchange "{exchange}" is known to not work with the bot yet. '
-                                   f'Reason: {get_exchange_bad_reason(exchange)}')
+                                   f'Reason: {get_exchange_bad_reason(exchange)}'
+                                  )
 
     if is_exchange_officially_supported(exchange):
         logger.info(f'Exchange "{exchange}" is officially supported '
@@ -72,5 +71,4 @@ def check_exchange(config: Dict[str, Any], check_for_bad: bool = True) -> bool:
                        f'by FinRL. '
                        f'It may work flawlessly (please report back) or have serious issues. '
                        f'Use it at your own discretion.')
-
     return True
