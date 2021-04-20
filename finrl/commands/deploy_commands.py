@@ -9,7 +9,6 @@ from finrl.exceptions import OperationalException
 from finrl.misc import render_template, render_template_with_fallback
 from finrl.state import RunMode
 
-
 logger = logging.getLogger(__name__)
 
 
