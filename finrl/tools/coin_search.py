@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Dec 28 12:02:02 2020
-
 @author: kaizentech
 Coin Research into txt List (Binance & Bittrex)
 """
-
 import time
 import os
 import ccxt
@@ -14,11 +12,13 @@ import re
 import pandas as pd
 import json
 
+
 ####################### Coin Search ###############################################
 ######################### Binance ################################################
 coin="XRP"
 # symbols = binance.id, binance.symbols
 # print(symbols)
+
 def coinSearch(coin, top=50):
     ex = ccxt.binance({'enableRateLimit': True,}) # Loads Binance
     ex.load_markets ()
@@ -42,24 +42,26 @@ def coins_to_json(config, coinslist):
     with open(config, 'r+') as f:
         data = json.load(f)
         data['exchange']["pair_whitelist"] = coinslist
-        f.seek(0)        # <--- should reset file position to the beginning.
+        f.seek(0) # <--- should reset file position to the beginning.
         json.dump(data, f, indent=4,separators=(", ", ": "))
-        f.truncate()     # remove remaining part
+        f.truncate() # remove remaining part
+        
+        
 def stocks_to_json(config, coinslist):
     with open(config, 'r+') as f:
         data = json.load(f)
         data['ticker_list'] = coinslist
-        f.seek(0)        # <--- should reset file position to the beginning.
+        f.seek(0) # <--- should reset file position to the beginning.
         json.dump(data, f, indent=4,separators=(", ", ": "))
-        f.truncate()     # remove remaining part
+        f.truncate() # remove remaining part
 
+        
 def coins_to_txt(coins, Path):
     with open(Path, 'w') as filehandle:
         json.dump(coins, filehandle)
     
+    
 ######################### Bittrex ################################################
-
-
 # coin="XRP"
 # # symbols = binance.id, binance.symbols
 # # print(symbols)
@@ -89,7 +91,6 @@ def coins_to_txt(coins, Path):
 # highest_coins.duplicated()
 # highest_coins = highest_coins.drop_duplicates()
 # coins = highest_coins["symbol"].tolist()
-
 
 # with open('coinlist'+coin+'.txt', 'w') as filehandle:
 #     json.dump(coins, filehandle)
