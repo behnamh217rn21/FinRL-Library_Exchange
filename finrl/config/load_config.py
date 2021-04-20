@@ -11,9 +11,7 @@ import rapidjson
 
 from finrl.exceptions import OperationalException
 
-
 logger = logging.getLogger(__name__)
-
 
 CONFIG_PARSE_MODE = rapidjson.PM_COMMENTS | rapidjson.PM_TRAILING_COMMAS
 
@@ -41,10 +39,8 @@ def log_config_error_range(path: str, errmsg: str) -> str:
 def load_config_file(path: str) -> Dict[str, Any]:
     """
     Loads a config file from the given path
-    
     param path: 
-        path as str
-        
+        path as str      
     return: 
         configuration as dictionary
     """
@@ -53,15 +49,13 @@ def load_config_file(path: str) -> Dict[str, Any]:
         with open(path) if path != '-' else sys.stdin as file:
             config = rapidjson.load(file, parse_mode=CONFIG_PARSE_MODE)
     except FileNotFoundError:
-        raise OperationalException(
-            f'Config file "{path}" not found!'
-            ' Please create a config file or check whether it exists.')
+        raise OperationalException(f'Config file "{path}" not found!'
+                                   ' Please create a config file or check whether it exists.')
     except rapidjson.JSONDecodeError as e:
         err_range = log_config_error_range(path, str(e))
-        raise OperationalException(
-            f'{e}\n'
-            f'Please verify the following segment of your configuration:\n{err_range}'
-            if err_range else 'Please verify your configuration file for syntax errors.'
-        )
+        raise OperationalException(f'{e}\n'
+                                   f'Please verify the following segment of your configuration:\n{err_range}'
+                                   if err_range else 'Please verify your configuration file for syntax errors.'
+                                  )
 
     return config
