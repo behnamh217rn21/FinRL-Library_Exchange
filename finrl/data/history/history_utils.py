@@ -16,7 +16,6 @@ from finrl.exceptions import OperationalException
 from finrl.exchange import Exchange
 from finrl.misc import format_ms_time
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -32,7 +31,6 @@ def load_pair_history(pair: str,
                       ) -> DataFrame:
     """
     Load cached ohlcv history for the given pair.
-
     :param pair: Pair to load data for
     :param timeframe: Timeframe (e.g. "5m")
     :param datadir: Path to the data storage location.
@@ -46,7 +44,6 @@ def load_pair_history(pair: str,
     :return: DataFrame with ohlcv data, or empty DataFrame
     """
     data_handler = get_datahandler(datadir, data_format, data_handler)
-
     return data_handler.ohlcv_load(pair=pair,
                                    timeframe=timeframe,
                                    timerange=timerange,
@@ -54,7 +51,7 @@ def load_pair_history(pair: str,
                                    drop_incomplete=drop_incomplete,
                                    startup_candles=startup_candles,
                                    )
-
+  
 
 def load_data(datadir: Path,
               timeframe: str,
@@ -172,29 +169,22 @@ def _download_pair_history(datadir: Path,
     :return: bool with success state
     """
     data_handler = get_datahandler(datadir, data_handler=data_handler)
-
     try:
-        logger.info(
-            f'Download history data for pair: "{pair}", timeframe: {timeframe} '
-            f'and store in {datadir}.'
-        )
+        logger.info(f'Download history data for pair: "{pair}", timeframe: {timeframe} '
+                    f'and store in {datadir}.')
 
         # data, since_ms = _load_cached_data_for_updating_old(datadir, pair, timeframe, timerange)
         data, since_ms = _load_cached_data_for_updating(pair, timeframe, timerange,
                                                         data_handler=data_handler)
 
-        logger.debug("Current Start: %s",
-                     f"{data.iloc[0]['date']:%Y-%m-%d %H:%M:%S}" if not data.empty else 'None')
-        logger.debug("Current End: %s",
-                     f"{data.iloc[-1]['date']:%Y-%m-%d %H:%M:%S}" if not data.empty else 'None')
+        logger.debug("Current Start: %s", f"{data.iloc[0]['date']:%Y-%m-%d %H:%M:%S}" if not data.empty else 'None')
+        logger.debug("Current End: %s", f"{data.iloc[-1]['date']:%Y-%m-%d %H:%M:%S}" if not data.empty else 'None')
 
         # Default since_ms to 30 days if nothing is given
         new_data = exchange.get_historic_ohlcv(pair=pair,
                                                timeframe=timeframe,
                                                since_ms=since_ms if since_ms else
-                                               int(arrow.utcnow().shift(
-                                                   days=-30).float_timestamp) * 1000
-                                               )
+                                               int(arrow.utcnow().shift(days=-30).float_timestamp) * 1000)
         # TODO: Maybe move parsing to exchange class (?)
         new_dataframe = ohlcv_to_dataframe(new_data, timeframe, pair,
                                            fill_missing=False, drop_incomplete=True)
@@ -206,18 +196,13 @@ def _download_pair_history(datadir: Path,
             data = clean_ohlcv_dataframe(data.append(new_dataframe), timeframe, pair,
                                          fill_missing=False, drop_incomplete=False)
 
-        logger.debug("New  Start: %s",
-                     f"{data.iloc[0]['date']:%Y-%m-%d %H:%M:%S}" if not data.empty else 'None')
-        logger.debug("New End: %s",
-                     f"{data.iloc[-1]['date']:%Y-%m-%d %H:%M:%S}" if not data.empty else 'None')
-
+        logger.debug("New  Start: %s", f"{data.iloc[0]['date']:%Y-%m-%d %H:%M:%S}" if not data.empty else 'None')
+        logger.debug("New End: %s", f"{data.iloc[-1]['date']:%Y-%m-%d %H:%M:%S}" if not data.empty else 'None')
         data_handler.ohlcv_store(pair, timeframe, data=data)
         return True
 
     except Exception:
-        logger.exception(
-            f'Failed to download history data for pair: "{pair}", timeframe: {timeframe}.'
-        )
+        logger.exception(f'Failed to download history data for pair: "{pair}", timeframe: {timeframe}.')
         return False
 
 
@@ -236,12 +221,9 @@ def refresh_backtest_ohlcv_data(exchange: Exchange, pairs: List[str], timeframes
             logger.info(f"Skipping pair {pair}...")
             continue
         for timeframe in timeframes:
-
             if erase:
                 if data_handler.ohlcv_purge(pair, timeframe):
-                    logger.info(
-                        f'Deleting existing data for pair {pair}, interval {timeframe}.')
-
+                    logger.info(f'Deleting existing data for pair {pair}, interval {timeframe}.')
             logger.info(f'Downloading pair {pair}, interval {timeframe}.')
             _download_pair_history(datadir=datadir, exchange=exchange,
                                    pair=pair, timeframe=str(timeframe),
@@ -259,11 +241,8 @@ def _download_trades_history(exchange: Exchange,
     Appends to previously downloaded trades data.
     """
     try:
-
         since = timerange.startts * 1000 if \
-            (timerange and timerange.starttype == 'date') else int(arrow.utcnow().shift(
-                days=-30).float_timestamp) * 1000
-
+            (timerange and timerange.starttype == 'date') else int(arrow.utcnow().shift(days=-30).float_timestamp) * 1000
         trades = data_handler.trades_load(pair)
 
         # TradesList columns are defined in constants.DEFAULT_TRADES_COLUMNS
@@ -301,11 +280,8 @@ def _download_trades_history(exchange: Exchange,
         logger.debug(f"New End: {format_ms_time(trades[-1][0])}")
         logger.info(f"New Amount of trades: {len(trades)}")
         return True
-
     except Exception:
-        logger.exception(
-            f'Failed to download historic trades for pair: "{pair}". '
-        )
+        logger.exception(f'Failed to download historic trades for pair: "{pair}". ')
         return False
 
 
