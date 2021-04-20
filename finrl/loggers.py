@@ -6,7 +6,6 @@ from typing import Any, Dict
 
 from finrl.exceptions import OperationalException
 
-
 logger = logging.getLogger(__name__)
 LOGFORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
@@ -18,26 +17,16 @@ bufferHandler.setFormatter(Formatter(LOGFORMAT))
 def _set_loggers(verbosity: int = 0, api_verbosity: str = 'info') -> None:
     """
     Set the logging level for third party libraries
-    
     return
     -------
         None
     """
-
-    logging.getLogger('requests').setLevel(
-        logging.INFO if verbosity <= 1 else logging.DEBUG
-    )
-    logging.getLogger("urllib3").setLevel(
-        logging.INFO if verbosity <= 1 else logging.DEBUG
-    )
-    logging.getLogger('ccxt.base.exchange').setLevel(
-        logging.INFO if verbosity <= 2 else logging.DEBUG
-    )
+    logging.getLogger('requests').setLevel(logging.INFO if verbosity <= 1 else logging.DEBUG)
+    logging.getLogger("urllib3").setLevel(logging.INFO if verbosity <= 1 else logging.DEBUG)
+    logging.getLogger('ccxt.base.exchange').setLevel(logging.INFO if verbosity <= 2 else logging.DEBUG)
     logging.getLogger('telegram').setLevel(logging.INFO)
 
-    logging.getLogger('werkzeug').setLevel(
-        logging.ERROR if api_verbosity == 'error' else logging.INFO
-    )
+    logging.getLogger('werkzeug').setLevel(logging.ERROR if api_verbosity == 'error' else logging.INFO)
 
 
 def get_existing_handlers(handlertype):
@@ -55,11 +44,10 @@ def setup_logging_pre() -> None:
     logging handlers after the real initialization, because we don't know which
     ones the user desires beforehand.
     """
-    logging.basicConfig(
-        level=logging.INFO,
-        format=LOGFORMAT,
-        handlers=[logging.StreamHandler(sys.stderr), bufferHandler]
-    )
+    logging.basicConfig(level=logging.INFO,
+                        format=LOGFORMAT,
+                        handlers=[logging.StreamHandler(sys.stderr), bufferHandler]
+                       )
 
 
 def setup_logging(config: Dict[str, Any]) -> None:
@@ -90,6 +78,7 @@ def setup_logging(config: Dict[str, Any]) -> None:
             # syslog config. The messages should be equal for this.
             handler_sl.setFormatter(Formatter('%(name)s - %(levelname)s - %(message)s'))
             logging.root.addHandler(handler_sl)
+            
         elif s[0] == 'journald':
             try:
                 from systemd.journal import JournaldLogHandler
@@ -105,6 +94,7 @@ def setup_logging(config: Dict[str, Any]) -> None:
             # syslog config. The messages should be equal for this.
             handler_jd.setFormatter(Formatter('%(name)s - %(levelname)s - %(message)s'))
             logging.root.addHandler(handler_jd)
+            
         else:
             handler_rf = get_existing_handlers(RotatingFileHandler)
             if handler_rf:
