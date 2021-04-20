@@ -68,7 +68,6 @@ def check_exchange(config: Dict[str, Any], check_for_bad: bool = True) -> bool:
     else:
         logger.warning(f'Exchange "{exchange}" is known to the the ccxt library, '
                        f'available for the bot, but not officially supported '
-                       f'by FinRL. '
-                       f'It may work flawlessly (please report back) or have serious issues. '
-                       f'Use it at your own discretion.')
+                       f'by FinRL. It may work flawlessly (please report back) or '
+                       f'have serious issues. Use it at your own discretion.')
     return True
