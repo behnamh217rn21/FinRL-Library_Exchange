@@ -12,7 +12,6 @@ from finrl.exceptions import OperationalException
 from finrl.pairlist.IPairList import IPairList
 from finrl.resolvers import PairListResolver
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -25,24 +24,25 @@ class PairListManager():
         self._blacklist = self._config['exchange'].get('pair_blacklist', [])
         self._pairlist_handlers: List[IPairList] = []
         self._tickers_needed = False
+        
         for pairlist_handler_config in self._config.get('pairlists', None):
             if 'method' not in pairlist_handler_config:
                 logger.warning(f"No method found in {pairlist_handler_config}, ignoring.")
                 continue
-            pairlist_handler = PairListResolver.load_pairlist(
-                    pairlist_handler_config['method'],
-                    exchange=exchange,
-                    pairlistmanager=self,
-                    config=config,
-                    pairlistconfig=pairlist_handler_config,
-                    pairlist_pos=len(self._pairlist_handlers)
-                    )
+            pairlist_handler = PairListResolver.load_pairlist(pairlist_handler_config['method'],
+                                                              exchange=exchange,
+                                                              pairlistmanager=self,
+                                                              config=config,
+                                                              pairlistconfig=pairlist_handler_config,
+                                                              pairlist_pos=len(self._pairlist_handlers)
+                                                             )
             self._tickers_needed |= pairlist_handler.needstickers
             self._pairlist_handlers.append(pairlist_handler)
 
         if not self._pairlist_handlers:
             raise OperationalException("No Pairlist Handlers defined")
 
+            
     @property
     def whitelist(self) -> List[str]:
         """
@@ -50,6 +50,7 @@ class PairListManager():
         """
         return self._whitelist
 
+    
     @property
     def blacklist(self) -> List[str]:
         """
@@ -58,6 +59,7 @@ class PairListManager():
         """
         return self._blacklist
 
+    
     @property
     def name_list(self) -> List[str]:
         """
@@ -65,16 +67,19 @@ class PairListManager():
         """
         return [p.name for p in self._pairlist_handlers]
 
+    
     def short_desc(self) -> List[Dict]:
         """
         List of short_desc for each Pairlist Handler
         """
         return [{p.name: p.short_desc()} for p in self._pairlist_handlers]
 
+    
     @cached(TTLCache(maxsize=1, ttl=1800))
     def _get_cached_tickers(self):
         return self._exchange.get_tickers()
 
+    
     def refresh_pairlist(self) -> None:
         """
         Run pairlist through all configured Pairlist Handlers.
@@ -97,9 +102,9 @@ class PairListManager():
         # Validation against blacklist happens after the chain of Pairlist Handlers
         # to ensure blacklist is respected.
         pairlist = self.verify_blacklist(pairlist, logger.warning)
-
         self._whitelist = pairlist
 
+        
     def _prepare_whitelist(self, pairlist: List[str], tickers) -> List[str]:
         """
         Prepare sanitized pairlist for Pairlist Handlers that use tickers data - remove
@@ -110,9 +115,9 @@ class PairListManager():
             for p in deepcopy(pairlist):
                 if p not in tickers:
                     pairlist.remove(p)
-
         return pairlist
 
+    
     def verify_blacklist(self, pairlist: List[str], logmethod) -> List[str]:
         """
         Verify and remove items from pairlist - returning a filtered pairlist.
@@ -129,6 +134,7 @@ class PairListManager():
                 pairlist.remove(pair)
         return pairlist
 
+    
     def create_pair_list(self, pairs: List[str], timeframe: str = None) -> ListPairsWithTimeframes:
         """
         Create list of pair tuples with (pair, timeframe)
