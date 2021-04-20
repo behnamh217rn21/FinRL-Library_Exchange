@@ -13,7 +13,6 @@ from finrl.constants import LAST_BT_RESULT_FN
 from finrl.misc import json_load
 from finrl.persistence import Trade, init_db
 
-
 logger = logging.getLogger(__name__)
 
 # must align with columns in backtest.py
@@ -37,17 +36,14 @@ def get_latest_optimize_filename(directory: Union[Path, str], variant: str) -> s
     if not directory.is_dir():
         raise ValueError(f"Directory '{directory}' does not exist.")
     filename = directory / LAST_BT_RESULT_FN
-
     if not filename.is_file():
         raise ValueError(
             f"Directory '{directory}' does not seem to contain backtest statistics yet.")
 
     with filename.open() as file:
         data = json_load(file)
-
     if f'latest_{variant}' not in data:
         raise ValueError(f"Invalid '{LAST_BT_RESULT_FN}' format.")
-
     return data[f'latest_{variant}']
 
 
@@ -113,7 +109,6 @@ def load_backtest_stats(filename: Union[Path, str]) -> Dict[str, Any]:
     logger.info(f"Loading backtest result from {filename}")
     with filename.open() as file:
         data = json_load(file)
-
     return data
 
 
@@ -155,7 +150,6 @@ def load_backtest_data(filename: Union[Path, str], strategy: Optional[str] = Non
     else:
         # old format - only with lists.
         df = pd.DataFrame(data, columns=BT_DATA_COLUMNS)
-
         df['open_date'] = pd.to_datetime(df['open_date'],
                                          unit='s',
                                          utc=True,
@@ -181,8 +175,7 @@ def analyze_trade_parallelism(results: pd.DataFrame, timeframe: str) -> pd.DataF
     """
     from freqtrade.exchange import timeframe_to_minutes
     timeframe_min = timeframe_to_minutes(timeframe)
-    dates = [pd.Series(pd.date_range(row[1]['open_date'], row[1]['close_date'],
-                                     freq=f"{timeframe_min}min"))
+    dates = [pd.Series(pd.date_range(row[1]['open_date'], row[1]['close_date'], freq=f"{timeframe_min}min"))
              for row in results[['open_date', 'close_date']].iterrows()]
     deltas = [len(x) for x in dates]
     dates = pd.Series(pd.concat(dates).values, name='date')
@@ -218,13 +211,10 @@ def load_trades_from_db(db_url: str, strategy: Optional[str] = None) -> pd.DataF
     :return: Dataframe containing Trades
     """
     init_db(db_url, clean_open_orders=False)
-
-    columns = ["pair", "open_date", "close_date", "profit", "profit_percent",
-               "open_rate", "close_rate", "amount", "trade_duration", "sell_reason",
-               "fee_open", "fee_close", "open_rate_requested", "close_rate_requested",
-               "stake_amount", "max_rate", "min_rate", "id", "exchange",
-               "stop_loss", "initial_stop_loss", "strategy", "timeframe"]
-
+    columns = ["pair", "open_date", "close_date", "profit", "profit_percent", "open_rate", "close_rate", "amount", 
+               "trade_duration", "sell_reason", "fee_open", "fee_close", "open_rate_requested", "close_rate_requested",
+               "stake_amount", "max_rate", "min_rate", "id", "exchange", "stop_loss", "initial_stop_loss", "strategy", 
+               "timeframe"]
     filters = []
     if strategy:
         filters.append(Trade.strategy == strategy)
@@ -246,10 +236,8 @@ def load_trades_from_db(db_url: str, strategy: Optional[str] = None) -> pd.DataF
                             t.id, t.exchange,
                             t.stop_loss, t.initial_stop_loss,
                             t.strategy, t.timeframe
-                            )
-                           for t in Trade.get_trades(filters).all()],
-                          columns=columns)
-
+                           )
+                           for t in Trade.get_trades(filters).all()], columns=columns)
     return trades
 
 
