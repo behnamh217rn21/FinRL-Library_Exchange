@@ -1,5 +1,4 @@
 # pragma pylint: disable=too-few-public-methods
-
 """
 Bot state constant
 """
@@ -13,7 +12,7 @@ class State(Enum):
     RUNNING = 1
     STOPPED = 2
     RELOAD_CONFIG = 3
-
+    
     def __str__(self):
         return f"{self.name.lower()}"
 
@@ -32,7 +31,6 @@ class RunMode(Enum):
     UTIL_NO_EXCHANGE = "util_no_exchange"
     PLOT = "plot"
     OTHER = "other"
-
 
 TRADING_MODES = [RunMode.LIVE, RunMode.DRY_RUN]
 OPTIMIZE_MODES = [RunMode.BACKTEST, RunMode.PREDICTION, RunMode.TRAIN]
