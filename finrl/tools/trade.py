@@ -8,4 +8,4 @@ def get_buy_and_hold_sharpe(test):
     
     print("annual return: ", annual_return)
     print("sharpe ratio: ", sharpe)
-    return sharpe
+    # return sharpe
