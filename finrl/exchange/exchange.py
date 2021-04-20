@@ -47,7 +47,7 @@ class Exchange:
                              "trades_pagination_arg": "since",
                              "l2_limit_range": None,
                             }
-      _ft_has: Dict = {}
+     _ft_has: Dict = {}
 
     def __init__(self, config: Dict[str, Any], validate: bool = True) -> None:
         """
@@ -453,9 +453,7 @@ class Exchange:
         if self.markets[pair]['precision']['price']:
             # price = float(decimal_to_precision(price, rounding_mode=ROUND,
             #                                    precision=self.markets[pair]['precision']['price'],
-            #                                    counting_mode=self.precisionMode,
-            #                                    )
-                                      )
+            #                                    counting_mode=self.precisionMode,))
             if self.precisionMode == TICK_SIZE:
                 precision = self.markets[pair]['precision']['price']
                 missing = price % precision
@@ -776,7 +774,8 @@ class Exchange:
         except (ccxt.NetworkError, ccxt.ExchangeError) as e:
             raise TemporaryError(f'Could not fetch historical candle (OHLCV) data '
                                  f'for pair {pair} due to {e.__class__.__name__}. '
-                                 f'Message: {e}') from e
+                                 f'Message: {e}'
+                                ) from e
         except ccxt.BaseError as e:
             raise OperationalException(f'Could not fetch historical candle (OHLCV) data '
                                        f'for pair {pair}. Message: {e}') from e
