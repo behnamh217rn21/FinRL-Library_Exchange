@@ -1,7 +1,6 @@
 """Contains methods and classes to collect data from
 Yahoo Finance API
 """
-
 import pandas as pd
 import yfinance as yf
 from finrl.exceptions import *
@@ -10,18 +9,16 @@ import sys
 import glob
 from datetime import datetime
 
+
 class FetchData:
     """Provides methods for retrieving daily stock data from
     Yahoo Finance API
-
     Attributes
     ----------
     start_date : str
         start date of the data (modified from config.py)
-        
     end_date : str
-        end date of the data (modified from config.py)
-            
+        end date of the data (modified from config.py)         
     ticker_list : list
         a list of stock tickers (modified from config.py)
 
@@ -35,9 +32,9 @@ class FetchData:
     def __init__(self, config: dict):
         self.config = config
 
+        
     def fetch_data_stock(self) -> pd.DataFrame:
         """Fetches data from Yahoo API
-        
         Parameters
         ----------
 
@@ -62,17 +59,17 @@ class FetchData:
         data_df = data_df.reset_index()
         try:
             # convert the column names to standardized names
-            data_df.columns = [
-                "date",
-                "open",
-                "high",
-                "low",
-                "close",
-                "volume",
-                "tic",
-            ]
+            data_df.columns = ["date",
+                               "open",
+                               "high",
+                               "low",
+                               "close",
+                               "volume",
+                               "tic",
+                              ]
         except NotImplementedError:
             print("the features are not supported currently")
+            
         # create day of the week column (monday = 0)
         data_df["day"] = data_df["date"].dt.dayofweek
         # convert date to standard string format, easy to filter
@@ -90,7 +87,6 @@ class FetchData:
     def fetch_data_crypto(self) -> pd.DataFrame:
         """
         Fetches data from local history directory (default= user_data/data/exchange)
-        
         Parameters
         ----------
         config.json ---> Exchange, Whitelist, timeframe 
@@ -101,10 +97,10 @@ class FetchData:
             7 columns: A date, open, high, low, close, volume and tick symbol
             for the specified stock ticker
         """
-
         datadir = self.config['datadir']
         exchange = self.config["exchange"]["name"]
         timeframe = self.config["timeframe"]
+        
         # Check if regex found something and only return these results
         df = pd.DataFrame()
         for i in self.config["pairs"]:
