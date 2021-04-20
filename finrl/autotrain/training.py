@@ -42,7 +42,7 @@ def main():
     print("****Start Feature Engineering****")
     fe = FeatureEngineer(use_technical_indicator=True,
                          tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
-                         use_turbulence=False,
+                         use_turbulence=True,
                          user_defined_feature=False)
     processed = fe.preprocess_data(df)
     np.seterr(divide = 'ignore')
