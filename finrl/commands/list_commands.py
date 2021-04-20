@@ -18,27 +18,32 @@ from finrl.misc import plural
 from finrl.resolvers import ExchangeResolver
 from finrl.state import RunMode
 
-
 logger = logging.getLogger(__name__)
 
 """
 TODO MAKE LIST AGENTS, LIST MODELS, LIST ENVIRONMENTS
-
-ARGS_LIST_EXCHANGES = ["print_one_column", "list_exchanges_all"]
-
-ARGS_LIST_TIMEFRAMES = ["exchange", "print_one_column"]
-
-ARGS_LIST_PAIRS = ["exchange", "print_list", "list_pairs_print_json", "print_one_column",
-                   "print_csv", "base_currencies", "quote_currencies", "list_pairs_all"]
-
-ARGS_TEST_PAIRLIST = ["config", "quote_currencies", "print_one_column", "list_pairs_print_json"]
+ARGS_LIST_EXCHANGES = ["print_one_column", 
+                       "list_exchanges_all"]
+ARGS_LIST_TIMEFRAMES = ["exchange", 
+                        "print_one_column"]
+ARGS_LIST_PAIRS = ["exchange", 
+                   "print_list", 
+                   "list_pairs_print_json",
+                   "print_one_column",
+                   "print_csv", 
+                   "base_currencies",
+                   "quote_currencies", 
+                   "list_pairs_all"]
+ARGS_TEST_PAIRLIST = ["config", 
+                      "quote_currencies", 
+                      "print_one_column",
+                      "list_pairs_print_json"]
 
 """
 
 def start_list_exchanges(args: Dict[str, Any]) -> None:
     """
     Print available exchanges
-    
     param args: 
       Cli args from Arguments()
       
@@ -62,18 +67,14 @@ def _print_objs_tabular(objs: List, print_colorized: bool) -> None:
         yellow = Fore.YELLOW
         reset = Style.RESET_ALL
     else:
-        red = ''
-        yellow = ''
-        reset = ''
-
+        red = ''; yellow = ''; reset = ''
+                  
     names = [s['name'] for s in objs]
-    objss_to_print = [{
-        'name': s['name'] if s['name'] else "--",
-        'location': s['location'].name,
-        'status': (red + "LOAD FAILED" + reset if s['class'] is None
-                   else "OK" if names.count(s['name']) == 1
-                   else yellow + "DUPLICATE NAME" + reset)
-    } for s in objs]
+    objss_to_print = [{'name': s['name'] if s['name'] else "--",
+                       'location': s['location'].name,
+                       'status': (red + "LOAD FAILED" + reset if s['class'] is None else "OK" 
+                                  if names.count(s['name']) == 1 else yellow + "DUPLICATE NAME" + reset)
+                      } for s in objs]
 
     print(tabulate(objss_to_print, headers='keys', tablefmt='psql', stralign='right'))
 
@@ -130,8 +131,8 @@ def start_list_markets(args: Dict[str, Any], pairs_only: bool = False) -> None:
         raise OperationalException(f"Cannot get markets. Reason: {e}") from e
 
     else:
-        summary_str = ((f"Exchange {exchange.name} has {len(pairs)} ") +
-                       ("active " if active_only else "") +
+        summary_str = ((f"Exchange {exchange.name} has {len(pairs)}") +
+                       (" active " if active_only else "") +
                        (plural(len(pairs), "pair" if pairs_only else "market")) +
                        (f" with {', '.join(base_currencies)} as base "
                         f"{plural(len(base_currencies), 'currency', 'currencies')}"
@@ -139,7 +140,8 @@ def start_list_markets(args: Dict[str, Any], pairs_only: bool = False) -> None:
                        (" and" if base_currencies and quote_currencies else "") +
                        (f" with {', '.join(quote_currencies)} as quote "
                         f"{plural(len(quote_currencies), 'currency', 'currencies')}"
-                        if quote_currencies else ""))
+                        if quote_currencies else "")
+                      )
 
         headers = ["Id", "Symbol", "Base", "Quote", "Active",
                    *(['Is pair'] if not pairs_only else [])]
@@ -150,11 +152,12 @@ def start_list_markets(args: Dict[str, Any], pairs_only: bool = False) -> None:
                                  'Base': v['base'], 'Quote': v['quote'],
                                  'Active': market_is_active(v),
                                  **({'Is pair': exchange.market_is_tradable(v)}
-                                    if not pairs_only else {})})
+                                    if not pairs_only else {})
+                                })
 
         if (args.get('print_one_column', False) or
-                args.get('list_pairs_print_json', False) or
-                args.get('print_csv', False)):
+            args.get('list_pairs_print_json', False) or
+            args.get('print_csv', False)):
             # Print summary string in the log in case of machine-readable
             # regular formats.
             logger.info(f"{summary_str}.")
