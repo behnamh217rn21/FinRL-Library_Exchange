@@ -76,6 +76,7 @@ def file_load_json(file):
         gzipfile = file.with_suffix(file.suffix + '.gz')
     else:
         gzipfile = file
+        
     # Try gzip file first, otherwise regular json file.
     if gzipfile.is_file():
         logger.debug(f"Loading historical data from file {gzipfile}")
