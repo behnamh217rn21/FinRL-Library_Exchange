@@ -17,12 +17,10 @@ from finrl.constants import ListPairsWithTimeframes, TradeList
 from finrl.data.converter import clean_ohlcv_dataframe, trades_remove_duplicates, trim_dataframe
 from finrl.exchange import timeframe_to_seconds
 
-
 logger = logging.getLogger(__name__)
 
 
 class IDataHandler(ABC):
-
     def __init__(self, datadir: Path) -> None:
         self._datadir = datadir
 
@@ -56,8 +54,7 @@ class IDataHandler(ABC):
 
     @abstractmethod
     def _ohlcv_load(self, pair: str, timeframe: str,
-                    timerange: Optional[TimeRange] = None,
-                    ) -> DataFrame:
+                    timerange: Optional[TimeRange] = None, ) -> DataFrame:
         """
         Internal method used to load data for one pair from disk.
         Implements the loading and conversion to a Pandas dataframe.
@@ -150,7 +147,6 @@ class IDataHandler(ABC):
                    ) -> DataFrame:
         """
         Load cached candle (OHLCV) data for the given pair.
-
         :param pair: Pair to load data for
         :param timeframe: Timeframe (e.g. "5m")
         :param timerange: Limit data to be loaded to this timerange
@@ -171,7 +167,6 @@ class IDataHandler(ABC):
             return pairdf
         else:
             enddate = pairdf.iloc[-1]['date']
-
             if timerange_startup:
                 self._validate_pairdata(pair, pairdf, timerange_startup)
                 pairdf = trim_dataframe(pairdf, timerange_startup)
@@ -187,26 +182,25 @@ class IDataHandler(ABC):
             self._check_empty_df(pairdf, pair, timeframe, warn_no_data)
             return pairdf
 
+        
     def _check_empty_df(self, pairdf: DataFrame, pair: str, timeframe: str, warn_no_data: bool):
         """
         Warn on empty dataframe
         """
         if pairdf.empty:
             if warn_no_data:
-                logger.warning(
-                    f'No history data for pair: "{pair}", timeframe: {timeframe}. '
-                    'Use fetchData Module to download the data'
-                )
+                logger.warning(f'No history data for pair: "{pair}", timeframe: {timeframe}. '
+                               'Use fetchData Module to download the data')
             return True
         return False
 
+    
     def _validate_pairdata(self, pair, pairdata: DataFrame, timerange: TimeRange):
         """
         Validates pairdata for missing data at start end end and logs warnings.
         :param pairdata: Dataframe to validate
         :param timerange: Timerange specified for start and end dates
         """
-
         if timerange.starttype == 'date':
             start = datetime.fromtimestamp(timerange.startts, tz=timezone.utc)
             if pairdata.iloc[0]['date'] > start:
@@ -227,7 +221,6 @@ def get_datahandlerclass(datatype: str) -> Type[IDataHandler]:
     :param datatype: datatype to use.
     :return: Datahandler class
     """
-
     if datatype == 'json':
         from .jsondatahandler import JsonDataHandler
         return JsonDataHandler
@@ -248,7 +241,6 @@ def get_datahandler(datadir: Path, data_format: str = None,
     :data_format: dataformat to use
     :data_handler: returns this datahandler if it exists or initializes a new one
     """
-
     if not data_handler:
         HandlerClass = get_datahandlerclass(data_format or 'json')
         data_handler = HandlerClass(datadir)
