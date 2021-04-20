@@ -800,8 +800,7 @@ class Exchange:
             else:
                 logger.debug("Fetching trades for pair %s, since %s %s...",
                              pair,  since,
-                             '(' + arrow.get(since // 1000).isoformat() + ') ' if since is not None else ''
-                            )
+                             '(' + arrow.get(since // 1000).isoformat() + ') ' if since is not None else '')
                 trades = await self._api_async.fetch_trades(pair, since=since, limit=1000)
             return trades_dict_to_list(trades)
         except ccxt.NotSupported as e:
@@ -1056,14 +1055,12 @@ class Exchange:
         try:
             return self._api.fetch_l2_order_book(pair, limit1)
         except ccxt.NotSupported as e:
-            raise OperationalException(
-                f'Exchange {self._api.name} does not support fetching order book.'
-                f'Message: {e}') from e
+            raise OperationalException(f'Exchange {self._api.name} does not support fetching order book.'
+                                       f'Message: {e}') from e
         except ccxt.DDoSProtection as e:
             raise DDosProtection(e) from e
         except (ccxt.NetworkError, ccxt.ExchangeError) as e:
-            raise TemporaryError(
-                f'Could not get order book due to {e.__class__.__name__}. Message: {e}') from e
+            raise TemporaryError(f'Could not get order book due to {e.__class__.__name__}. Message: {e}') from e
         except ccxt.BaseError as e:
             raise OperationalException(e) from e
 
