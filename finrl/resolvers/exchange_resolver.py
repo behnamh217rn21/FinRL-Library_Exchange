@@ -7,8 +7,8 @@ import finrl.exchange as exchanges
 from finrl.exchange import MAP_EXCHANGE_CHILDCLASS, Exchange
 from finrl.resolvers import IResolver
 
-
 logger = logging.getLogger(__name__)
+
 
 
 class ExchangeResolver(IResolver):
@@ -32,12 +32,13 @@ class ExchangeResolver(IResolver):
                                                        kwargs={'config': config,
                                                                'validate': validate})
         except ImportError:
-            logger.info(
-                f"No {exchange_name} specific subclass found. Using the generic class instead.")
+            logger.info(f"No {exchange_name} specific subclass found. Using the generic class instead.")
+            
         if not exchange:
             exchange = Exchange(config, validate=validate)
         return exchange
 
+    
     @staticmethod
     def _load_exchange(exchange_name: str, kwargs: dict) -> Exchange:
         """
@@ -46,10 +47,8 @@ class ExchangeResolver(IResolver):
         :param exchange_name: name of the module to import
         :return: Exchange instance or None
         """
-
         try:
             ex_class = getattr(exchanges, exchange_name)
-
             exchange = ex_class(**kwargs)
             if exchange:
                 logger.info(f"Using resolved exchange '{exchange_name}'...")
@@ -58,7 +57,5 @@ class ExchangeResolver(IResolver):
             # Pass and raise ImportError instead
             pass
 
-        raise ImportError(
-            f"Impossible to load Exchange '{exchange_name}'. This class does not exist "
-            "or contains Python code errors."
-        )
+        raise ImportError(f"Impossible to load Exchange '{exchange_name}'. This class does not exist "
+                          "or contains Python code errors.")
