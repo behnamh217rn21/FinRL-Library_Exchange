@@ -47,7 +47,7 @@ class Exchange:
                              "trades_pagination_arg": "since",
                              "l2_limit_range": None,
                             }
-     _ft_has: Dict = {}
+    _ft_has: Dict = {}
 
     def __init__(self, config: Dict[str, Any], validate: bool = True) -> None:
         """
