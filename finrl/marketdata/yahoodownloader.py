@@ -22,8 +22,11 @@ class YahooDownloader:
         Fetches data from yahoo API
     """
 
-    def __init__(self, start_date: str, end_date: str, ticker_list: list, interval_period: str):
-
+    def __init__(self, 
+                 start_date: str,
+                 end_date: str,
+                 ticker_list: list,
+                 interval_period: str):
         self.start_date = start_date
         self.end_date = end_date
         self.ticker_list = ticker_list
@@ -47,19 +50,17 @@ class YahooDownloader:
             data_df = data_df.append(temp_df)            
         # reset the index, we want to use numbers as index instead of dates
         data_df = data_df.reset_index()
-        
         try:
             # convert the column names to standardized names
-            data_df.columns = [
-                "date",
-                "open",
-                "high",
-                "low",
-                "close",
-                "adjcp",
-                "volume",
-                "tic",
-            ]     
+            data_df.columns = ["date",
+                               "open",
+                               "high",
+                               "low",
+                               "close",
+                               "adjcp",
+                               "volume",
+                               "tic",
+                              ]     
             # use adjusted close price instead of close price
             data_df["close"] = data_df["adjcp"]
             # drop the adjusted close price column
@@ -86,6 +87,7 @@ class YahooDownloader:
         data_df = data_df.sort_values(by=['date','tic']).reset_index(drop=True)
         return data_df
 
+   
     def select_equal_rows_stock(self, df):
         df_check = df.tic.value_counts()
         df_check = pd.DataFrame(df_check).reset_index()
