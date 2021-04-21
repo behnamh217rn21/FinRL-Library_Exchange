@@ -102,11 +102,9 @@ class StockTradingEnvStopLoss(gym.Env):
         self.state_space = (
             1 + len(self.assets) + len(self.assets) * len(self.daily_information_cols)
         )
-        self.action_space = spaces.Box(low=-1, 
-                                       high=1, 
+        self.action_space = spaces.Box(low=-1, high=1, 
                                        shape=(len(self.assets),))
-        self.observation_space = spaces.Box(low=-np.inf,
-                                            high=np.inf, 
+        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, 
                                             shape=(self.state_space,))
         self.turbulence = 0
         self.episode = -1 # initialize so we can call reset
