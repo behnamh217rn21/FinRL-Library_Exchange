@@ -40,19 +40,14 @@ def rates_subscriptions(_symbols):
 def main():
     print("==============Start Trading===========")
     DDPG_model = model.load("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
-    
-    with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
-        _symbols = eval(file.readline())
-    _symbols_i1 = []
-    for i in range(0, len(_symbols)):
-        _symbols_i1.append(_symbols[i][1])
-        
+
     print("****Environment Document****")
     print(StockTradingEnvStopLoss_online.__doc__)
     
     print("****rates subscriptions process****")
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
+    _symbols_i1 = []
     process = multiprocessing.Process(target=rates_subscriptions(), args=(_symbols,))
     process.start()
     sleep(60)
@@ -62,7 +57,10 @@ def main():
     initial_amount = file.read()
     initial_amount = float(initial_amount)
     file.close()
-    information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
+    for i in range(0, len(_symbols)):
+        _symbols_i1.append(_symbols[i][1])
+    information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", 
+                        "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     env_trade_kwargs = {'initial_amount': initial_amount*500,
                         'assets': _symbols_i1,
                         'hmax': 100,
