@@ -76,10 +76,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
     """
     metadata = {"render.modes": ["human"]}
     def __init__(self,
-                 df,
                  buy_cost_pct=3e-3,
                  sell_cost_pct=3e-3,
-                 date_cn="date",
                  hmax=10,
                  discrete_actions=False,
                  shares_increment=1,
@@ -88,26 +86,17 @@ class StockTradingEnvStopLossOnline(gym.Env):
                  turbulence_threshold=None,
                  print_verbosity=10,
                  initial_amount=1e6,
+                 assets=20000,
                  daily_information_cols=["open", "close", "high", "low", "volume"],
-                 cache_indicator_data=True,
                  cash_penalty_proportion=0.1,
-                 random_start=True,
                  patient=False,
                  currency="$",
                 ):
-        with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
-            self._symbols = eval(file.readline())
         self.symbol = "tic"
-        self.assets = []
-        for i in range(0, len(_symbols)):
-            self.assets.append(_symbols[i][1])
-            
-        self.dates = df[date_cn].sort_values().unique()
-        self.random_start = random_start
+        self.assets = assets
         self.discrete_actions = discrete_actions
         self.patient = patient
         self.currency = currency
-        self.df = self.df.set_index(date_cn)
         self.shares_increment = shares_increment
         self.hmax = hmax
         self.initial_amount = initial_amount
@@ -121,28 +110,16 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.state_space = (
             1 + len(self.assets) + len(self.assets) * len(self.daily_information_cols)
         )
-        self.action_space = spaces.Box(low=-1, 
-                                       high=1, 
+        self.action_space = spaces.Box(low=-1, high=1, 
                                        shape=(len(self.assets),))
-        self.observation_space = spaces.Box(low=-np.inf,
-                                            high=np.inf, 
+        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, 
                                             shape=(self.state_space,))
         self.turbulence = 0
         self.episode = -1 # initialize so we can call reset
         self.episode_history = []
         self.printed_header = False
-        self.cache_indicator_data = cache_indicator_data
-        self.cached_data = None
         self.cash_penalty_proportion = cash_penalty_proportion
-
-        if self.cache_indicator_data:
-            print("caching data")
-            self.cached_data = [
-                self.get_date_vector(i) for i, _ in enumerate(self.dates)
-            ]
-            self.cached_data = list(filter(None, self.cached_data))
-            print("data cached!")
-                
+        
                 
     def seed(self, seed=None):
         if seed is None:
