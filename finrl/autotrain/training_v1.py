@@ -39,7 +39,8 @@ def main():
     """ 
     print("==============Start Training===========")
     print("****Start Fetching Data****")
-    #df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, ticker_list=ticker, interval_period="30m").fetch_data()   
+    #df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, \
+                         #ticker_list=ticker, interval_period="30m").fetch_data()   
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
     _symbols_i1 = []
@@ -57,7 +58,8 @@ def main():
                          user_defined_feature=False)
     processed = fe.preprocess_data(df)
     np.seterr(divide = 'ignore')
-    processed['log_volume'] = np.where((processed.volume*processed.close)>0, np.log(processed.volume*processed.close), 0)
+    processed['log_volume'] = np.where((processed.volume*processed.close)>0, \
+                                       np.log(processed.volume*processed.close), 0)
     processed['change'] = (processed.close-processed.open)/processed.close
     processed['daily_variance'] = (processed.high-processed.low)/processed.close
     print(processed.head())
