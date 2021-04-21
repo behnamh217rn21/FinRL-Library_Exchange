@@ -36,6 +36,14 @@ def main():
     """ 
     print("==============Start Training===========")
     print("****Start Fetching Data****")
+    #df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, ticker_list=ticker, interval_period="30m").fetch_data()   
+    with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
+        _symbols = eval(file.readline())
+    _symbols_i1 = []
+    for i in range(0, len(_symbols)):
+        _symbols_i1.append(_symbols[i][1])
+    #Data_Downloader(_symbols_i1)
+    #df = load_dataset(file_name="mt4_dataset.csv")
     df = load_dataset(file_name="data.csv")
     print(df.head())
     
