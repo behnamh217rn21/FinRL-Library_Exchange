@@ -63,7 +63,7 @@ def main():
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     env_trade_kwargs = {'initial_amount': initial_amount*500,
                         'assets': _symbols_i1,
-                        'hmax': 100,
+                        'hmax': 5000,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
                         'random_start': False,
