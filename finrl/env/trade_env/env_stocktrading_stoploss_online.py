@@ -52,7 +52,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
     Parameters:
     state space: {start_cash, <owned_shares>, for s in stocks{<stock.values>}, }
-        df (pandas.DataFrame): Dataframe containing data
         buy_cost_pct (float): cost for buying shares
         sell_cost_pct (float): cost for selling shares
         hmax (int): max number of share purchases allowed per asset
@@ -86,7 +85,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                  turbulence_threshold=None,
                  print_verbosity=10,
                  initial_amount=1e6,
-                 assets=20000,
+                 assets=2e+4,
                  daily_information_cols=["open", "close", "high", "low", "volume"],
                  cash_penalty_proportion=0.1,
                  patient=False,
