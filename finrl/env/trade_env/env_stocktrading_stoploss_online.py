@@ -139,13 +139,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.profit_sell_diff_avg_buy = np.zeros(len(self.assets))
         self.n_buys = np.zeros(len(self.assets))
         self.avg_buy_price = np.zeros(len(self.assets))
-        if self.random_start:
-            starting_point = random.choice(range(int(len(self.dates) * 0.5)))
-            self.starting_point = starting_point
-        else:
-            self.starting_point = 0
-            
-        self.date_index = self.starting_point
+        self.date_index = 0
         self.turbulence = 0
         self.episode += 1
         self.actions_memory = []
@@ -156,6 +150,9 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                     "total_assets": [],
                                     "reward": [],
                                    }
+        self.start_t = Timestamp.now('UTC')+ timedelta(hours=3)
+        self.start_t = self.start_t.strftime('%Y-%m-%d %H:%M:%S')
+        self.start_t = datetime.datetime.strptime(self.start_t, '%Y-%m-%d %H:%M:%S')
         init_state = np.array([self.initial_amount] 
                               + [0] * len(self.assets) 
                               + self.get_date_vector(self.date_index))
@@ -175,29 +172,28 @@ class StockTradingEnvStopLossOnline(gym.Env):
         return adj_close
     
     def get_date_vector(self, date, cols=None):
-        if (cols is None) and (self.cached_data is not None):
-            return self.cached_data[date]
-        else:
-            date = self.dates[date]
-            if cols is None:
-                cols = self.daily_information_cols
-            
-            now_t = Timestamp.now('UTC') + timedelta(hours=3)
-            now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
-            now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d %H:%M:%S')
-            self.p_fetch_t = trunc_df.loc[0, "date"]
-            self.p_fetch_t = datetime.datetime.strptime(self.p_fetch_t, '%Y-%m-%d %H:%M:%S')
-            self.f_fetch_t = self.p_fetch_t + timedelta(minutes=self._symbols[0][1])               
-            sleep_t = self.f_fetch_t - now_t
-            sleep(sleep_t)
-            trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
-            v = []
-            for a in self.assets:
-                subset = trunc_df[trunc_df[self.stock_col] == a]
-                subset["close"] = adjusted_prices(a, subset["close"])
-                v += subset.loc[date, cols].tolist()
-            assert len(v) == len(self.assets) * len(cols)
-            return v
+        if cols is None:
+            cols = self.daily_information_cols
+
+        trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
+
+        fetch_t = self.start_t + timedelta(hours=date)
+        fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
+        fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
+        now_t = Timestamp.now('UTC')+ timedelta(hours=3)
+        now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
+        now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d %H:%M:%S')
+        sleep_t = fetch_t - now_t
+        print("sleep for {} second".format(sleep_t))
+        sleep(sleep_t)
+                
+        v = []
+        for a in self.assets:
+            subset = trunc_df[trunc_df[self.symbol] == a]
+            subset["close"] = adjusted_prices(a, subset["close"])
+            v += subset.loc[date, cols].tolist()
+        assert len(v) == len(self.assets) * len(cols)
+        return v
         
         
     def return_terminal(self, reason="Last Date", reward=0):
