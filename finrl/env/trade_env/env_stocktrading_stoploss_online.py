@@ -118,6 +118,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.episode_history = []
         self.printed_header = False
         self.cash_penalty_proportion = cash_penalty_proportion
+        self.days = 365
         
                 
     def seed(self, seed=None):
@@ -150,9 +151,11 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                     "total_assets": [],
                                     "reward": [],
                                    }
-        self.start_t = Timestamp.now('UTC')+ timedelta(hours=3)
+        self.start_t = Timestamp.now('UTC') + timedelta(hours=3)
         self.start_t = self.start_t.strftime('%Y-%m-%d %H:%M:%S')
         self.start_t = datetime.datetime.strptime(self.start_t, '%Y-%m-%d %H:%M:%S')
+        self.dates = self.days*24
+
         init_state = np.array([self.initial_amount] 
                               + [0] * len(self.assets) 
                               + self.get_date_vector(self.date_index))
@@ -308,7 +311,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.log_step(reason="update")
             
         # if we're at the end
-        if self.date_index == len(self.dates) - 1:
+        if self.date_index == self.dates - 1:
             # if we hit the end, set reward to total gains (or losses)
             return self.return_terminal(reward=self.get_reward())
         else:
