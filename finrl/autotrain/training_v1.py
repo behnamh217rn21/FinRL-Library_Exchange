@@ -76,7 +76,8 @@ def main():
     initial_amount = file.read()
     initial_amount = float(initial_amount)
     file.close()
-    information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
+    information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", 
+                        "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     env_trade_kwargs = {'initial_amount': initial_amount*500,
                         'assets': _symbols_i1,
                         'hmax': 100, 
@@ -107,8 +108,14 @@ def main():
                   "gamma": 0.99,
                   "batch_size": 1024,
                   "eval_env": env_trade}  
-    policy_kwargs = {"net_arch": ["lstm", "lstm", dict(pi=[dict(lstm_L1=24, dropout_L2=0.2, lstm_L3=24, dropout_L4=0.2)], \
-                                                       vf=[dict(dense_L1=64, dense_L2=16)])],
+    policy_kwargs = {"net_arch": ["lstm", \
+                                  "lstm", \
+                                  dict(pi=[dict(lstm_L1=24, \
+                                                dropout_L2=0.2, \
+                                                lstm_L3=24, \
+                                                dropout_L4=0.2)], \
+                                       vf=[dict(dense_L1=64, \
+                                                dense_L2=16)])],
                      "n_lstm": 10}
     DDPG_model = agent.get_model("ddpg",
                                  model_kwargs = ddpg_params,
