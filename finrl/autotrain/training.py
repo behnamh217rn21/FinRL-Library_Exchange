@@ -36,7 +36,8 @@ def main():
     """ 
     print("==============Start Training===========")
     print("****Start Fetching Data****")
-    #df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, ticker_list=ticker, interval_period="30m").fetch_data()   
+    #df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, \
+                         #ticker_list=ticker, interval_period="30m").fetch_data()   
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
     _symbols_i1 = []
@@ -54,7 +55,8 @@ def main():
                          user_defined_feature=False)
     processed = fe.preprocess_data(df)
     np.seterr(divide = 'ignore')
-    processed['log_volume'] = np.where((processed.volume*processed.close)>0, np.log(processed.volume*processed.close), 0)
+    processed['log_volume'] = np.where((processed.volume*processed.close)>0, \
+                                       np.log(processed.volume*processed.close), 0)
     processed['change'] = (processed.close-processed.open)/processed.close
     processed['daily_variance'] = (processed.high-processed.low)/processed.close
     processed.to_csv("./" + config.DATA_SAVE_DIR + "/Dataframe/data_df.csv")
@@ -74,7 +76,8 @@ def main():
     initial_amount = file.read()
     initial_amount = float(initial_amount)
     file.close()
-    information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
+    information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", \
+                        "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     env_train_kwargs = {'initial_amount': initial_amount*500,
                         'cash_penalty_proportion': 0.2,
                         'hmax': 100, 
