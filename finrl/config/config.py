@@ -58,7 +58,51 @@ SAC_PARAMS = {"batch_size": 64,
 ############## Stock Ticker Setup starts ##############
 SINGLE_TICKER = ["AAPL"]
 
-FX_MAJOR_TICKER = ['EURUSD=X','GBPUSD=X','AUDUSD=X','USDCAD=X','USDCHF=X','NZDUSD=X']
+CUSTOM_US_TICKER = ["AAPL", 
+		    "JPM",
+		    "PG",
+		    "BAC", 
+		    "EA",
+		    "EBAY",
+		    "GE",
+		    "IBM",
+		    "INTC",
+		    "JNJ", 
+		    "NKE",
+		    "PFE",
+		    "ORCL",
+		    "VZ",
+		    "WMT",
+		    "XOM", 
+		    "ATVI",
+		    "C",
+		    "CMCSA",
+		    "CSCO", 
+		    "CVX", 
+		    "DAL",
+		    "DIS",
+		    "FOXA",
+		    "GM",
+		    "HPE",
+		    "KO",
+		    "LLY",
+		    "NEM",
+		    "PEP",
+		    "PM",
+		    "PRU",
+		    "SBUX", 
+		    "UPS", 
+		    "WFC"
+		   ]
+
+FX_MAJOR_TICKER = ["EURUSD=X",
+		   "GBPUSD=X",
+		   "AUDUSD=X",
+		   "USDCAD=X",
+		   "USDCHF=X",
+		   "NZDUSD=X",
+		   "USDJPY=X"
+		  ]
 
 # self defined
 SRI_KEHATI_TICKER = ["AALI.JK",
