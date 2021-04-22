@@ -85,7 +85,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                  turbulence_threshold=None,
                  print_verbosity=10,
                  initial_amount=1e6,
-                 assets=2e+4,
+                 assets=[],
                  daily_information_cols=["open", "close", "high", "low", "volume"],
                  cash_penalty_proportion=0.1,
                  patient=False,
