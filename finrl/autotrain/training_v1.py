@@ -40,7 +40,8 @@ def main():
     print("==============Start Training===========")
     print("****Start Fetching Data****")
     #df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, \
-                         #ticker_list=ticker, interval_period="30m").fetch_data()   
+                         #ticker_list=CUSTOM_US_TICKER, interval_period="1h").fetch_data()
+    """
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
     _symbols_i1 = []
@@ -48,6 +49,7 @@ def main():
         _symbols_i1.append(_symbols[i][1])
     #Data_Downloader(_symbols_i1)
     #df = load_dataset(file_name="mt4_dataset.csv")
+    """
     df = load_dataset(file_name="data.csv")
     print(df.head())
 
@@ -80,8 +82,8 @@ def main():
     file.close()
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", 
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
-    env_trade_kwargs = {'initial_amount': initial_amount*500,
-                        'hmax': 5000, 
+    env_trade_kwargs = {'initial_amount': initial_amount*200,
+                        'hmax': 100, 
                         'cache_indicator_data': True,
                         'daily_information_cols': information_cols,
                         'print_verbosity': 500, 
@@ -91,7 +93,7 @@ def main():
     env_train, _ = e_train_gym.get_sb_env()
        
     print("****Build Trade Environment****")
-    env_trade_kwargs = {'initial_amount': initial_amount*500,
+    env_trade_kwargs = {'initial_amount': initial_amount*200,
                         'hmax': 100,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
