@@ -33,11 +33,12 @@ sys.path.append("..\\FinRL-Library_Exchange")
 def main():
     """
     train an agent
-    
+    """
     print("==============Start Training===========")
     print("****Start Fetching Data****")
-    #df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, \
-                         #ticker_list=ticker, interval_period="30m").fetch_data()   
+    df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, \
+                         ticker_list=config.FX_MAJOR_TICKER, interval_period="1h").fetch_data()
+    """
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
     _symbols_i1 = []
@@ -47,7 +48,7 @@ def main():
     #df = load_dataset(file_name="mt4_dataset.csv")
     df = load_dataset(file_name="data.csv")
     print(df.head())
-    
+    """
     print("****Start Feature Engineering****")
     fe = FeatureEngineer(use_technical_indicator=True,
                          tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
@@ -60,7 +61,7 @@ def main():
     processed['change'] = (processed.close-processed.open)/processed.close
     processed['daily_variance'] = (processed.high-processed.low)/processed.close
     processed.to_csv("./" + config.DATA_SAVE_DIR + "/Dataframe/data_df.csv")
-    """
+    
     processed = pd.read_csv("./" + config.DATA_SAVE_DIR + "/Dataframe/data_df.csv", sep=',', low_memory=False, index_col=[0])
     print("****Training & Trading data split****")
     # Training & Trading data split
