@@ -33,7 +33,7 @@ sys.path.append("..\\FinRL-Library_Exchange")
 def main():
     """
     train an agent
-    """ 
+     
     print("==============Start Training===========")
     print("****Start Fetching Data****")
     #df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, \
@@ -60,7 +60,8 @@ def main():
     processed['change'] = (processed.close-processed.open)/processed.close
     processed['daily_variance'] = (processed.high-processed.low)/processed.close
     processed.to_csv("./" + config.DATA_SAVE_DIR + "/Dataframe/data_df.csv")
-
+    """
+    processed = pd.read_csv("./" + config.DATA_SAVE_DIR + "/Dataframe/data_df.csv", sep=',', low_memory=False, index_col=[0])
     print("****Training & Trading data split****")
     # Training & Trading data split
     train_df = data_split(processed, config.START_DATE, config.START_TRADE_DATE)
