@@ -26,22 +26,17 @@ import pandas as pd
 
 
 class t_class(DWX_ZMQ_Strategy):
-    def __init__(self, _name="COIN_FLIP_TRADERS",
-                 _symbols=[('INTC_D1', 'INTC', 1440), 
-                           ('AAPL_D1', 'AAPL', 1440)],
+    def __init__(self, _name="ONLINE_TRADERS",
+                 _symbols=['INTC', 'AAPL'],
                  _delay=0.1,
                  _broker_gmt=2,
                  _verbose=False
                  ):
-        
-        super().__init__(_name,
-                         _symbols,
-                         _broker_gmt,
-                         _verbose)
+        super().__init__(_name, _symbols, _broker_gmt, _verbose)
         
         # This strategy's variables
-        self._traders = []
         self._delay = _delay
+        self._traders = []
         self._verbose = _verbose
         
         self._symbols = _symbols
@@ -52,12 +47,9 @@ class t_class(DWX_ZMQ_Strategy):
         self._lock = Lock()
         
     ##########################################################################
-    
     def _run_(self, holdings, sells, buys):
-        
         """
         Logic:
-            
             For each symbol in self._symbols:
                 
                 1) Open a new Market Order every 2 seconds
@@ -66,23 +58,21 @@ class t_class(DWX_ZMQ_Strategy):
                 4) Plot Open P&L in real-time
                 5) Lot size per trade = 0.01
                 6) SL/TP = 10 pips each
-        """
-        
+        """      
         # Launch traders!
-        for _symbol in self._symbols:
-            
-            _t = Thread(name="{}_Trader".format(_symbol[0]),
+        for index, _symbol in enumerate(self._symbols):
+            _t = Thread(name="{}_Trader".format(_symbol),
                         target=self._trader_, 
-                        args=(_symbol, holdings[index], sells[index], buys[index]))
-            
+                        args=(_symbol, 
+                              holdings[index], 
+                              sells[index],
+                              buys[index]))
             _t.start()
             
-            print('[{}_Trader] Alright ...'.format(_symbol[0]))
-            
+            print('[{}_Trader] Alright ...'.format(_symbol))        
             self._traders.append(_t)
         
     ##########################################################################
-    
     def _trader_(self, _symbol, holding, sell, buy):
         # Note: Just for this example, only the Order Type is dynamic.
         _default_order = self._zmq._generate_default_order_dict()
@@ -90,7 +80,6 @@ class t_class(DWX_ZMQ_Strategy):
         _default_order['_SL'] = 100
         _default_order['_TP'] = 100
         _default_order['_comment'] = '{}_Trader'.format(_symbol[1])
-        
         """
         Default Order:
         --
@@ -104,7 +93,6 @@ class t_class(DWX_ZMQ_Strategy):
          '_lots': 0.01,
          '_magic': 123456}
         """
-        
         try:
             # Acquire lock
             self._lock.acquire()
@@ -113,12 +101,12 @@ class t_class(DWX_ZMQ_Strategy):
             # SECTION - SELL TRADES #
             ############################### 
             if sell != 0:
-                for i in (self._ot.loc[_df["_symbol"] == _symbol[1]].index):
+                for i in (self._ot.loc[_df["_symbol"] == _symbol].index):
                     if sell < self._ot["_lots"].loc[_df.index == i]:
                         _ret_cp = self._execution._execute_({'_action': 'CLOSE_PARTIAL',
                                                              '_ticket': i,
                                                              'size': sell,
-                                                             '_comment': '{}_Trader'.format(_symbol[1])},
+                                                             '_comment': '{}_Trader'.format(_symbol)},
                                                             self._verbose,
                                                             self._delay,
                                                             10
@@ -144,7 +132,7 @@ class t_class(DWX_ZMQ_Strategy):
                         break
                                                             
                     else:
-                        sell = sell - self._ot["_lots"].loc[_df["_symbol"] == _symbol[1]]
+                        sell = sell - self._ot["_lots"].loc[_df["_symbol"] == _symbol]
                         _ret_c = self._execution._execute_({'_action': 'CLOSE',
                                                             '_ticket': i,
                                                             'size': self._ot["_lots"].loc[_df.index == i]},
@@ -173,8 +161,7 @@ class t_class(DWX_ZMQ_Strategy):
                     _ret_o = self._execution._execute_(_default_order,
                                                        self._verbose,
                                                        self._delay,
-                                                       10
-                                                      )
+                                                       10)
                     # Reset cycle if nothing received
                     if self._zmq._valid_response_(_ret_o) == False:
                         break
@@ -183,14 +170,13 @@ class t_class(DWX_ZMQ_Strategy):
                     #############################
                     # SECTION - GET OPEN TRADES #
                     #############################
-                    self._ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol[1]),
-                                                            self._delay,      
-                                                            10)
+                    self._ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
+                                                                 self._delay,
+                                                                 10)
                     # Reset cycle if nothing received
                     if self._zmq._valid_response_(_ot) == False:
                         continue
-  
-                    
+        
         finally:
             # Release lock
             self._lock.release()
@@ -199,12 +185,10 @@ class t_class(DWX_ZMQ_Strategy):
         sleep(self._delay)
     
     ##########################################################################
-    
     def _stop_(self):        
         for _t in self._traders:      
             # wait for traders to finish.
-            _t.join()
-            
-            print('\n[{}] .. and that\'s a wrap! Time to head home.\n'.format(_t.getName()))
-        
+            _t.join() 
+            print('\n[{}] finished.\n'.format(_t.getName()))
+                                                            
     ##########################################################################
