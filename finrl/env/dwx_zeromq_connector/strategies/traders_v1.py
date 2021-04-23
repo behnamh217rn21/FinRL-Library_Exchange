@@ -41,7 +41,6 @@ class t_class(DWX_ZMQ_Strategy):
         
         self._symbols = _symbols
         self._ot = pd.Dataframe()
-        self._ticket_n = {}
         
         # lock for acquire/release of ZeroMQ connector
         self._lock = Lock()
