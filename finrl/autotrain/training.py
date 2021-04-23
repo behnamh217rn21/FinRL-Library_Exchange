@@ -83,7 +83,7 @@ def main():
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     env_train_kwargs = {'initial_amount': initial_amount*200,
                         'cash_penalty_proportion': 0.2,
-                        'hmax': 100, 
+                        'hmax': 10, 
                         'cache_indicator_data': True,
                         'daily_information_cols': information_cols,
                         'print_verbosity': 500, 
@@ -95,7 +95,7 @@ def main():
     print("****Build Trade Environment****")
     env_trade_kwargs = {'initial_amount': initial_amount*200,
                         'cash_penalty_proportion': 0.2,
-                        'hmax': 100,
+                        'hmax': 10,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
                         'random_start': False,
