@@ -111,7 +111,8 @@ CUSTOM_US_TICKER = ['#AAPL',
 		    '#PYPL',
 		    '#SBUX',
 		    '#OKTA',
-		    '#TSLA',]
+		    '#TSLA',
+		   ]
 
 FX_MAJOR_TICKER = ["EURUSD=X",
 		   "GBPUSD=X",
@@ -119,7 +120,7 @@ FX_MAJOR_TICKER = ["EURUSD=X",
 		   "USDCAD=X",
 		   "USDCHF=X",
 		   "NZDUSD=X",
-		   "USDJPY=X"
+		   "USDJPY=X",
 		  ]
 
 # self defined
@@ -147,7 +148,7 @@ SRI_KEHATI_TICKER = ["AALI.JK",
 		     "UNVR.JK",
 		     "WIKA.JK",
 		     "WSKT.JK",
-		     "WTON.JK"
+		     "WTON.JK",
 		    ]
 
 # check https://wrds-www.wharton.upenn.edu/ for U.S. index constituents
@@ -1333,6 +1334,6 @@ FX_TICKER = ["AUDCAD",
              "XAGUSD",
              "XAUUSD",
              "ZARJPY",
-             "EURDKK"
+             "EURDKK",
 	    ]
 ################FX Ticker Setup End###################
