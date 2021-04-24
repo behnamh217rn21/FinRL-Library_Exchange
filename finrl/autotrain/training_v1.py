@@ -82,7 +82,7 @@ def main():
     file.close()
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", 
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
-    env_trade_kwargs = {'initial_amount': initial_amount*500,
+    env_trade_kwargs = {'initial_amount': initial_amount*1000,
                         'hmax': 10, 
                         'cache_indicator_data': True,
                         'daily_information_cols': information_cols,
@@ -93,8 +93,8 @@ def main():
     env_train, _ = e_train_gym.get_sb_env()
        
     print("****Build Trade Environment****")
-    env_trade_kwargs = {'initial_amount': initial_amount*200,
-                        'hmax': 100,
+    env_trade_kwargs = {'initial_amount': initial_amount*1000,
+                        'hmax': 10,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
                         'random_start': False,
