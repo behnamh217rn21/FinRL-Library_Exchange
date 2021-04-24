@@ -19,8 +19,10 @@ TENSORBOARD_LOG_DIR = f"finrl/tensorboard_log"
 RESULTS_DIR = f"finrl/results"
 
 ## time_fmt = '%Y-%m-%d %H:%M:00'
-START_DATE = "2019-04-24 01:00:00"; END_DATE = "2021-04-21 00:00:00"
-START_TRADE_DATE = "2021-02-21 23:00:00"
+START_DATE = "2019-04-26"; END_DATE = "2021-04-24"
+START_TRADE_DATE = "2021-02-24"
+S_SPLIT = "2019-04-26 00:00:00"; F_SPLIT = "2021-04-24 00:00:00"
+T_SPLIT = "2021-02-24 00:00:00"
 
 ## dataset default columns
 DEFAULT_DATA_COLUMNS = ["date", "tic", "close"]
@@ -58,7 +60,7 @@ SAC_PARAMS = {"batch_size": 64,
 ############## Stock Ticker Setup starts ##############
 SINGLE_TICKER = ["AAPL"]
 
-CUSTOM_US_TICKER = ['#AAPL',
+CUSTOM_US_TICKER = ['AAPL',
 		    'AA',
 		    'AXP',
 		    'BA',
