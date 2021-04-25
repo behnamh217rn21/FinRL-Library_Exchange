@@ -451,7 +451,8 @@ class StockTradingEnvStopLoss(gym.Env):
     def get_multiproc_env(self, n=10):
         def get_self():
             return deepcopy(self)
-        e = SubprocVecEnv([get_self for _ in range(n)], start_method="fork")
+        e = SubprocVecEnv([get_self for _ in range(n)],
+                          start_method="fork")
         obs = e.reset()
         return e, obs
     
