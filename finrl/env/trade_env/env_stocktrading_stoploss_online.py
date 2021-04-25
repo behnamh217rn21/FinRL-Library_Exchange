@@ -433,10 +433,12 @@ class StockTradingEnvStopLossOnline(gym.Env):
             order_data = pd.read_csv("C:\\Users\\BEHNAMH721AS.RN\\AppData\\Roaming\\" \
                                      "MetaQuotes\\Terminal\\2E8DC23981084565FA3E19C061F586B2\\MQL4\\Files\\OrdersReport.csv",
                                      sep=';')
-            swap=0
+            swap = 0
+            commission = 0
             for i in range(0, len(order_data)):
                 long_swap += order_data.loc[i, 'swap']
-            coh = coh - spend - costs - leverage_spend - long_swap
+                commission += order_data.loc[i, 'commission']
+            coh = coh - spend - costs - leverage_spend - long_swap - commission
             holdings_updated = holdings + actions
             self.holdings_memory.append(holdings_updated * closings)
 
