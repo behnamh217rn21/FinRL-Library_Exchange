@@ -430,8 +430,12 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # update our holdings
             diff = (holding * closing) - self.holdings_memory[-1]
             leverage_spend = (np.sum(diff)) * 1000
-            if self.date_index % 7 == 0:
-                long_swap = (holdings * 0.1) * 0.01
+            order_data = pd.read_csv("C:\\Users\\BEHNAMH721AS.RN\\AppData\\Roaming\\" \
+                                     "MetaQuotes\\Terminal\\2E8DC23981084565FA3E19C061F586B2\\MQL4\\Files\\OrdersReport.csv",
+                                     sep=';')
+            swap=0
+            for i in range(0, len(order_data)):
+                long_swap += order_data.loc[i, 'swap']
             coh = coh - spend - costs - leverage_spend - long_swap
             holdings_updated = holdings + actions
             self.holdings_memory.append(holdings_updated * closings)
