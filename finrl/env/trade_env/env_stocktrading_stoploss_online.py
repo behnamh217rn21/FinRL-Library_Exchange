@@ -106,9 +106,9 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.min_profit_penalty  = 1 + profit_loss_ratio * (1 - self.stoploss_penalty) 
         self.turbulence_threshold = turbulence_threshold
         self.daily_information_cols = daily_information_cols
-        self.state_space = (
-            1 + len(self.assets) + len(self.assets) * len(self.daily_information_cols)
-        )
+        
+        self.state_space = (1 + len(self.assets) + len(self.assets) * len(self.daily_information_cols))
+        
         self.action_space = spaces.Box(low=-1, high=1, 
                                        shape=(len(self.assets),))
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, 
@@ -340,8 +340,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, 
-                               actions, 
-                               0)
+                               actions, 0)
             
             if self.turbulence_threshold is not None:
                 # if turbulence goes over threshold, just clear out all positions
@@ -353,8 +352,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             if self.discrete_actions:
                 # convert into integer because we can't buy fraction of shares
                 actions = np.where(closings > 0, 
-                                   actions // closings, 
-                                   0)
+                                   actions // closings, 0)
                 actions = actions.astype(int)
                 # round down actions to the nearest multiplies of shares_increment
                 actions = np.where(actions >= 0,
@@ -362,8 +360,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                    ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
             else:
                 actions = np.where(closings > 0, 
-                                   actions / closings, 
-                                   0)
+                                   actions / closings, 0)
 
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
@@ -372,8 +369,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             if begin_cash >= self.stoploss_penalty * self.initial_amount:
                 # clear out position if stop-loss criteria is met
                 actions = np.where(self.closing_diff_avg_buy < 0, 
-                                   -np.array(holdings), 
-                                   actions)
+                                   -np.array(holdings), actions)
                 
                 if any(np.clip(self.closing_diff_avg_buy, -np.inf, 0) < 0):
                     self.log_step(reason="STOP LOSS")
@@ -397,8 +393,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                     # ... just don't buy anything until we got additional cash
                     self.log_step(reason="CASH SHORTAGE")
                     actions = np.where(actions>0, 
-                                       0, 
-                                       actions)
+                                       0, actions)
                     spend = 0
                     costs = 0
                 else:
@@ -409,15 +404,12 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # get profitable sell actions
             sell_closing_price = np.where(sells>0, 
-                                          closings, 
-                                          0) # get closing price of assets that we sold
+                                          closings, 0) # get closing price of assets that we sold
             profit_sell = np.where(sell_closing_price - self.avg_buy_price > 0, 
-                                   1, 
-                                   0) # mark the one which is profitable
+                                   1, 0) # mark the one which is profitable
 
             self.profit_sell_diff_avg_buy = np.where(profit_sell==1, 
-                                                     closings - (self.min_profit_penalty * self.avg_buy_price),
-                                                     0)
+                                                     closings - (self.min_profit_penalty * self.avg_buy_price), 0)
             
             if any(np.clip(self.profit_sell_diff_avg_buy, -np.inf, 0) < 0):
                 self.log_step(reason="LOW PROFIT")
@@ -446,8 +438,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.n_buys = np.where(holdings_updated > 0, 
                                    self.n_buys, 0)
             self.avg_buy_price = np.where(holdings_updated > 0, 
-                                          self.avg_buy_price, 
-                                          0) 
+                                          self.avg_buy_price, 0) 
             
             self.date_index += 1
             if self.turbulence_threshold is not None:
@@ -470,7 +461,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
     def get_multiproc_env(self, n=10):
         def get_self():
             return deepcopy(self)
-        e = SubprocVecEnv([get_self for _ in range(n)], start_method="fork")
+        e = SubprocVecEnv([get_self for _ in range(n)], 
+                          start_method="fork")
         obs = e.reset()
         return e, obs
     
@@ -488,10 +480,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if self.current_step == 0:
             return None
         else:
-            return pd.DataFrame(
-                {
-                    "date": self.dates[-len(self.account_information["cash"]) :],
-                    "actions": self.actions_memory,
-                    "transactions": self.transaction_memory,
-                }
-            )
+            return pd.DataFrame({"date": self.dates[-len(self.account_information["cash"]) :],
+                                 "actions": self.actions_memory,
+                                 "transactions": self.transaction_memory,
+                                })
