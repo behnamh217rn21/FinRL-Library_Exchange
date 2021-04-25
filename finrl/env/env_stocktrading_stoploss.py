@@ -329,8 +329,7 @@ class StockTradingEnvStopLoss(gym.Env):
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, 
-                               actions, 
-                               0)
+                               actions, 0)
             
             if self.turbulence_threshold is not None:
                 # if turbulence goes over threshold, just clear out all positions
