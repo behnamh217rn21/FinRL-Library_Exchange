@@ -44,7 +44,6 @@ class DWX_ZeroMQ_Connector():
                  _monitor=False):           # Experimental ZeroMQ Socket Monitoring
     
         ######################################################################
-        
         # Strategy Status (if this is False, ZeroMQ will not listen for data)
         self._ACTIVE = True
         
@@ -145,12 +144,9 @@ class DWX_ZeroMQ_Connector():
         # Enable/Disable ZeroMQ Socket Monitoring #
         ###########################################
         if _monitor == True:
-            
             # ZeroMQ Monitor Event Map
             self._MONITOR_EVENT_MAP = {}
-            
             print("\n[KERNEL] Retrieving ZeroMQ Monitor Event Names:\n")
-            
             for name in dir(zmq):
                 if name.startswith('EVENT_'):
                     value = getattr(zmq, name)
@@ -180,9 +176,7 @@ class DWX_ZeroMQ_Connector():
             self._PULL_Monitor_Thread.start()
        
     ##########################################################################
-    
     def _DWX_ZMQ_SHUTDOWN_(self):
-        
         # Set INACTIVE
         self._ACTIVE = False
         
@@ -206,22 +200,18 @@ class DWX_ZeroMQ_Connector():
         print("\n++ [KERNEL] ZeroMQ Context Terminated.. shut down safely complete! :)")
         
     ##########################################################################
-    
     """
     Set Status (to enable/disable strategy manually)
     """
     def _setStatus(self, _new_status=False):
-    
         self._ACTIVE = _new_status
         print("\n**\n[KERNEL] Setting Status to {} - Deactivating Threads.. please wait a bit.\n**".format(_new_status))
                 
     ##########################################################################
-    
     """
     Function to send commands to MetaTrader (PUSH)
     """
     def remote_send(self, _socket, _data):
-        
         if self._PUSH_SOCKET_STATUS['state'] == True:
             try:
                 _socket.send_string(_data, zmq.DONTWAIT)
@@ -232,19 +222,15 @@ class DWX_ZeroMQ_Connector():
             print('\n[KERNEL] NO HANDSHAKE ON PUSH SOCKET.. Cannot SEND data')
       
     ##########################################################################
-    
     def _get_response_(self):
         return self._thread_data_output
     
     ##########################################################################
-    
     def _set_response_(self, _resp=None):
         self._thread_data_output = _resp
     
     ##########################################################################
-    
     def _valid_response_(self, _input='zmq'):
-        
         # Valid data types
         _types = (dict,DataFrame)
         
@@ -258,12 +244,10 @@ class DWX_ZeroMQ_Connector():
         return False
     
     ##########################################################################
-    
     """
     Function to retrieve data from MetaTrader (PULL)
     """
     def remote_recv(self, _socket):
-        
         if self._PULL_SOCKET_STATUS['state'] == True:
             try:
                 msg = _socket.recv_string(zmq.DONTWAIT)
@@ -277,22 +261,20 @@ class DWX_ZeroMQ_Connector():
         return None
         
     ##########################################################################
-    
     # Convenience functions to permit easy trading via underlying functions.
     
     # OPEN ORDER
-    def _DWX_MTX_NEW_TRADE_(self, _order=None):
-        
+    def _DWX_MTX_NEW_TRADE_(self, _order=None):  
         if _order is None:
             _order = self._generate_default_order_dict()
         
         # Execute
         self._DWX_MTX_SEND_COMMAND_(**_order)
         
+        
     # MODIFY ORDER
     # _SL and _TP given in points. _price is only used for pending orders. 
-    def _DWX_MTX_MODIFY_TRADE_BY_TICKET_(self, _ticket, _SL, _TP, _price=0):
-        
+    def _DWX_MTX_MODIFY_TRADE_BY_TICKET_(self, _ticket, _SL, _TP, _price=0):  
         try:
             self.temp_order_dict['_action'] = 'MODIFY'
             self.temp_order_dict['_ticket'] = _ticket
@@ -306,9 +288,9 @@ class DWX_ZeroMQ_Connector():
         except KeyError:
             print("[ERROR] Order Ticket {} not found!".format(_ticket))
     
+    
     # CLOSE ORDER
     def _DWX_MTX_CLOSE_TRADE_BY_TICKET_(self, _ticket):
-        
         try:
             self.temp_order_dict['_action'] = 'CLOSE'
             self.temp_order_dict['_ticket'] = _ticket
@@ -318,10 +300,10 @@ class DWX_ZeroMQ_Connector():
             
         except KeyError:
             print("[ERROR] Order Ticket {} not found!".format(_ticket))
-            
+           
+        
     # CLOSE PARTIAL
     def _DWX_MTX_CLOSE_PARTIAL_BY_TICKET_(self, _ticket, _lots):
-        
         try:
             self.temp_order_dict['_action'] = 'CLOSE_PARTIAL'
             self.temp_order_dict['_ticket'] = _ticket
@@ -332,10 +314,10 @@ class DWX_ZeroMQ_Connector():
             
         except KeyError:
             print("[ERROR] Order Ticket {} not found!".format(_ticket))
-            
+           
+        
     # CLOSE MAGIC
     def _DWX_MTX_CLOSE_TRADES_BY_MAGIC_(self, _magic):
-        
         try:
             self.temp_order_dict['_action'] = 'CLOSE_MAGIC'
             self.temp_order_dict['_magic'] = _magic
@@ -346,9 +328,9 @@ class DWX_ZeroMQ_Connector():
         except KeyError:
             pass
     
+    
     # CLOSE ALL TRADES
     def _DWX_MTX_CLOSE_ALL_TRADES_(self):
-        
         try:
             self.temp_order_dict['_action'] = 'CLOSE_ALL'
             
@@ -358,9 +340,9 @@ class DWX_ZeroMQ_Connector():
         except KeyError:
             pass
         
-    # GET OPEN TRADES
-    def _DWX_MTX_GET_ALL_OPEN_TRADES_(self):
         
+    # GET OPEN TRADES
+    def _DWX_MTX_GET_ALL_OPEN_TRADES_(self): 
         try:
             self.temp_order_dict['_action'] = 'GET_OPEN_TRADES'
                         
@@ -369,6 +351,7 @@ class DWX_ZeroMQ_Connector():
             
         except KeyError:
             pass
+    
     
     # DEFAULT ORDER DICT
     def _generate_default_order_dict(self):
@@ -396,11 +379,7 @@ class DWX_ZeroMQ_Connector():
                                     _end=Timestamp.now().strftime('%Y.%m.%d %H:%M:00')):
                                     #_end='2019.01.04 17:05:00'):
         
-        _msg = "{};{};{};{};{}".format('HIST',
-                                       _symbol,
-                                       _timeframe,
-                                       _start,
-                                       _end)
+        _msg = "{};{};{};{};{}".format('HIST', _symbol, _timeframe, _start, _end)
 
         # Send via PUSH Socket
         self.remote_send(self._PUSH_SOCKET, _msg)
@@ -411,11 +390,10 @@ class DWX_ZeroMQ_Connector():
     Function to construct messages for sending TRACK_PRICES commands to 
     MetaTrader for real-time price updates
     """
-    def _DWX_MTX_SEND_TRACKPRICES_REQUEST_(self,
-                                           _symbols=['EURUSD']):
+    def _DWX_MTX_SEND_TRACKPRICES_REQUEST_(self, _symbols=['EURUSD']):
         _msg = 'TRACK_PRICES'
         for s in _symbols:
-          _msg = _msg + ";{}".format(s)
+            _msg = _msg + ";{}".format(s)
 
         # Send via PUSH Socket
         self.remote_send(self._PUSH_SOCKET, _msg)
@@ -426,15 +404,13 @@ class DWX_ZeroMQ_Connector():
     Function to construct messages for sending TRACK_RATES commands to 
     MetaTrader for OHLC
     """
-    def _DWX_MTX_SEND_TRACKRATES_REQUEST_(self,
-                                          _instruments=[('EURUSD_M1','EURUSD',1)]):
+    def _DWX_MTX_SEND_TRACKRATES_REQUEST_(self, _instruments=[('EURUSD_M1','EURUSD',1)]):
         _msg = 'TRACK_RATES'                                 
         for i in _instruments:
-          _msg = _msg + ";{};{}".format(i[1], i[2])
+            _msg = _msg + ";{};{}".format(i[1], i[2])
           
         # Send via PUSH Socket
         self.remote_send(self._PUSH_SOCKET, _msg)
-    
     
     ##########################################################################
     
@@ -443,17 +419,12 @@ class DWX_ZeroMQ_Connector():
     """
     Function to construct messages for sending Trade commands to MetaTrader
     """
-    def _DWX_MTX_SEND_COMMAND_(self, _action='OPEN', _type=0,
-                               _symbol='EURUSD', _price=0.0,
-                               _SL=50, _TP=50, _comment="Python-to-MT",
+    def _DWX_MTX_SEND_COMMAND_(self, _action='OPEN', _type=0, _symbol='EURUSD', 
+                               _price=0.0, _SL=50, _TP=50, _comment="Python-to-MT", 
                                _lots=0.01, _magic=123456, _ticket=0):
-        
-        _msg = "{};{};{};{};{};{};{};{};{};{};{}".format('TRADE',_action,_type,
-                                                         _symbol,_price,
-                                                         _SL,_TP,_comment,
-                                                         _lots,_magic,
-                                                         _ticket)
-        
+        _msg = "{};{};{};{};{};{};{};{};{};{};{}".format('TRADE',_action,_type, _symbol,
+                                                         _price, _SL, _TP, _comment,
+                                                         _lots, _magic, _ticket)
         # Send via PUSH Socket
         self.remote_send(self._PUSH_SOCKET, _msg)
         
@@ -487,33 +458,26 @@ class DWX_ZeroMQ_Connector():
         # pass
     
     ##########################################################################
-    
     """
     Function to check Poller for new reponses (PULL) and market data (SUB)
     """
-    
     def _DWX_ZMQ_Poll_Data_(self, 
                             string_delimiter=';',
                             poll_timeout=1000):
-        
         while self._ACTIVE:
-            
             sleep(self._sleep_delay) # poll timeout is in ms, sleep() is s.
             
             sockets = dict(self._poller.poll(poll_timeout))
             
             # Process response to commands sent to MetaTrader
             if self._PULL_SOCKET in sockets and sockets[self._PULL_SOCKET] == zmq.POLLIN:
-                
                 if self._PULL_SOCKET_STATUS['state'] == True:
                     try:
-                        
                         # msg = self._PULL_SOCKET.recv_string(zmq.DONTWAIT)
                         msg = self.remote_recv(self._PULL_SOCKET)
                         
                         # If data is returned, store as pandas Series
                         if msg != '' and msg != None:
-                            
                             try: 
                                 _data = eval(msg)
                                 if '_action' in _data and _data['_action'] == 'HIST':
@@ -551,13 +515,12 @@ class DWX_ZeroMQ_Connector():
             
             # Receive new market data from MetaTrader
             if self._SUB_SOCKET in sockets and sockets[self._SUB_SOCKET] == zmq.POLLIN:
-                
                 try:
                     msg = self._SUB_SOCKET.recv_string(zmq.DONTWAIT)
                     
                     if msg != "":
                         self._timestamp = str(Timestamp.now('UTC'))[:-6]
-                        _symbol, self._Balance, _data = msg.split("--")
+                        _symbol, self._Balance, _data = msg.split("&")
 
                         if len(_data.split(string_delimiter)) == 2:
                             _bid, _ask = _data.split(string_delimiter)   
@@ -571,12 +534,15 @@ class DWX_ZeroMQ_Connector():
                             
                             self._Market_Data_DB[_symbol][self._timestamp] = (float(_bid), float(_ask))
 
-                        elif len(_data.split(string_delimiter)) == 16:
-                            _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol, \
-                            _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = _data.split(string_delimiter)
+                        elif len(_data.split("|")) == 2:
+                            _ohlc, _indicator = _data.split("|")
+                            _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = _ohlc.split(",")
+                            _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = _indicator.split(string_delimiter)
+                            
                             if self._verbose:
                                 print("\n[" + _symbol + "] " + self._timestamp + " (" + _time + "/" + _open + "/" + _high + "/" + _low + "/" + _close + "/" + _tick_vol + "/" + _spread + "/" + _real_vol + "/" + \
                                       _macd + "/" + _boll_ub + "/" + _boll_lb + "/" + _rsi_30 + "/" + _cci_30 + "/" + _adx_30 + "/" + _close_30_sma + "/" + _close_60_sma + ") TIME/OPEN/HIGH/LOW/CLOSE/TICKVOL/SPREAD/VOLUME/MACD/BOLL_UB/BOLL_LB/RSI/CCI/ADX/SMA_30/SMA_60")                    
+                           
                             # Update Market Rate DB
                             if _symbol not in self._Market_Data_DB.keys():
                                 self._Market_Data_DB[_symbol] = {}
@@ -596,7 +562,6 @@ class DWX_ZeroMQ_Connector():
         print("\n++ [KERNEL] _DWX_ZMQ_Poll_Data_() Signing Out ++")
                 
     ##########################################################################
-    
     """
     Function to subscribe to given Symbol's BID/ASK feed from MetaTrader
     """
@@ -615,8 +580,7 @@ class DWX_ZeroMQ_Connector():
     def _DWX_MTX_UNSUBSCRIBE_MARKETDATA_(self, _symbol):
         
         self._SUB_SOCKET.setsockopt_string(zmq.UNSUBSCRIBE, _symbol)
-        print("\n**\n[KERNEL] Unsubscribing from " + _symbol + "\n**\n")
-        
+        print("\n**\n[KERNEL] Unsubscribing from " + _symbol + "\n**\n")   
         
     """
     Function to unsubscribe from ALL MetaTrader Symbols
@@ -628,7 +592,6 @@ class DWX_ZeroMQ_Connector():
             self._DWX_MTX_UNSUBSCRIBE_MARKETDATA_(_symbol=_symbol)
         
     ##########################################################################
-    
     def _DWX_ZMQ_EVENT_MONITOR_(self, 
                                 socket_name, 
                                 monitor_socket):
@@ -639,8 +602,7 @@ class DWX_ZeroMQ_Connector():
             sleep(self._sleep_delay) # poll timeout is in ms, sleep() is s.
             
             # while monitor_socket.poll():
-            while monitor_socket.poll(self._poll_timeout):
-                
+            while monitor_socket.poll(self._poll_timeout): 
                 try:
                     evt = recv_monitor_message(monitor_socket, zmq.DONTWAIT)
                     evt.update({'description': self._MONITOR_EVENT_MAP[evt['event']]})
@@ -672,7 +634,6 @@ class DWX_ZeroMQ_Connector():
                             self._PULL_SOCKET_STATUS['latest_event'] = evt['description']
                 
                     if evt['event'] == zmq.EVENT_MONITOR_STOPPED:
-                        
                         # Reinitialize the socket
                         if socket_name == "PUSH":
                             monitor_socket = self._PUSH_SOCKET.get_monitor_socket()
@@ -686,18 +647,15 @@ class DWX_ZeroMQ_Connector():
                
         # Close Monitor Socket
         monitor_socket.close()
-        
         print(f"\n++ [KERNEL] {socket_name} _DWX_ZMQ_EVENT_MONITOR_() Signing Out ++")
             
     ##########################################################################
-    
     def _DWX_ZMQ_HEARTBEAT_(self):
         self.remote_send(self._PUSH_SOCKET, "HEARTBEAT;")
         
     ##########################################################################
 
 ##############################################################################
-
 def _DWX_ZMQ_CLEANUP_(_name='DWX_ZeroMQ_Connector',
                       _globals=globals(), 
                       _locals=locals()):
@@ -714,7 +672,6 @@ def _DWX_ZMQ_CLEANUP_(_name='DWX_ZeroMQ_Connector',
                 print('\n++ [KERNEL] Cleanup Complete -> OK to initialize DWX_ZeroMQ_Connector if NETSTAT diagnostics == True. ++\n')
            
     except Exception as ex:
-        
         _exstr = "Exception Type {0}. Args:\n{1!r}"
         _msg = _exstr.format(type(ex).__name__, ex.args)
             
