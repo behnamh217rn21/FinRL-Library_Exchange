@@ -305,6 +305,13 @@ class StockTradingEnvStopLoss(gym.Env):
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
             
+            pip = (holding * closing) - self.holdings_memory[-1]
+            leverage_spend = (np.sum(pip)) * 1000
+            datetime = self.dates[self.date_index]
+            time = (str(datetime)).split(" ")[1]
+            if time == "00:00:00":
+                long_swap = (pip * 0.1) * 0.01
+
             asset_value = np.dot(holdings, closings)
             
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
@@ -368,7 +375,9 @@ class StockTradingEnvStopLoss(gym.Env):
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
-            spend = np.dot(buys, closings)
+            ask_buys = (buys * 1) * 0.01
+            ask_closings = closings + ask_buys
+            spend = np.dot(buys, ask_closings)
             costs += spend * self.buy_cost_pct
             
             # if we run out of cash...
@@ -412,7 +421,7 @@ class StockTradingEnvStopLoss(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            coh = coh - spend - costs
+            coh = coh - spend - costs - leverage_spend - long_swap
             holdings_updated = holdings + actions
 
             # Update average buy price
