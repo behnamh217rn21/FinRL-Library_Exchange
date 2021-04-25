@@ -146,11 +146,13 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.actions_memory = []
         self.transaction_memory = []
         self.state_memory = []
+        self.holdings_memory = []
         self.account_information = {"cash": [],
                                     "asset_value": [],
                                     "total_assets": [],
                                     "reward": [],
                                    }
+        
         self.start_t = Timestamp.now('UTC') + timedelta(hours=3)
         self.start_t = self.start_t.strftime('%Y-%m-%d %H:%M:%S')
         self.start_t = datetime.datetime.strptime(self.start_t, '%Y-%m-%d %H:%M:%S')
@@ -322,7 +324,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             assert min(holdings) >= 0
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
-            
+                
             asset_value = np.dot(holdings, closings)
             
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
@@ -382,11 +384,11 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
-            spend = np.dot(buys, closings)
+            spread = (buys * 1) * 0.01
+            ask_closings = closings + spread
+            spend = np.dot(buys, ask_closings)
             costs += spend * self.buy_cost_pct
             
-            _trading_process(self, holdings, sells, buys)
-
             # if we run out of cash...
             if (spend + costs) > coh:
                 if self.patient:
@@ -399,6 +401,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 else:
                     # ... end the cycle and penalize
                     return self.return_terminal(reason="CASH SHORTAGE", reward=self.get_reward())
+            else:
+                _trading_process(self, holdings, sells, buys)
 
             self.transaction_memory.append(actions) # capture what the model's could do
 
@@ -424,8 +428,13 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            coh = coh - spend - costs
+            diff = (holding * closing) - self.holdings_memory[-1]
+            leverage_spend = (np.sum(diff)) * 1000
+            if self.date_index % 7 == 0:
+                long_swap = (holdings * 0.1) * 0.01
+            coh = coh - spend - costs - leverage_spend - long_swap
             holdings_updated = holdings + actions
+            self.holdings_memory.append(holdings_updated * closings)
 
             # Update average buy price
             buys = np.sign(buys)
