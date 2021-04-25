@@ -309,7 +309,7 @@ class StockTradingEnvStopLoss(gym.Env):
             leverage_spend = (np.sum(pip)) * 1000
             datetime = self.dates[self.date_index]
             time = (str(datetime)).split(" ")[1]
-            if time == "00:00:00":
+            if time == "09:30:00":
                 long_swap = (pip * 0.1) * 0.01
 
             asset_value = np.dot(holdings, closings)
