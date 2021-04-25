@@ -64,6 +64,7 @@ def main():
     env_trade_kwargs = {'initial_amount': initial_amount*1000,
                         'assets': _symbols_i1,
                         'hmax': 10,
+                        'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
                         'random_start': False,
