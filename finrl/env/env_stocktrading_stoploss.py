@@ -305,12 +305,6 @@ class StockTradingEnvStopLoss(gym.Env):
             assert min(holdings) >= 0
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
-            
-            pip = (holding * closing) - self.holdings_memory[-1]
-            leverage_spend = (np.sum(pip)) * 1000
-            
-            if self.date_index % 7 == 0:
-                long_swap = (holdings * 0.1) * 0.01
 
             asset_value = np.dot(holdings, closings)
             
@@ -413,6 +407,10 @@ class StockTradingEnvStopLoss(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
+            diff = (holding * closing) - self.holdings_memory[-1]
+            leverage_spend = (np.sum(diff)) * 1000
+            if self.date_index % 7 == 0:
+                long_swap = (holdings * 0.1) * 0.01
             coh = coh - spend - costs - leverage_spend - long_swap
             holdings_updated = holdings + actions
             self.holdings_memory.append(holdings_updated * closings)
