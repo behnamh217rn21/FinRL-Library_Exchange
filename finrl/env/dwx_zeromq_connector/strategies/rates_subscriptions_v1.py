@@ -16,11 +16,17 @@
     Through commmand TRACK_RATES, this client can select multiple INSTRUMENTS (symbol, timeframe).
     For example, to receive rates from instruments INTC(M1) and BAC(H1), this client
     will send this command to the Server, through its PUSH channel:
+
     "TRACK_RATES;INTC;1;BAC;60"
+
     Server will answer through the PULL channel with a json response like this:
+
     {'_action':'TRACK_RATES', '_data': {'instrument_count':2}}
+
     or if errors, then: 
+
     {'_action':'TRACK_RATES', '_data': {'_response':'NOT_AVAILABLE'}}
+
     Once subscribed to this feed, it will receive through the SUB channel, rates in this format:
     "INTC_M1 TIME;OPEN;HIGH;LOW;CLOSE;TICKVOL;SPREAD;REALVOL"
     "BAC_H1 TIME;OPEN;HIGH;LOW;CLOSE;TICKVOL;SPREAD;REALVOL"
@@ -118,7 +124,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         Callback to process new data received through the SUB port
         """
         # split data to get topic and message and balance
-        _topic, _, _msg = data.split("--")
+        _topic, _, _msg = data.split("&")
         print('Data on Topic={} with Message={} and Balance={}'.format(_topic,
                                                                        self._zmq._Market_Data_DB[_topic][self._zmq._timestamp],
                                                                        self._zmq._Balance
@@ -130,8 +136,9 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             self.p_time = self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0]
 
         file = "./data_info" + "/data.csv"
-        _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol, \
-        _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = _msg.split(';')
+        ohlc, indicator = _msg.split("|")
+        _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = ohlc.split(",")
+        _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = indicator.split(";")
 
         _time = pd.to_datetime(_time, format="%Y.%m.%d %H:%M")
         _time = datetime.datetime.strftime(_time, "%Y-%m-%d %H:%M:00")
@@ -232,4 +239,4 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
           finally:
             # Release lock
             self._lock.release()
-            sleep(self._delay)  
+            sleep(self._delay)     
