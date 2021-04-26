@@ -158,6 +158,9 @@ class StockTradingEnvStopLoss(gym.Env):
         self.transaction_memory = []
         self.state_memory = []
         self.holdings_memory = []
+        self.holdings_memory.append([0] * len(self.assets))
+        self.temp = self.df.loc[[self.dates[0]], day][0]
+        self.total_assets.append([0] * len(self.assets))
         self.account_information = {"cash": [],
                                     "asset_value": [],
                                     "total_assets": [],
@@ -409,10 +412,20 @@ class StockTradingEnvStopLoss(gym.Env):
             # update our holdings
             diff = (holding * closing) - self.holdings_memory[-1]
             leverage_spend = (np.sum(diff)) * 1000
-            if self.date_index % 7 == 0:
-                long_swap = (holdings * 0.1) * 0.01
+            date = self.dates[self.date_index]
+            day = self.df.loc[[date], day][0]
+            if day == (self.temp+1):
+                i = day - 1
+                while i > -1:
+                    sub = self.total_assets[i] - self.total_assets[i-1]
+                    if sub < 0:
+                        long_swap += (self.total_assets[i] * 0.1) * 0.01
+                    else:
+                        long_swap += ((self.total_assets[i] - self.total_assets[i-1]) * 0.1) * 0.01
+                    i -= 1
             coh = coh - spend - costs - leverage_spend - long_swap
             holdings_updated = holdings + actions
+            self.total_assets.append(holdings_updated)
             self.holdings_memory.append(holdings_updated * closings)
 
             # Update average buy price
