@@ -159,8 +159,6 @@ class StockTradingEnvStopLoss(gym.Env):
         self.state_memory = []
         self.holdings_memory = []
         self.holdings_memory.append([0] * len(self.assets))
-        self.temp = self.df.loc[[self.dates[0]], day][0]
-        self.total_assets.append([0] * len(self.assets))
         self.account_information = {"cash": [],
                                     "asset_value": [],
                                     "total_assets": [],
@@ -368,9 +366,7 @@ class StockTradingEnvStopLoss(gym.Env):
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
-            spread = (buys * 1) * 0.01
-            ask_closings = closings + spread
-            spend = np.dot(buys, ask_closings)
+            spend = np.dot(buys, closings)
             costs += spend * self.buy_cost_pct
             
             # if we run out of cash...
@@ -410,24 +406,12 @@ class StockTradingEnvStopLoss(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            diff = (holding * closing) - self.holdings_memory[-1]
-            leverage_spend = (np.sum(diff)) * 1000
-            date = self.dates[self.date_index]
-            day = self.df.loc[[date], day][0]
-            if day == (self.temp+1):
-                i = day - 1
-                while i > -1:
-                    sub = self.total_assets[i] - self.total_assets[i-1]
-                    if sub < 0:
-                        long_swap += (self.total_assets[i] * 0.1) * 0.01
-                    else:
-                        long_swap += ((self.total_assets[i] - self.total_assets[i-1]) * 0.1) * 0.01
-                    i -= 1
-            coh = coh - spend - costs - leverage_spend - long_swap
+            instant_difference = (holding * closing) - self.holdings_memory[-1]
+            instant_price_difference = (np.sum(instant_difference)) * 1000
+            coh = coh - spend - costs - instant_price_difference
             holdings_updated = holdings + actions
-            self.total_assets.append(holdings_updated)
             self.holdings_memory.append(holdings_updated * closings)
-
+            
             # Update average buy price
             buys = np.sign(buys)
             self.n_buys += buys
@@ -438,6 +422,7 @@ class StockTradingEnvStopLoss(gym.Env):
             # set as zero when we don't have any holdings anymore
             self.n_buys = np.where(holdings_updated > 0, 
                                    self.n_buys, 0)
+            
             self.avg_buy_price = np.where(holdings_updated > 0, 
                                           self.avg_buy_price, 0) 
             
