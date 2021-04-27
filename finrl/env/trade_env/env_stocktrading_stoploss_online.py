@@ -156,15 +156,12 @@ class StockTradingEnvStopLossOnline(gym.Env):
         now_t = Timestamp.now('UTC') + timedelta(hours=3)
         now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
         time = now_t.split(" ")[0]
-        start_dt = "{} 16:30:00".format(time)
-        start_dt = datetime.datetime.strptime(start_dt, '%Y-%m-%d %H:%M:%S')
-        now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d %H:%M:%S')
-        sleep_t = start_dt - now_t
-        print("sleep for {} second".format(sleep_t))
-        sleep(sleep_t)
+        self.start_dt = "{} 16:30:00".format(time)
+        self.start_dt = datetime.datetime.strptime(self.start_dt, '%Y-%m-%d %H:%M:%S')
 
         self.dates = self.days*24
 
+                trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         init_state = np.array([self.initial_amount] 
                               + [0] * len(self.assets) 
                               + self.get_date_vector(self.date_index))
@@ -187,7 +184,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if cols is None:
             cols = self.daily_information_cols
         
-        fetch_t = self.start_t + timedelta(hours=date)
+        fetch_t = self.start_dt + timedelta(hours=date)
         fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
         fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
         now_t = Timestamp.now('UTC')+ timedelta(hours=3)
