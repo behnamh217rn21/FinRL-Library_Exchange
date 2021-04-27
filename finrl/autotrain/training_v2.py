@@ -13,8 +13,9 @@ import datetime
 
 #############################################################################
 from finrl.config import config
-from finrl.env.env_stocktrading_stoploss import StockTradingEnvStopLoss
 from finrl.model.models import DRLAgent
+from finrl.env.env_stocktrading_stoploss import StockTradingEnvStopLoss
+from finrl.env.dwx_zeromq_connector.strategies import rates_subscriptions_v1
 
 #############################################################################
 import multiprocessing
