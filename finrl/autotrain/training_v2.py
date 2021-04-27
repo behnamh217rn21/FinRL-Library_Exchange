@@ -30,6 +30,17 @@ def main():
     """
     train an agent
     """
+    print("==============rates subscriptions===========")
+    def rates_subscriptions(_symbols):
+        # creates object with a predefined configuration
+        print('running rates subscriptions process ...')
+        func = rates_subscriptions_v1.rates_subscriptions(_instruments=_symbols)
+        func.run()
+        # Waits example termination
+        print('Waiting rates subscriptions process termination...\n')
+        while not func.isFinished():
+            sleep(1)
+        
     print("==============Start Training===========")
     print("****Start Fetching Data (rates subscriptions process)****")
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
