@@ -39,12 +39,10 @@
 #############################################################################
 # DWX-ZMQ required imports 
 #############################################################################
-# Append path for main project folder
-import sys
-sys.path.append('../../..')
-
 # Import ZMQ-Strategy from relative path
-from examples.template.strategies.base.DWX_ZMQ_Strategy import DWX_ZMQ_Strategy
+from base.DWX_ZMQ_Strategy import DWX_ZMQ_Strategy
+
+from finrl.preprocessing.preprocessors import FeatureEngineer
 
 #################################################################################
 from pandas import Timestamp
@@ -135,7 +133,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             f1.write(self._zmq._Balance); f1.close()
             self.p_time = self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0]
 
-        file = "./data_info" + "/data.csv"
+        file = "./" + config.DATA_SAVE_DIR + "/data.csv"
         ohlc, indicator = _msg.split("|")
         _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = ohlc.split(",")
         _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = indicator.split(";")
@@ -150,10 +148,17 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
 
         if ((self.cnt+1) % len(self._instruments)) == 0:
             self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
-            self.data_df["change"] = (self.data_df.close-self.data_df.open)/self.data_df.close
-            self.data_df["log_volume"] = np.log(self.data_df.volume*self.data_df.close)
-            self.data_df["daily_variance"] = (self.data_df.high-self.data_df.low)/self.data_df.close
-            self.data_df.to_csv(file)
+            fe = FeatureEngineer(use_technical_indicator=True,
+                                 tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
+                                 use_turbulence=True,
+                                 user_defined_feature=False)
+            processed = fe.preprocess_data(self.data_df)
+            np.seterr(divide = 'ignore')
+            processed['log_volume'] = np.where((processed.volume * processed.close) > 0, \
+                                               np.log(processed.volume * processed.close), 0)
+            processed['change'] = (processed.close - processed.open) / processed.close
+            processed['daily_variance'] = (processed.high - processed.low) / processed.close
+            processed.to_csv(file)
 
         _timestamp = pd.to_datetime(self._zmq._timestamp, format="%Y-%m-%d %H:%M:%S.%f")
         _timestamp = datetime.datetime.strftime(_timestamp, "%Y-%m-%d %H:%M:%S")
