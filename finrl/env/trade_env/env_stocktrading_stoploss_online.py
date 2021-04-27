@@ -391,9 +391,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
-            spread = (buys * 1) * 0.01
-            ask_closings = closings + spread
-            spend = np.dot(buys, ask_closings)
+            spend = np.dot(buys, closings)
             costs += spend * self.buy_cost_pct
             
             # if we run out of cash...
@@ -435,17 +433,17 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            diff = (holding * closing) - self.holdings_memory[-1]
-            leverage_spend = (np.sum(diff)) * 1000
             order_data = pd.read_csv("C:\\Users\\BEHNAMH721AS.RN\\AppData\\Roaming\\" \
                                      "MetaQuotes\\Terminal\\2E8DC23981084565FA3E19C061F586B2\\MQL4\\Files\\OrdersReport.csv",
                                      sep=';')
             swap = 0
             commission = 0
             for i in range(0, len(order_data)):
-                long_swap += order_data.loc[i, 'swap']
+                Leverage += order_data.loc[i, 'Leverage']
+                swap += order_data.loc[i, 'swap']
                 commission += order_data.loc[i, 'commission']
-            coh = coh - spend - costs - leverage_spend - long_swap - commission
+                FreeMargin += order_data.loc[i, 'FreeMargin']
+            coh = coh - spend - costs - swap - commission - FreeMargin
             holdings_updated = holdings + actions
             self.holdings_memory.append(holdings_updated * closings)
 
