@@ -64,11 +64,12 @@ def main():
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     env_trade_kwargs = {'initial_amount': initial_amount*1000,
                         'assets': _symbols_i1,
+                        'sell_cost_pct': 0,
+                        'buy_cost_pct': 0,
                         'hmax': 10,
                         'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
-                        'random_start': False,
                         'discrete_actions': True}
     e_trade_gym = StockTradingEnvStopLoss_online(**env_trade_kwargs)
     
