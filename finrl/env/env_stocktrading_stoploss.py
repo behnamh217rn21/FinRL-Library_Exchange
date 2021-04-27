@@ -158,7 +158,6 @@ class StockTradingEnvStopLoss(gym.Env):
         self.transaction_memory = []
         self.state_memory = []
         self.holdings_memory = []
-        self.holdings_memory.append([0] * len(self.assets))
         self.account_information = {"cash": [],
                                     "asset_value": [],
                                     "total_assets": [],
@@ -406,11 +405,8 @@ class StockTradingEnvStopLoss(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            instant_difference = (holdings * closings) - self.holdings_memory[-1]
-            instant_price_difference = (np.sum(instant_difference)) * 1000
-            coh = coh - spend - costs - instant_price_difference
+            coh = coh - spend - costs
             holdings_updated = holdings + actions
-            self.holdings_memory.append(holdings_updated * closings)
             
             # Update average buy price
             buys = np.sign(buys)
