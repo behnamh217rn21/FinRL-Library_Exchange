@@ -445,10 +445,9 @@ class StockTradingEnvStopLossOnline(gym.Env):
             swap = 0
             commission = 0
             for i in range(0, len(order_data)):
-                Leverage += order_data.loc[i, 'Leverage']
-                swap += order_data.loc[i, 'swap']
+                FreeMargin = order_data.loc[i, 'FreeMargin']
                 commission += order_data.loc[i, 'commission']
-                FreeMargin += order_data.loc[i, 'FreeMargin']
+                swap += order_data.loc[i, 'swap']
             coh = coh - spend - costs - swap - commission
             holdings_updated = holdings + actions
             self.holdings_memory.append(holdings_updated * closings)
