@@ -20,6 +20,10 @@ from stable_baselines import logger
 import time
 from time import sleep
 
+# Append path for main project folder
+import sys
+sys.path.append("../")
+
 #############################################################################
 #############################################################################
 from dwx_zeromq_connector.strategies import traders_v1
