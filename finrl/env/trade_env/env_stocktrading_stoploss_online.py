@@ -14,9 +14,11 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+#############################################################################
 from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines import logger
 
+#############################################################################
 import time
 from time import sleep
 
