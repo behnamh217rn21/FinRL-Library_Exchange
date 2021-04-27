@@ -406,7 +406,7 @@ class StockTradingEnvStopLoss(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            instant_difference = (holding * closing) - self.holdings_memory[-1]
+            instant_difference = (holdings * closings) - self.holdings_memory[-1]
             instant_price_difference = (np.sum(instant_difference)) * 1000
             coh = coh - spend - costs - instant_price_difference
             holdings_updated = holdings + actions
