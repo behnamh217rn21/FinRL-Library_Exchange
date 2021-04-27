@@ -10,16 +10,15 @@ from gym import spaces
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-
-from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
-from stable_baselines import logger
-
 import time
 
 #############################################################################
+from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
+from stable_baselines import logger
+
+
 #############################################################################
-
-
+#############################################################################
 class StockTradingEnvStopLoss(gym.Env):
     """
     A stock trading environment for OpenAI gym
