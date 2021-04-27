@@ -60,10 +60,10 @@ def main():
                          user_defined_feature=False)
     processed = fe.preprocess_data(df)
     np.seterr(divide = 'ignore')
-    processed['log_volume'] = np.where((processed.volume*processed.close)>0, \
-                                       np.log(processed.volume*processed.close), 0)
-    processed['change'] = (processed.close-processed.open)/processed.close
-    processed['daily_variance'] = (processed.high-processed.low)/processed.close
+    processed['log_volume'] = np.where((processed.volume * processed.close) > 0, \
+                                       np.log(processed.volume * processed.close), 0)
+    processed['change'] = (processed.close - processed.open) / processed.close
+    processed['daily_variance'] = (processed.high - processed.low) / processed.close
     print(processed.head())
     processed.to_csv("./" + config.DATA_SAVE_DIR + "/Dataframe/data_df.csv")
         
@@ -137,7 +137,7 @@ def main():
                                    log_interval=1)
     
     print("****Model Saving****")
-    DDPG_model.save(".\\" + config.TRAINED_MODEL_DIR + "\\DDPG.model")
+    DDPG_model.save("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
     
     
 if __name__ == "__main__":
