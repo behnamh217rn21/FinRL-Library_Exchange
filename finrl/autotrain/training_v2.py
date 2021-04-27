@@ -61,12 +61,12 @@ def main():
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", \
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     env_train_kwargs = {'initial_amount': initial_amount*1000,
+                        'assets': _symbols_i1,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
                         'hmax': 10,
                         'cash_penalty_proportion': 0.2,
-                        'cache_indicator_data': True,
-                        'daily_information_cols': information_cols,
+                        'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
                         'discrete_actions': True}
     e_train_gym = StockTradingEnvStopLoss(df = train_df, **env_train_kwargs)
