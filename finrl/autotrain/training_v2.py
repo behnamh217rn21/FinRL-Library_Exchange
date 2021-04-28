@@ -14,7 +14,7 @@ import datetime
 #############################################################################
 from finrl.config import config
 from finrl.model.models import DRLAgent
-from finrl.env.env_stocktrading_stoploss import StockTradingEnvStopLoss
+from finrl.env.trade_env.env_stocktrading_stoploss_online import StockTradingEnvStopLossOnline
 from finrl.env.dwx_zeromq_connector.strategies import rates_subscriptions_v1
 
 #############################################################################
@@ -51,7 +51,7 @@ def main():
     sleep(60)
     
     print("****Environment Document****")
-    print(StockTradingEnvStopLoss.__doc__)
+    print(StockTradingEnvStopLossOnline.__doc__)
     
     print("****Build Train Environment****")
     file = open("./" + config.DATA_SAVE_DIR + "/balance.txt","r+") 
@@ -69,7 +69,7 @@ def main():
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
                         'discrete_actions': True}
-    e_train_gym = StockTradingEnvStopLoss(df = train_df, **env_train_kwargs)
+    e_train_gym = StockTradingEnvStopLossOnline(df = train_df, **env_train_kwargs)
     # this is our training env. It allows multiprocessing
     env_train, _ = e_train_gym.get_sb_env()
 
