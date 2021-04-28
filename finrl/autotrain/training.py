@@ -62,6 +62,8 @@ def main():
                                        np.log(processed.volume*processed.close), 0)
     processed['change'] = (processed.close-processed.open)/processed.close
     processed['daily_variance'] = (processed.high-processed.low)/processed.close
+    print(processed.head())
+    processed.to_csv("./" + config.DATA_SAVE_DIR + "/Dataframe/data_df.csv")
     """
     print("****Training & Trading data split****")
     # Training & Trading data split
