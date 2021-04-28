@@ -47,10 +47,10 @@ def main():
     #Data_Downloader(_symbols_i1)
     #df = load_dataset(file_name="mt4_dataset.csv")
     """
+    """
     df = load_dataset(file_name="data.csv")
     print(df.head())
-    
-    """
+     
     print("****Start Feature Engineering****")
     fe = FeatureEngineer(use_technical_indicator=True,
                          tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
@@ -65,6 +65,9 @@ def main():
     print(processed.head())
     processed.to_csv("./" + config.DATA_SAVE_DIR + "/Dataframe/data_df.csv")
     """
+    processed = load_dataset(file_name="data.csv")
+    print(processed.head())
+    
     print("****Training & Trading data split****")
     # Training & Trading data split
     train_df = data_split(processed, config.START_DATE, config.START_TRADE_DATE)
