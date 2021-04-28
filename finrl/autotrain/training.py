@@ -70,9 +70,9 @@ def main():
     
     print("****Training & Trading data split****")
     # Training & Trading data split
-    train_df = data_split(processed, config.START_DATE, config.START_TRADE_DATE)
+    train_df = data_split(processed, config.S_SPLIT, config.T_SPLIT)
     print("train dataset length: {}".format(str(len(train_df))))
-    trade_df = data_split(processed, config.START_TRADE_DATE, config.END_DATE)
+    trade_df = data_split(processed, config.T_SPLIT, config.F_SPLIT)
     print("trade dataset length: {}".format(str(len(trade_df))))
     
     print("****Environment Document****")
