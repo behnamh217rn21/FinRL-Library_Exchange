@@ -45,7 +45,7 @@ def main():
     print("****Start Fetching Data (rates subscriptions process)****")
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
-    process = multiprocessing.Process(target=rates_subscriptions(), args=(_symbols,))
+    process = multiprocessing.Process(target=rates_subscriptions, args=(_symbols,))
     process.start()
     sleep(60)
     
