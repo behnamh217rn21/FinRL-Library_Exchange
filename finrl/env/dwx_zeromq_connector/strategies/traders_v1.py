@@ -164,7 +164,6 @@ class t_class(DWX_ZMQ_Strategy):
                     # Reset cycle if nothing received
                     if self._zmq._valid_response_(_ret_o) == False:
                         print("Nothing Received")
-                        continue
                         
                 finally:
                     #############################
@@ -176,7 +175,6 @@ class t_class(DWX_ZMQ_Strategy):
                     # Reset cycle if nothing received
                     if self._zmq._valid_response_(_ot) == False:
                         print("Nothing Received")
-                        continue
         
         finally:
             # Release lock
