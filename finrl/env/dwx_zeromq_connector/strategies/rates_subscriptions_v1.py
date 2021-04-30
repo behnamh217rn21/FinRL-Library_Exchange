@@ -124,11 +124,12 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         """
         # split data to get topic and message and balance
         _topic, _, _msg = data.split("&")
+        """
         print('Data on Topic={} with Message={} and Balance={}'.format(_topic,
                                                                        self._zmq._Market_Data_DB[_topic][self._zmq._timestamp],
                                                                        self._zmq._Balance
                                                                        ))
-
+        """
         if self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0] != self.p_time:
             f1 = open("./" + config.DATA_SAVE_DIR + "/balance.txt", 'w')
             f1.write(self._zmq._Balance); f1.close()
@@ -159,6 +160,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                                                np.log(processed.volume * processed.close), 0)
             processed['change'] = (processed.close - processed.open) / processed.close
             processed['daily_variance'] = (processed.high - processed.low) / processed.close
+            print(processed)
             processed.to_csv(file)
 
         _timestamp = pd.to_datetime(self._zmq._timestamp, format="%Y-%m-%d %H:%M:%S.%f")
