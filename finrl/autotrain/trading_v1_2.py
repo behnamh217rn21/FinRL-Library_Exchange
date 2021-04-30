@@ -28,7 +28,6 @@ sys.path.append("..\\FinRL-Library_Master")
 #############################################################################
 #############################################################################                 
 def main():
-    print("==============rates subscriptions===========")
     def rates_subscriptions(_symbols):
         # creates object with a predefined configuration
         print('running rates subscriptions process ...')
