@@ -199,9 +199,9 @@ class StockTradingEnvStopLossOnline(gym.Env):
         sleep(7)
         
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
-        trunc_df = trunc_df.reset_index(drop=True)
         date = trunc_df['date'][0]
-        
+        trunc_df = trunc_df.reset_index(drop=True)
+
         v = []
         for a in self.assets:
             try:
@@ -209,7 +209,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 v += subset.loc[date, cols].tolist()
             except:
                 print("No data received on {}".format(date))
-                return self.get_date_vector(self, date, cols)
+                return self.get_date_vector(date, cols)
         assert len(v) == len(self.assets) * len(cols)
         return v
         
