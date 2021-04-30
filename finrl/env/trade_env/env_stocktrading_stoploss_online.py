@@ -206,11 +206,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         for a in self.assets:
             try:
                 subset = trunc_df[trunc_df[self.symbol] == a]
-                print("11111111111111111111111111111111")
-                print(subset)
                 v += subset.loc[date_time, cols].tolist()
-                print("22222222222222222222222222222222")
-                print(v)
             except:
                 print("No data received on {}".format(date))
                 return self.get_date_vector(date, cols)
