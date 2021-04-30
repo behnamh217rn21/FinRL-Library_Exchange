@@ -81,8 +81,7 @@ def main():
     ddpg_params = {"actor_lr": 5e-06,
                    "critic_lr": 5e-06,
                    "gamma": 0.99,
-                   "batch_size": 1024,
-                   "eval_env": env_trade}
+                   "batch_size": 1024}
 
     DDPG_model = agent.get_model("ddpg",
                                  model_kwargs = ddpg_params,
