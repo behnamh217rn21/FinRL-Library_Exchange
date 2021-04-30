@@ -113,7 +113,7 @@ class t_class(DWX_ZMQ_Strategy):
                         # Reset cycle if nothing received
                         if self._zmq._valid_response_(_ret_cp) == False:
                             print("Nothing Received")
-                            break   
+                            continue   
                         break
                         
                     elif sell == self._ot["_lots"].loc[_df.index == i]:
@@ -127,7 +127,7 @@ class t_class(DWX_ZMQ_Strategy):
                         # Reset cycle if nothing received
                         if self._zmq._valid_response_(_ret_c) == False:
                             print("Nothing Received")
-                            break
+                            continue
                         break
                                                             
                     else:
@@ -142,7 +142,7 @@ class t_class(DWX_ZMQ_Strategy):
                         # Reset cycle if nothing received
                         if self._zmq._valid_response_(_ret_c) == False:
                             print("Nothing Received")
-                            break   
+                            continue   
                         # Sleep between commands to MetaTrader
                         sleep(self._delay)
                    
@@ -163,7 +163,8 @@ class t_class(DWX_ZMQ_Strategy):
                                                        10)
                     # Reset cycle if nothing received
                     if self._zmq._valid_response_(_ret_o) == False:
-                        break
+                        print("Nothing Received")
+                        continue
                         
                 finally:
                     #############################
@@ -174,6 +175,7 @@ class t_class(DWX_ZMQ_Strategy):
                                                                  10)
                     # Reset cycle if nothing received
                     if self._zmq._valid_response_(_ot) == False:
+                        print("Nothing Received")
                         continue
         
         finally:
