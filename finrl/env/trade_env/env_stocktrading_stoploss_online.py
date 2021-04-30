@@ -200,7 +200,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         date_time = trunc_df['date'][0]
-        trunc_df = trunc_df.reset_index(drop=True)
+        trunc_df= trunc_df.set_index('date')
 
         v = []
         for a in self.assets:
