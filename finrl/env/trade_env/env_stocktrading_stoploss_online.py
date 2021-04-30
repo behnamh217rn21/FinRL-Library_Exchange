@@ -190,9 +190,13 @@ class StockTradingEnvStopLossOnline(gym.Env):
         now_t = Timestamp.now('UTC')+ timedelta(hours=3)
         now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
         now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d %H:%M:%S')
-        sleep_t = fetch_t - now_t
+        if fetch_t >= now_t:
+            sleep_t = (fetch_t - now_t).total_seconds()
+        else:
+            fetch_t = fetch_t + timedelta(hours=24)
+            sleep_t = (fetch_t - now_t).total_seconds()
         print("sleep for {} second".format(sleep_t))
-        sleep(sleep_t)
+        sleep(7)
         
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         
