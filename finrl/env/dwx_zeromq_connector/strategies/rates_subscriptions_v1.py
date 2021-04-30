@@ -149,16 +149,22 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
 
         if ((self.cnt+1) % len(self._instruments)) == 0:
             self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
-            fe = FeatureEngineer(use_technical_indicator=True,
+            print("111111111111111111111111111111111111111111")
+            print(self.data_df)
+            fe = FeatureEngineer(use_technical_indicator=False,
                                  tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
                                  use_turbulence=True,
                                  user_defined_feature=False)
             processed = fe.preprocess_data(self.data_df)
+            print("222222222222222222222222222222222222222222")
+            print(processed)
             np.seterr(divide = 'ignore')
             processed['log_volume'] = np.where((processed.volume * processed.close) > 0, \
                                                np.log(processed.volume * processed.close), 0)
             processed['change'] = (processed.close - processed.open) / processed.close
             processed['daily_variance'] = (processed.high - processed.low) / processed.close
+            print("333333333333333333333333333333333333333333")
+            print(processed)
             processed.to_csv(file)
 
         _timestamp = pd.to_datetime(self._zmq._timestamp, format="%Y-%m-%d %H:%M:%S.%f")
