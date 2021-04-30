@@ -43,6 +43,7 @@
 from finrl.env.dwx_zeromq_connector.strategies.base.DWX_ZMQ_Strategy import DWX_ZMQ_Strategy
 
 from finrl.preprocessing.preprocessors import FeatureEngineer
+from finrl.config import config
 
 #################################################################################
 from pandas import Timestamp
