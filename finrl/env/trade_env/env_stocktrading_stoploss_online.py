@@ -22,13 +22,9 @@ from stable_baselines import logger
 import time
 from time import sleep
 
-# Append path for main project folder
-import sys
-#sys.path.append("../")
-
 #############################################################################
 #############################################################################
-from ../dwx_zeromq_connector.strategies.traders_v1 import t_class
+from finrl.env.dwx_zeromq_connector.strategies.traders_v1 import t_class
 
 #############################################################################
 from finrl.config import config
