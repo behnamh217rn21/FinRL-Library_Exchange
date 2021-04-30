@@ -13,9 +13,9 @@
     https://opensource.org/licenses/BSD-3-Clause
 """
 
-from api.DWX_ZeroMQ_Connector_v2_0_1_RC8 import DWX_ZeroMQ_Connector
-from modules.DWX_ZMQ_Execution import DWX_ZMQ_Execution
-from modules.DWX_ZMQ_Reporting import DWX_ZMQ_Reporting
+from finrl.env.dwx_zeromq_connector.strategies.base.api.DWX_ZeroMQ_Connector_v2_0_1_RC8 import DWX_ZeroMQ_Connector
+from finrl.env.dwx_zeromq_connector.strategies.base.modules.DWX_ZMQ_Execution import DWX_ZMQ_Execution
+from finrl.env.dwx_zeromq_connector.strategies.base.modules.DWX_ZMQ_Reporting import DWX_ZMQ_Reporting
 
 class DWX_ZMQ_Strategy(object):
     
