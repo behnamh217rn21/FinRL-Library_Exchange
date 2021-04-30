@@ -73,6 +73,7 @@ def main():
                         'print_verbosity': 500, 
                         'discrete_actions': True}
     e_train_gym = StockTradingEnvStopLossOnline(**env_train_kwargs)
+    print("222222222222222222222222222222222222222222222")
     # this is our training env. It allows multiprocessing
     env_train, _ = e_train_gym.get_sb_env()
 
