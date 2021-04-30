@@ -17,7 +17,7 @@
 
 #############################################################################
 #############################################################################
-from base.DWX_ZMQ_Strategy import DWX_ZMQ_Strategy
+from finrl.env.dwx_zeromq_connector.strategies.base.DWX_ZMQ_Strategy import DWX_ZMQ_Strategy
 
 from threading import Thread, Lock
 from time import sleep
