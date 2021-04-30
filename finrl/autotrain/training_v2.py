@@ -31,7 +31,6 @@ def main():
     """
     train an agent
     """
-    print("==============rates subscriptions===========")
     def rates_subscriptions(_symbols):
         # creates object with a predefined configuration
         print('running rates subscriptions process ...')
