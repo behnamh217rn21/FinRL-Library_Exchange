@@ -119,7 +119,7 @@ class t_class(DWX_ZMQ_Strategy):
                     elif sell == self._ot["_lots"].loc[_df.index == i]:
                         _ret_c = self._execution._execute_({'_action': 'CLOSE',
                                                             '_ticket': i,
-                                                            'size': sell,
+                                                            'size': sell},
                                                            self._verbose,
                                                            self._delay,
                                                            10
