@@ -107,18 +107,10 @@ class FeatureEngineer:
         :param data: (df) pandas dataframe
         :return: (df) pandas dataframe
         """
-        print("4444444444444444444444444444444444444444")
-        print(data)
         df = data.copy()
         turbulence_index = self.calculate_turbulence(df)
-        print("5555555555555555555555555555555555555555")
-        print(turbulence_index)
         df = df.merge(turbulence_index, on="date")
-        print("6666666666666666666666666666666666666666")
-        print(df)
         df = df.sort_values(["date", "tic"]).reset_index(drop=True)
-        print("7777777777777777777777777777777777777777")
-        print(df)
         return df
 
     
