@@ -199,7 +199,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         sleep(7)
         
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
-        print("33333333333333333333333333333333333")
+        trunc_df = trunc_df.reset_index(drop=True)
         print(trunc_df)
         
         v = []
