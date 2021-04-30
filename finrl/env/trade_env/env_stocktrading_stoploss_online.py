@@ -164,10 +164,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
         time = now_t.split(" ")[0]
         self.start_dt = "{} 16:30:00".format(time)
         self.start_dt = datetime.datetime.strptime(self.start_dt, '%Y-%m-%d %H:%M:%S')
-
         self.dates = self.days*24
-
-                trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
+        
         init_state = np.array([self.initial_amount] 
                               + [0] * len(self.assets) 
                               + self.get_date_vector(self.date_index))
