@@ -72,7 +72,7 @@ def main():
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
                         'discrete_actions': True}
-    e_train_gym = StockTradingEnvStopLossOnline(df = train_df, **env_train_kwargs)
+    e_train_gym = StockTradingEnvStopLossOnline(**env_train_kwargs)
     # this is our training env. It allows multiprocessing
     env_train, _ = e_train_gym.get_sb_env()
 
