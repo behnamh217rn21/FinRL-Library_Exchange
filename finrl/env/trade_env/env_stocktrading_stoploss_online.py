@@ -28,7 +28,7 @@ sys.path.append("../")
 
 #############################################################################
 #############################################################################
-from dwx_zeromq_connector.strategies import traders_v1
+from dwx_zeromq_connector.strategies.traders_v1 import t_class
 
 #############################################################################
 from finrl.config import config
