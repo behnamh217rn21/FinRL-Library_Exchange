@@ -85,7 +85,8 @@ def main():
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     
     from pathlib import Path
-    path = Path(__file__).resolve().parents[5].joinpath("AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files/leverage.txt")
+    path = Path(__file__).resolve().parents[5].joinpath("AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/" \
+                                                        "MQL4/Files/leverage.txt")
     with open(path, 'r') as reader:
         Leverage = reader.read()
     print("Leverage : {}".format(Leverage))
