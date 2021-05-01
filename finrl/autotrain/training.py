@@ -93,7 +93,7 @@ def main():
                         'cache_indicator_data': True,
                         'daily_information_cols': information_cols,
                         'print_verbosity': 500, 
-                        'discrete_actions': True}
+                        'discrete_actions': False}
     e_train_gym = StockTradingEnvStopLoss(df = train_df, **env_train_kwargs)
     # this is our training env. It allows multiprocessing
     env_train, _ = e_train_gym.get_sb_env()
@@ -107,7 +107,7 @@ def main():
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
                         'random_start': False,
-                        'discrete_actions': True}
+                        'discrete_actions': False}
     e_trade_gym = StockTradingEnvStopLoss(df = trade_df, **env_trade_kwargs)
     # this is our observation environment. It allows full diagnostics
     env_trade, _ = e_trade_gym.get_sb_env()
