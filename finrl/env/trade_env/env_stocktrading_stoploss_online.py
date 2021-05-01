@@ -184,20 +184,20 @@ class StockTradingEnvStopLossOnline(gym.Env):
     def get_date_vector(self, date, cols=None):
         if cols is None:
             cols = self.daily_information_cols
-        
-        fetch_t = self.start_dt + timedelta(hours=date)
-        fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
-        fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
-        now_t = Timestamp.now('UTC')+ timedelta(hours=3)
-        now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
-        now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d %H:%M:%S')
-        if fetch_t >= now_t:
-            sleep_t = (fetch_t - now_t).total_seconds()
-        else:
-            fetch_t = fetch_t + timedelta(hours=24)
-            sleep_t = (fetch_t - now_t).total_seconds()
-        print("sleep for {} second".format(sleep_t))
-        sleep(7)
+            
+            fetch_t = self.start_dt + timedelta(hours=date)
+            fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
+            fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
+            now_t = Timestamp.now('UTC')+ timedelta(hours=3)
+            now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
+            now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d %H:%M:%S')
+            if fetch_t >= now_t:
+                sleep_t = (fetch_t - now_t).total_seconds()
+            else:
+                fetch_t = fetch_t + timedelta(hours=24)
+                sleep_t = (fetch_t - now_t).total_seconds()
+                print("sleep for {} second".format(sleep_t))
+                sleep(7)
         
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         date_time = trunc_df['date'][0]
@@ -338,8 +338,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
             assert min(holdings) >= 0
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
-            print("2222222222222222222222")
-            print(closings)
             
             asset_value = np.dot(holdings, closings)
             
@@ -416,7 +414,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                     # ... end the cycle and penalize
                     return self.return_terminal(reason="CASH SHORTAGE", reward=self.get_reward())
             else:
-                self._trading_process(self, holdings, sells, buys)
+                self._trading_process(holdings, sells, buys)
 
             self.transaction_memory.append(actions) # capture what the model's could do
 
