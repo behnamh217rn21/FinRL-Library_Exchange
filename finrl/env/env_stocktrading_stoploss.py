@@ -346,6 +346,8 @@ class StockTradingEnvStopLoss(gym.Env):
 
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
+            print("22222222222222222222222")
+            print(actions)
             
             self.closing_diff_avg_buy = closings - (self.stoploss_penalty * self.avg_buy_price)
             if begin_cash >= self.stoploss_penalty * self.initial_amount:
@@ -361,11 +363,15 @@ class StockTradingEnvStopLoss(gym.Env):
             proceeds = np.dot(sells, closings)
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
+            print("333333333333333333333333")
+            print(sells)
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             spend = np.dot(buys, closings)
             costs += spend * self.buy_cost_pct
+            print("4444444444444444444444")
+            print(buys)
             
             # if we run out of cash...
             if (spend + costs) > coh:
