@@ -67,10 +67,10 @@ def main():
                         'assets': _symbols_i1,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
-                        'hmax': 1,
+                        'hmax': 10,
                         'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols, 
-                        'print_verbosity': 500, 
+                        'print_verbosity': 1, 
                         'discrete_actions': True}
     e_train_gym = StockTradingEnvStopLossOnline(**env_train_kwargs)
     # this is our training env. It allows multiprocessing
