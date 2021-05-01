@@ -338,7 +338,9 @@ class StockTradingEnvStopLossOnline(gym.Env):
             assert min(holdings) >= 0
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
-                
+            print("2222222222222222222222")
+            print(closings)
+            
             asset_value = np.dot(holdings, closings)
             
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
@@ -414,7 +416,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                     # ... end the cycle and penalize
                     return self.return_terminal(reason="CASH SHORTAGE", reward=self.get_reward())
             else:
-                _trading_process(self, holdings, sells, buys)
+                self._trading_process(self, holdings, sells, buys)
 
             self.transaction_memory.append(actions) # capture what the model's could do
 
