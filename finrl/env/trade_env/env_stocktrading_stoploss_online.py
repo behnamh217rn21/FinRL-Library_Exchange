@@ -142,7 +142,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.profit_sell_diff_avg_buy = np.zeros(len(self.assets))
         self.n_buys = np.zeros(len(self.assets))
         self.avg_buy_price = np.zeros(len(self.assets))
-        self.date_index = 0
+        self.starting_point = 0
+        self.date_index = self.starting_point
         self.turbulence = 0
         self.episode += 1
         self.actions_memory = []
