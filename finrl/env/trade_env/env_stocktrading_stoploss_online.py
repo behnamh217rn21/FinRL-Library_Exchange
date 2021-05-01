@@ -237,13 +237,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
     
     
     def log_step(self, reason, terminal_reward=None):
-        print("222222222222222333")
         if terminal_reward is None:
             terminal_reward = self.account_information["reward"][-1]
         cash_pct = (self.account_information["cash"][-1] / self.account_information["total_assets"][-1])
         gl_pct = self.account_information["total_assets"][-1] / self.initial_amount
-        print("333333333333333333333")
-        print(gl_pct)
         rec = [
             self.episode,
             self.date_index - self.starting_point,
