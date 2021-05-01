@@ -71,7 +71,7 @@ def main():
                         'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 1, 
-                        'discrete_actions': True}
+                        'discrete_actions': False}
     e_train_gym = StockTradingEnvStopLossOnline(**env_train_kwargs)
     # this is our training env. It allows multiprocessing
     env_train, _ = e_train_gym.get_sb_env()
