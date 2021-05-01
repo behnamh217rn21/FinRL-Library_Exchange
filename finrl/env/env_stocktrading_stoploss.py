@@ -343,9 +343,14 @@ class StockTradingEnvStopLoss(gym.Env):
             else:
                 actions = np.where(closings > 0, 
                                    actions / closings, 0)
+                print("11111111111111111111")
+                print(type(actions))
+                actions = list(map(lambda x: round(x, ndigits=2), actions))
 
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
+            print("22222222222222222222")
+            print(actions)
             
             self.closing_diff_avg_buy = closings - (self.stoploss_penalty * self.avg_buy_price)
             if begin_cash >= self.stoploss_penalty * self.initial_amount:
