@@ -56,12 +56,20 @@ def main():
     initial_amount = file.read()
     initial_amount = float(initial_amount)
     file.close()
+    
     _symbols_i1 = []
     for i in range(0, len(_symbols)):
         _symbols_i1.append(_symbols[i][1])
+        
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", 
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
-    env_trade_kwargs = {'initial_amount': initial_amount*1000,
+    
+    from pathlib import Path
+    path = Path(__file__).resolve().parents[5].joinpath("AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files/leverage.txt")
+    with open(path, 'r') as reader:
+        Leverage = reader.read()
+    print("Leverage : {}".format(Leverage))
+    env_trade_kwargs = {'initial_amount': initial_amount*float(Leverage),
                         'assets': _symbols_i1,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
