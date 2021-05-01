@@ -309,7 +309,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         # creates object with a predefined configuration
         print('\nrunning trading process ...')
         func2 = traders_v1.t_class(_symbols=self.assets)
-        func2.run(holdings, sells, buys)
+        func2._run_(holdings, sells, buys)
         
         # Waits example termination
         print('\nWaiting trading process termination...')
