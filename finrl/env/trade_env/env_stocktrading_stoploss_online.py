@@ -323,7 +323,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.log_header()
             
         # print if it's time.
-        if (self.current_step + 1) % self.print_verbosity == 0:
+        if ((self.current_step + 1) % self.print_verbosity == 0) and (self.current_step != 0):
             self.log_step(reason="update")
             
         # if we're at the end
