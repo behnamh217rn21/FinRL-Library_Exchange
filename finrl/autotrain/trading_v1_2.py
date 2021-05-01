@@ -69,7 +69,7 @@ def main():
                         'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
-                        'discrete_actions': True}
+                        'discrete_actions': False}
     e_trade_gym = StockTradingEnvStopLoss_online(**env_trade_kwargs)
     
     print("==============Start Trading===========")
