@@ -90,7 +90,6 @@ def main():
                         'buy_cost_pct': 0,
                         'hmax': 10,
                         'cash_penalty_proportion': 0.2,
-                        'cache_indicator_data': True,
                         'daily_information_cols': information_cols,
                         'print_verbosity': 500, 
                         'discrete_actions': False}
@@ -104,7 +103,6 @@ def main():
                         'buy_cost_pct': 0,
                         'hmax': 10,
                         'cash_penalty_proportion': 0.2,
-                        'cache_indicator_data': True,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
                         'random_start': False,
