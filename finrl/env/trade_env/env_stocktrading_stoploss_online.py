@@ -325,12 +325,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.log_header()
             
         # print if it's time.
-        print("55555555555555555555555555")
-        print(self.current_step)
-        print("66666666666666666666666666")
-        print(self.print_verbosity)
         if (self.current_step + 1) % self.print_verbosity == 0:
-            print("7777777777777777777")
             self.log_step(reason="update")
             
         # if we're at the end
@@ -387,8 +382,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
-            print("hhhhhhhhhhhhhhhhhhhhhhhhhh")
-            print(actions)
+            
             self.closing_diff_avg_buy = closings - (self.stoploss_penalty * self.avg_buy_price)
             if begin_cash >= self.stoploss_penalty * self.initial_amount:
                 # clear out position if stop-loss criteria is met
@@ -400,8 +394,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
-            print("jjjjjjjjjjjjjjjjjjjjjjjjjjj")
-            print(sells)
             proceeds = np.dot(sells, closings)
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
@@ -410,8 +402,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             buys = np.clip(actions, 0, np.inf)
             spend = np.dot(buys, closings)
             costs += spend * self.buy_cost_pct
-            print("kkkkkkkkkkkkkkkkkkkkkkkk")
-            print(buys)
+            
             # if we run out of cash...
             if (spend + costs) > coh:
                 if self.patient:
