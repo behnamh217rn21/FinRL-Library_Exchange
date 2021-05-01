@@ -387,6 +387,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             actions = np.maximum(actions, -np.array(holdings))
             print("22222222222222222222")
             print(actions)
+            
             self.closing_diff_avg_buy = closings - (self.stoploss_penalty * self.avg_buy_price)
             if begin_cash >= self.stoploss_penalty * self.initial_amount:
                 # clear out position if stop-loss criteria is met
