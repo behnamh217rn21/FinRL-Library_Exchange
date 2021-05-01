@@ -241,6 +241,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             terminal_reward = self.account_information["reward"][-1]
         cash_pct = (self.account_information["cash"][-1] / self.account_information["total_assets"][-1])
         gl_pct = self.account_information["total_assets"][-1] / self.initial_amount
+        
         rec = [
             self.episode,
             self.date_index - self.starting_point,
