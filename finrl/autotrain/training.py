@@ -93,7 +93,7 @@ def main():
     with open(path, 'r') as reader:
         Leverage = reader.read()
     print("Leverage : {}".format(Leverage))
-    env_trade_kwargs = {'initial_amount': initial_amount*float(Leverage),
+    env_train_kwargs = {'initial_amount': initial_amount*float(Leverage),
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
                         'hmax': 10,
