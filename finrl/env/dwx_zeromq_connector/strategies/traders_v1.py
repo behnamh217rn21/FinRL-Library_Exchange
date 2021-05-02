@@ -46,7 +46,7 @@ class t_class(DWX_ZMQ_Strategy):
         self._lock = Lock()
         
     ##########################################################################
-    def _run_(self, holdings, sells, buys):
+    def _run_(self, sells, buys):
         """
         Logic:
             For each symbol in self._symbols:
@@ -63,7 +63,6 @@ class t_class(DWX_ZMQ_Strategy):
             _t = Thread(name="{}_Trader".format(_symbol),
                         target=self._trader_, 
                         args=(_symbol, 
-                              holdings[index], 
                               sells[index],
                               buys[index]))
             _t.start()
@@ -72,7 +71,11 @@ class t_class(DWX_ZMQ_Strategy):
             self._traders.append(_t)
         
     ##########################################################################
-    def _trader_(self, _symbol, holding, sell, buy):
+    def _trader_(self, _symbol, sell, buy):
+        print("1111111111111111111111111")
+        print(_symbol)
+        print(sell)
+        print(buy)
         # Note: Just for this example, only the Order Type is dynamic.
         _default_order = self._zmq._generate_default_order_dict()
         _default_order['_symbol'] = _symbol[1]
@@ -192,6 +195,6 @@ class t_class(DWX_ZMQ_Strategy):
         for _t in self._traders:      
             # wait for traders to finish.
             _t.join() 
-            print('\n[{}] finished.\n'.format(_t.getName()))
+        print("\ntraders finished.\n")
                                                             
     ##########################################################################
