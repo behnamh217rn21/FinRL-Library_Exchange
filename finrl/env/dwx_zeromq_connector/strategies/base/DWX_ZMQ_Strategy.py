@@ -39,11 +39,6 @@ class DWX_ZMQ_Strategy(object):
         self._symbols = _symbols
         self._broker_gmt = _broker_gmt
         
-        # Not entirely necessary here.
-        self._zmq = DWX_ZeroMQ_Connector(_pulldata_handlers=_pulldata_handlers,
-                                         _subdata_handlers=_subdata_handlers,
-                                         _verbose=_verbose)
-        
         # Modules
         self._execution = DWX_ZMQ_Execution(self._zmq)
         self._reporting = DWX_ZMQ_Reporting(self._zmq)
