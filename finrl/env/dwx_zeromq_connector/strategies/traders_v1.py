@@ -33,10 +33,7 @@ class t_class(DWX_ZMQ_Strategy):
                  _verbose=False
                  ):
         
-        super().__init__(_name, _symbols, _broker_gmt,
-                         [self],      # Registers itself as handler of pull data via self.onPullData()
-                         [self],      # Registers itself as handler of sub data via self.onSubData()
-                         _verbose)
+        super().__init__(_name, _symbols, _broker_gmt, _verbose)
         
         # This strategy's variables
         self._delay = _delay
