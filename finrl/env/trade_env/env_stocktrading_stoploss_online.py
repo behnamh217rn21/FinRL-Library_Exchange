@@ -441,10 +441,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            from pathlib import Path
-            path = Path(__file__).resolve().parents[17].joinpath("AppData\\Roaming\\MetaQuotes\\Terminal\\58F16B8C9F18D6DD6A5DAC862FC9CB62\\" \
-                                                                "MQL4\\Files\\OrdersReport.csv")
-            order_data = pd.read_csv(path, sep=';')
+            order_data = pd.read_csv("C:/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
+                                     , sep=';')
             swap = 0
             commission = 0
             for i in range(0, len(order_data)):
