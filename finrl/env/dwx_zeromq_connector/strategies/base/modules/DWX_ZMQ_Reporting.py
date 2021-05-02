@@ -25,7 +25,7 @@ class DWX_ZMQ_Reporting():
     def _get_open_trades_(self, _trader='Trader_SYMBOL', 
                           _delay=0.1, _wbreak=10):
         # Reset data output
-        self._zmq._set_response_(None)
+        #self._zmq._set_response_(None)
         
         # Get open trades from MetaTrader
         self._zmq._DWX_MTX_GET_ALL_OPEN_TRADES_()
