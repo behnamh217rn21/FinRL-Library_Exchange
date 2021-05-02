@@ -453,7 +453,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             os.chdir(path)
             order_data = pd.read_csv("OrdersReport.csv", sep=';')
             os.chdir("../../../../../../..")
-            os.chdir("OneDrive/Desktop/FinRL-Library_Exchange")
+            os.chdir("/OneDrive/Desktop/FinRL-Library_Exchange")
             swap = 0
             commission = 0
             for i in range(0, len(order_data)):
