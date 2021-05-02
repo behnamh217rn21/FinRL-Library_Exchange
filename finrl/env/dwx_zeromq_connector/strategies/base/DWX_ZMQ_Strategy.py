@@ -30,7 +30,7 @@ class DWX_ZMQ_Strategy(object):
                            ('SPX500',1.0),
                            ('STOXX50E',0.10),
                            ('XAUUSD',0.01)],
-                 _handler=0
+                 _handler=0,
                  _broker_gmt=0,                 # Darwinex GMT offset
                  _verbose=False):               # Print ZeroMQ messages
                  
