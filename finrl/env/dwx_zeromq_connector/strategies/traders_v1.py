@@ -28,11 +28,12 @@ import pandas as pd
 class t_class(DWX_ZMQ_Strategy):
     def __init__(self, _name="ONLINE_TRADERS",
                  _symbols=['#INTC', '#AAPL'],
+                 _handler=0
                  _delay=0.1,
                  _broker_gmt=2,
                  _verbose=False
                  ):
-        super().__init__(_name, _symbols, _broker_gmt, _verbose)
+        super().__init__(_name, _symbols, _handler, _broker_gmt, _verbose)
         
         # This strategy's variables
         self._delay = _delay
