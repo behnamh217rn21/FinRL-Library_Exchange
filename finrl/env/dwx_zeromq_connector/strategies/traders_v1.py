@@ -41,7 +41,6 @@ class t_class(DWX_ZMQ_Strategy):
         self._verbose = _verbose
         
         self._symbols = _symbols
-        self._ot = pd.DataFrame()
         
         # lock for acquire/release of ZeroMQ connector
         self._lock = Lock()
@@ -108,7 +107,7 @@ class t_class(DWX_ZMQ_Strategy):
             # SECTION - SELL TRADES #
             ############################### 
             if sell != 0:
-                for i in (_ot.loc[self._ot["_symbol"] == _symbol].index):
+                for i in (_ot.loc[_ot["_symbol"] == _symbol].index):
                     if sell < _ot["_lots"].loc[_ot.index == i]:
                         _ret_cp = self._execution._execute_({'_action': 'CLOSE_PARTIAL',
                                                              '_ticket': i,
