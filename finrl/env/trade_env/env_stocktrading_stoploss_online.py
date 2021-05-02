@@ -441,8 +441,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            order_data = pd.read_csv("C:\\Users\\BEHNAMH721AS.RN\\AppData\\Roaming\\MetaQuotes\\Terminal\\58F16B8C9F18D6DD6A5DAC862FC9CB62\\MQL4\\Files\\OrdersReport.csv"
-                                     , sep=';')
+            import os
+            print("11111111111111111111111111")
+            print(os.getcwd())
+            path = "C:/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
+            os.chdir(path)
+            print("22222222222222222222222222")
+            print(os.getcwd())
+            order_data = pd.read_csv("OrdersReport.csv", sep=';')
             swap = 0
             commission = 0
             for i in range(0, len(order_data)):
