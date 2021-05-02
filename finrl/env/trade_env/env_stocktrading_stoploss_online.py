@@ -442,7 +442,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # update our holdings
             from pathlib import Path
-            path = Path(__file__).resolve().parents[10].joinpath("AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/" \
+            path = Path(__file__).resolve().parents[17].joinpath("AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/" \
                                                                 "MQL4/Files/OrdersReport.csv")
             order_data = pd.read_csv(path, sep=';')
             swap = 0
