@@ -165,6 +165,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.dates = pd.bdate_range(start=_date, periods=self.days)
         self.dates = self.dates + timedelta(minutes=990)
         
+        self._handler_cnt = 0
+        
         self._h_cnt = 0
         self.dates_cnt = self.days*24
         
@@ -316,13 +318,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
     def _trading_process(self, sells, buys):
         # creates object with a predefined configuration
         print('\nrunning trading process ...')
-        func2 = traders_v1.t_class(_symbols=self.assets)
+        func2 = traders_v1.t_class(_symbols=self.assets, _handler=self._handler_cnt)
         func2._run_(sells, buys)
         
         # Waits example termination
         print('\nWaiting trading process termination...')
         sleep(10)
         func2._stop_()
+        self._handler_cnt += 1
 
     def step(self, actions):
         # let's just log what we're doing in terms of max actions at each step.
