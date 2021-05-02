@@ -157,7 +157,7 @@ class t_class(DWX_ZMQ_Strategy):
                 try:
                     # 1 (OP_BUY) or 0 (OP_SELL)
                     _default_order['_type'] = 1    
-                    _default_order['_lots'] = diff
+                    _default_order['_lots'] = buy
                     _default_order['_magic'] = random.getrandbits(6)
                     
                     # Send instruction to MetaTrader
