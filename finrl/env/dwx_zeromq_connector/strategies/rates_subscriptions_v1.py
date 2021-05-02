@@ -79,7 +79,6 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         # received data on PULL and SUB ports 
         super().__init__(_name,
                          [],          # Empty symbol list (not needed for this example)
-                         _handler=0,
                          _broker_gmt,
                          [self],      # Registers itself as handler of pull data via self.onPullData()
                          [self],      # Registers itself as handler of sub data via self.onSubData()
