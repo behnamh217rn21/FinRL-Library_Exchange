@@ -95,35 +95,40 @@ class t_class(DWX_ZMQ_Strategy):
         try:
             # Acquire lock
             self._lock.acquire()
-
+            
+            self._ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
+                                                         self._delay,
+                                                         10)
+            # Reset cycle if nothing received
+            if self._zmq._valid_response_(self._ot) == False:
+                print("Nothing Received")
+                
             ###############################
             # SECTION - SELL TRADES #
             ############################### 
             if sell != 0:
-                for i in (self._ot.loc[_df["_symbol"] == _symbol].index):
-                    if sell < self._ot["_lots"].loc[_df.index == i]:
+                for i in (self._ot.loc[self._ot["_symbol"] == _symbol].index):
+                    if sell < self._ot["_lots"].loc[self._ot.index == i]:
                         _ret_cp = self._execution._execute_({'_action': 'CLOSE_PARTIAL',
                                                              '_ticket': i,
                                                              'size': sell,
                                                              '_comment': '{}_Trader'.format(_symbol)},
                                                             self._verbose,
                                                             self._delay,
-                                                            10
-                                                           )
+                                                            10)
                         # Reset cycle if nothing received
                         if self._zmq._valid_response_(_ret_cp) == False:
                             print("Nothing Received")
                             continue   
                         break
                         
-                    elif sell == self._ot["_lots"].loc[_df.index == i]:
+                    elif sell == self._ot["_lots"].loc[self._ot.index == i]:
                         _ret_c = self._execution._execute_({'_action': 'CLOSE',
                                                             '_ticket': i,
                                                             'size': sell},
                                                            self._verbose,
                                                            self._delay,
-                                                           10
-                                                          )
+                                                           10)
                         # Reset cycle if nothing received
                         if self._zmq._valid_response_(_ret_c) == False:
                             print("Nothing Received")
@@ -131,14 +136,13 @@ class t_class(DWX_ZMQ_Strategy):
                         break
                                                             
                     else:
-                        sell = sell - self._ot["_lots"].loc[_df["_symbol"] == _symbol]
+                        sell = sell - self._ot["_lots"].loc[self._ot["_symbol"] == _symbol]
                         _ret_c = self._execution._execute_({'_action': 'CLOSE',
                                                             '_ticket': i,
                                                             'size': self._ot["_lots"].loc[_df.index == i]},
                                                            self._verbose,
                                                            self._delay,
-                                                           10
-                                                          )
+                                                           10)
                         # Reset cycle if nothing received
                         if self._zmq._valid_response_(_ret_c) == False:
                             print("Nothing Received")
@@ -173,7 +177,7 @@ class t_class(DWX_ZMQ_Strategy):
                                                                  self._delay,
                                                                  10)
                     # Reset cycle if nothing received
-                    if self._zmq._valid_response_(_ot) == False:
+                    if self._zmq._valid_response_(self._ot) == False:
                         print("Nothing Received")
         
         finally:
