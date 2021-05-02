@@ -31,6 +31,8 @@ class DWX_ZMQ_Strategy(object):
                            ('STOXX50E',0.10),
                            ('XAUUSD',0.01)],
                  _broker_gmt=0,                 # Darwinex GMT offset
+                 _pulldata_handlers = [],       # Handlers to process data received through PULL port.
+                 _subdata_handlers = [],        # Handlers to process data received through SUB port.
                  _verbose=False):               # Print ZeroMQ messages
                  
         self._name = _name
