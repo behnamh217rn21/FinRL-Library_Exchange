@@ -444,7 +444,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             import os
             print("11111111111111111111111111")
             print(os.getcwd())
-            path = "C:/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
+            path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
             os.chdir(path)
             print("22222222222222222222222222")
             print(os.getcwd())
