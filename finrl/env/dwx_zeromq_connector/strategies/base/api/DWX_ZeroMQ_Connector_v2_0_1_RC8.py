@@ -490,9 +490,7 @@ class DWX_ZeroMQ_Connector():
                                         print('No data found. MT4 often needs multiple requests when accessing data of symbols without open charts.')
                                         print('message: ' + msg)
                                 
-                                # invokes data handlers on pull port
-                                for hnd in self._pulldata_handlers:
-                                    hnd.onPullData(_data)
+
                                 
                                 self._thread_data_output = _data
                                 if self._verbose:
@@ -548,9 +546,7 @@ class DWX_ZeroMQ_Connector():
                                 self._Market_Data_DB[_symbol] = {}
                             self._Market_Data_DB[_symbol][self._timestamp] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), \
                                                                               float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
-                        # invokes data handlers on sub port
-                        for hnd in self._subdata_handlers:
-                            hnd.onSubData(msg)
+
 
                 except zmq.error.Again:
                     pass # resource temporarily unavailable, nothing to print
