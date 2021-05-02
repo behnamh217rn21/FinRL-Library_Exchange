@@ -27,7 +27,7 @@ import pandas as pd
 
 class t_class(DWX_ZMQ_Strategy):
     def __init__(self, _name="ONLINE_TRADERS",
-                 _symbols=['INTC', 'AAPL'],
+                 _symbols=['#INTC', '#AAPL'],
                  _delay=0.1,
                  _broker_gmt=2,
                  _verbose=False
@@ -109,8 +109,6 @@ class t_class(DWX_ZMQ_Strategy):
             if sell != 0:
                 for i in (self._ot.loc[self._ot["_symbol"] == _symbol].index):
                     if sell < self._ot["_lots"].loc[self._ot.index == i]:
-                        print("22222222222222222222222222")
-                        print(i)
                         _ret_cp = self._execution._execute_({'_action': 'CLOSE_PARTIAL',
                                                              '_ticket': i,
                                                              'size': sell,
@@ -156,9 +154,6 @@ class t_class(DWX_ZMQ_Strategy):
             # SECTION - buy TRADES #
             #############################
             if buy != 0:
-                print("1111111111111111111111111")
-                print(_symbol)
-                print(buy)
                 try:
                     # 1 (OP_BUY) or 0 (OP_SELL)
                     _default_order['_type'] = 1    
