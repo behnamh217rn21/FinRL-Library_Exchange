@@ -66,7 +66,6 @@ class t_class(DWX_ZMQ_Strategy):
                               sells[index],
                               buys[index]))
             _t.start()
-            _t.join()
             
             print('[{}_Trader] Alright ...'.format(_symbol))        
             self._traders.append(_t)
@@ -192,7 +191,7 @@ class t_class(DWX_ZMQ_Strategy):
     def _stop_(self):        
         for _t in self._traders:      
             # wait for traders to finish.
-            _t.exit() 
+            _t.join() 
         print("\ntraders finished.\n")
                                                             
     ##########################################################################
