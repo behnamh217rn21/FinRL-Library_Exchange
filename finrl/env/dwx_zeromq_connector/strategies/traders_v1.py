@@ -72,10 +72,6 @@ class t_class(DWX_ZMQ_Strategy):
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
-        print("1111111111111111111111111")
-        print(_symbol)
-        print(sell)
-        print(buy)
         # Note: Just for this example, only the Order Type is dynamic.
         _default_order = self._zmq._generate_default_order_dict()
         _default_order['_symbol'] = _symbol[1]
@@ -110,8 +106,13 @@ class t_class(DWX_ZMQ_Strategy):
             # SECTION - SELL TRADES #
             ############################### 
             if sell != 0:
+                print("1111111111111111111111111")
+                print(_symbol)
+                print(sell)
                 for i in (self._ot.loc[self._ot["_symbol"] == _symbol].index):
                     if sell < self._ot["_lots"].loc[self._ot.index == i]:
+                        print("22222222222222222222222222")
+                        print(i)
                         _ret_cp = self._execution._execute_({'_action': 'CLOSE_PARTIAL',
                                                              '_ticket': i,
                                                              'size': sell,
