@@ -158,7 +158,7 @@ class t_class(DWX_ZMQ_Strategy):
             if buy != 0:
                 print("1111111111111111111111111")
                 print(_symbol)
-                print(sell)
+                print(buy)
                 try:
                     # 1 (OP_BUY) or 0 (OP_SELL)
                     _default_order['_type'] = 1    
