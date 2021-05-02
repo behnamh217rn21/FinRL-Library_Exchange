@@ -32,7 +32,7 @@ class DWX_ZMQ_Execution():
         _check = ''
         
         # Reset thread data output
-        self._zmq._set_response_(None)
+        #self._zmq._set_response_(None)
         
         # CLOSE_PARTIAL TRADE
         if _exec_dict['_action'] == 'CLOSE_PARTIAL':  
