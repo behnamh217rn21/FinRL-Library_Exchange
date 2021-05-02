@@ -37,7 +37,7 @@ class DWX_ZMQ_Strategy(object):
         self._symbols = _symbols
         self._broker_gmt = _broker_gmt
         import random
-        Leverage = random.randint(1, 1000))
+        Leverage = random.randint(1, 1000)
         _pulldata_handlers="_pulldata_handlers_{}".format(str(Leverage))
         _pulldata_handlers = []
         _subdata_handlers="_subdata_handlers_{}".format(str(Leverage))
