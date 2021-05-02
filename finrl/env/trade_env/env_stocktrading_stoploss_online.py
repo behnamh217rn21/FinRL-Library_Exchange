@@ -19,6 +19,8 @@ from stable_baselines.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines import logger
 
 #############################################################################
+import multiprocessing
+
 import time
 from time import sleep
 import os
