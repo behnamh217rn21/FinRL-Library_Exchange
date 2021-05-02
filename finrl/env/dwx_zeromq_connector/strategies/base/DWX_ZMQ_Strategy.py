@@ -38,15 +38,10 @@ class DWX_ZMQ_Strategy(object):
         self._name = _name
         self._symbols = _symbols
         self._broker_gmt = _broker_gmt
-        import random
-        Leverage = random.randint(1, 1000)
-        _pulldata_handlers_="_pulldata_handlers_{}".format(str(Leverage))
-        _pulldata_handlers_ = _pulldata_handlers
-        _subdata_handlers_="_subdata_handlers_{}".format(str(Leverage))
-        _subdata_handlers_ = _subdata_handlers
+        
         # Not entirely necessary here.
-        self._zmq = DWX_ZeroMQ_Connector(_pulldata_handlers=_pulldata_handlers_,
-                                         _subdata_handlers=_subdata_handlers_,
+        self._zmq = DWX_ZeroMQ_Connector(_pulldata_handlers=_pulldata_handlers,
+                                         _subdata_handlers=_subdata_handlers,
                                          _verbose=_verbose)
         
         # Modules
