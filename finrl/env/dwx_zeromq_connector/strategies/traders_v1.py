@@ -192,6 +192,7 @@ class t_class(DWX_ZMQ_Strategy):
     def _stop_(self):        
         for _t in self._traders:      
             # wait for traders to finish.
+            _t.join() 
             _t.kill() 
         print("\ntraders finished.\n")
                                                             
