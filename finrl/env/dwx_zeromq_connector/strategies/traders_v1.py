@@ -72,12 +72,13 @@ class t_class(DWX_ZMQ_Strategy):
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
+        sleep(2)
         # Note: Just for this example, only the Order Type is dynamic.
         _default_order = self._zmq._generate_default_order_dict()
-        _default_order['_symbol'] = _symbol[1]
+        _default_order['_symbol'] = _symbol
         _default_order['_SL'] = 100
         _default_order['_TP'] = 100
-        _default_order['_comment'] = '{}_Trader'.format(_symbol[1])
+        _default_order['_comment'] = '{}_Trader'.format(_symbol)
         """
         Default Order:
         --
@@ -106,9 +107,6 @@ class t_class(DWX_ZMQ_Strategy):
             # SECTION - SELL TRADES #
             ############################### 
             if sell != 0:
-                print("1111111111111111111111111")
-                print(_symbol)
-                print(sell)
                 for i in (self._ot.loc[self._ot["_symbol"] == _symbol].index):
                     if sell < self._ot["_lots"].loc[self._ot.index == i]:
                         print("22222222222222222222222222")
@@ -158,6 +156,9 @@ class t_class(DWX_ZMQ_Strategy):
             # SECTION - buy TRADES #
             #############################
             if buy != 0:
+                print("1111111111111111111111111")
+                print(_symbol)
+                print(sell)
                 try:
                     # 1 (OP_BUY) or 0 (OP_SELL)
                     _default_order['_type'] = 1    
