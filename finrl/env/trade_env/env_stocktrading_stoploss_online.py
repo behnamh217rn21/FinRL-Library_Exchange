@@ -155,13 +155,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                     "total_assets": [],
                                     "reward": [],
                                    }
-        
+         
         now_t = Timestamp.now('UTC') + timedelta(hours=3)
         now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
         time = now_t.split(" ")[0]
         self.start_dt = "{} 16:30:00".format(time)
         self.start_dt = datetime.datetime.strptime(self.start_dt, '%Y-%m-%d %H:%M:%S')
         self.dates = self.days*24
+        dates = pd.bdate_range(start=self.start_dt, periods=100)  # Start date is a Thursday
         
         init_state = np.array([self.initial_amount] 
                               + [0] * len(self.assets) 
@@ -185,12 +186,15 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if cols is None:
             cols = self.daily_information_cols
             
+            now_t = Timestamp.now('UTC')+ timedelta(hours=3)
+            now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
+            date = now_t.split(" ")[1]
+            now_t = datetime.datetime.strptime(date, '%Y-%m-%d')
+            if now_t 
             fetch_t = self.start_dt + timedelta(hours=date)
             fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
             fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
-            now_t = Timestamp.now('UTC')+ timedelta(hours=3)
-            now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
-            now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d %H:%M:%S')
+
             if fetch_t >= now_t:
                 sleep_t = (fetch_t - now_t).total_seconds()
             else:
