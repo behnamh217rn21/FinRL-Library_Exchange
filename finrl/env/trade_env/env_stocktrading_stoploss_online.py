@@ -158,10 +158,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
          
         now_t = Timestamp.now('UTC') + timedelta(hours=3)
         now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
-        time = now_t.split(" ")[0]
-        date = now_t.split(" ")[1]
-        self.start_dt = "{} 16:30:00".format(time)
-        self.start_dt = datetime.datetime.strptime(self.start_dt, '%Y-%m-%d %H:%M:%S')
+        _date = now_t.split(" ")[1]
         self.dates = pd.bdate_range(start=date, periods=self.days)
         self.dates = self.dates + timedelta(minutes=990)
         
@@ -189,15 +186,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if cols is None:
             cols = self.daily_information_cols
             
+            if _h_cnt == 7: _h_cnt = 0
+            else: _h_cnt += 1
             now_t = Timestamp.now('UTC')+ timedelta(hours=3)
             now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
-            date = now_t.split(" ")[1]
-            now_t = datetime.datetime.strptime(date, '%Y-%m-%d')
-            if now_t 
-            fetch_t = self.start_dt + timedelta(hours=date)
+            now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d')
+            fetch_t = self.dates[date] + timedelta(hours=_h_cnt)
             fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
             fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
-
             if fetch_t >= now_t:
                 sleep_t = (fetch_t - now_t).total_seconds()
             else:
@@ -334,7 +330,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.log_step(reason="update")
             
         # if we're at the end
-        if self.date_index == self.dates - 1:
+        if self.date_index == self.dates_cnt - 1:
             # if we hit the end, set reward to total gains (or losses)
             return self.return_terminal(reward=self.get_reward())
         else:
@@ -448,14 +444,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            import os
-            print("11111111111111111111111111")
-            print(os.getcwd())
             path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
             os.chdir(path)
-            print("22222222222222222222222222")
-            print(os.getcwd())
             order_data = pd.read_csv("OrdersReport.csv", sep=';')
+            os.chdir("mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange")
             swap = 0
             commission = 0
             for i in range(0, len(order_data)):
@@ -510,7 +502,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if self.current_step == 0:
             return None
         else:
-            self.account_information["date"] = self.dates[
+            self.account_information["date"] = self.dates_cnt[
                 -len(self.account_information["cash"]) :
             ]
             return pd.DataFrame(self.account_information)
@@ -519,7 +511,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if self.current_step == 0:
             return None
         else:
-            return pd.DataFrame({"date": self.dates[-len(self.account_information["cash"]) :],
+            return pd.DataFrame({"date": self.dates_cnt[-len(self.account_information["cash"]) :],
                                  "actions": self.actions_memory,
                                  "transactions": self.transaction_memory,
                                 })
