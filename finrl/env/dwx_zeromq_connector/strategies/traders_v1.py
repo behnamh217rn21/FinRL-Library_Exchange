@@ -32,7 +32,6 @@ class t_class(DWX_ZMQ_Strategy):
                  _broker_gmt=2,
                  _verbose=False
                  ):
-        
         super().__init__(_name, _symbols, _broker_gmt, _verbose)
         
         # This strategy's variables
@@ -41,6 +40,7 @@ class t_class(DWX_ZMQ_Strategy):
         self._verbose = _verbose
         
         self._symbols = _symbols
+        self._ot = pd.DataFrame()
         
         # lock for acquire/release of ZeroMQ connector
         self._lock = Lock()
@@ -96,19 +96,19 @@ class t_class(DWX_ZMQ_Strategy):
             # Acquire lock
             self._lock.acquire()
             
-            _ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
+            self._ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
                                                          self._delay,
                                                          10)
             # Reset cycle if nothing received
-            if self._zmq._valid_response_(_ot) == False:
+            if self._zmq._valid_response_(self._ot) == False:
                 print("Nothing Received")
                 
             ###############################
             # SECTION - SELL TRADES #
             ############################### 
             if sell != 0:
-                for i in (_ot.loc[_ot["_symbol"] == _symbol].index):
-                    if sell < _ot["_lots"].loc[_ot.index == i]:
+                for i in (self._ot.loc[self._ot["_symbol"] == _symbol].index):
+                    if sell < self._ot["_lots"].loc[self._ot.index == i]:
                         _ret_cp = self._execution._execute_({'_action': 'CLOSE_PARTIAL',
                                                              '_ticket': i,
                                                              'size': sell,
@@ -122,7 +122,7 @@ class t_class(DWX_ZMQ_Strategy):
                             continue   
                         break
                         
-                    elif sell == _ot["_lots"].loc[_ot.index == i]:
+                    elif sell == self._ot["_lots"].loc[self._ot.index == i]:
                         _ret_c = self._execution._execute_({'_action': 'CLOSE',
                                                             '_ticket': i,
                                                             'size': sell},
@@ -136,10 +136,10 @@ class t_class(DWX_ZMQ_Strategy):
                         break
                                                             
                     else:
-                        sell = sell - _ot["_lots"].loc[_ot["_symbol"] == _symbol]
+                        sell = sell - self._ot["_lots"].loc[self._ot["_symbol"] == _symbol]
                         _ret_c = self._execution._execute_({'_action': 'CLOSE',
                                                             '_ticket': i,
-                                                            'size': _ot["_lots"].loc[_ot.index == i]},
+                                                            'size': self._ot["_lots"].loc[self._ot.index == i]},
                                                            self._verbose,
                                                            self._delay,
                                                            10)
@@ -173,11 +173,11 @@ class t_class(DWX_ZMQ_Strategy):
                     #############################
                     # SECTION - GET OPEN TRADES #
                     #############################
-                    _ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
+                    self._ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
                                                                  self._delay,
                                                                  10)
                     # Reset cycle if nothing received
-                    if self._zmq._valid_response_(_ot) == False:
+                    if self._zmq._valid_response_(self._ot) == False:
                         print("Nothing Received")
         
         finally:
