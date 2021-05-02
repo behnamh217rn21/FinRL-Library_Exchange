@@ -303,11 +303,11 @@ class StockTradingEnvStopLossOnline(gym.Env):
             return reward
         
         
-    def _trading_process(self, holdings, sells, buys):
+    def _trading_process(self, sells, buys):
         # creates object with a predefined configuration
         print('\nrunning trading process ...')
         func2 = traders_v1.t_class(_symbols=self.assets)
-        func2._run_(holdings, sells, buys)
+        func2._run_(sells, buys)
         
         # Waits example termination
         print('\nWaiting trading process termination...')
@@ -415,7 +415,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                     # ... end the cycle and penalize
                     return self.return_terminal(reason="CASH SHORTAGE", reward=self.get_reward())
             else:
-                self._trading_process(holdings, sells, buys)
+                self._trading_process(sells, buys)
 
             self.transaction_memory.append(actions) # capture what the model's could do
 
