@@ -452,7 +452,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
             os.chdir(path)
             order_data = pd.read_csv("OrdersReport.csv", sep=';')
-            os.chdir(../../../../../../..)
+            os.chdir("../../../../../../..")
             os.chdir("OneDrive/Desktop/FinRL-Library_Exchange")
             swap = 0
             commission = 0
