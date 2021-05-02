@@ -159,10 +159,13 @@ class StockTradingEnvStopLossOnline(gym.Env):
         now_t = Timestamp.now('UTC') + timedelta(hours=3)
         now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
         time = now_t.split(" ")[0]
+        date = now_t.split(" ")[1]
         self.start_dt = "{} 16:30:00".format(time)
         self.start_dt = datetime.datetime.strptime(self.start_dt, '%Y-%m-%d %H:%M:%S')
-        self.dates = self.days*24
-        dates = pd.bdate_range(start=self.start_dt, periods=100)  # Start date is a Thursday
+        self.dates = pd.bdate_range(start=date, periods=self.days)
+        self.dates = self.dates + timedelta(minutes=990)
+        
+        self.dates_cnt = self.days*24
         
         init_state = np.array([self.initial_amount] 
                               + [0] * len(self.assets) 
