@@ -96,7 +96,7 @@ class DWX_ZeroMQ_Connector():
         
         # Initialize POLL set and register PULL and SUB sockets
         import random
-        _random_int = random.randint(3, 500)
+        _random_int = random.randint(1, 999)
         value = "self._zmq_{}".format(str(_random_int))
         self.x = 'value'
         globals()[self.x] = zmq.Poller()
@@ -197,11 +197,11 @@ class DWX_ZeroMQ_Connector():
         # Unregister sockets from Poller
         globals()[self.x].unregister(self._PULL_SOCKET)
         #globals()[self.x].unregister(self._SUB_SOCKET)
-        print("\n++ [KERNEL] Sockets unregistered from ZMQ Poller()! ++")
+        print("\n++ [KERNEL] Pull socket unregistered from ZMQ Poller()! ++")
         
         # Terminate context 
         #self._ZMQ_CONTEXT.destroy(0)
-        print("\n++ [KERNEL] ZeroMQ Context Terminated.. shut down safely complete! :)")
+        #print("\n++ [KERNEL] ZeroMQ Context Terminated.. shut down safely complete! :)")
         
     ##########################################################################
     """
