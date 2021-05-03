@@ -44,6 +44,9 @@ class DWX_ZMQ_Strategy(object):
         n = random.randint(1, 999)
         value = "self._zmq_{}".format(str(n))
         x = 'value'
+        print("1111111111111111111111111")
+        print(globals()[x])
+        print(value)
         file = open("f.txt","w")
         file.writelines(globals()[x])
         file.close()
@@ -52,8 +55,8 @@ class DWX_ZMQ_Strategy(object):
                                             _verbose=_verbose)
         
         # Modules
-        self._execution = DWX_ZMQ_Execution(value)
-        self._reporting = DWX_ZMQ_Reporting(value)
+        self._execution = DWX_ZMQ_Execution(globals()[x])
+        self._reporting = DWX_ZMQ_Reporting(globals()[x])
         
     ##########################################################################
     
