@@ -92,7 +92,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         
         file1 = open("f.txt","r+") 
         value = file1.read()
-        x = 'value'
+        self.x = 'value'
         print(value)
         
         self.finish_time = Timestamp.now('UTC') + timedelta(days=365)
@@ -234,7 +234,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             try:
               # Acquire lock
               self._lock.acquire()
-              globals()[x]._DWX_MTX_SUBSCRIBE_MARKETDATA_(_instrument[0])
+              globals()[self.x]._DWX_MTX_SUBSCRIBE_MARKETDATA_(_instrument[0])
               print('Subscribed to {} rate feed'.format(_instrument))
               
             finally:
