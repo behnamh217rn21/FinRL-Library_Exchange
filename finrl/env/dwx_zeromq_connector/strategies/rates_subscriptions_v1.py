@@ -93,8 +93,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         file1 = open("f.txt","r+") 
         value = file1.read()
         x = 'value'
-        print(globals()[x])
-        self.ff=globals()[x]
+        print(value)
         
         self.finish_time = Timestamp.now('UTC') + timedelta(days=365)
         self.finish_time = datetime.datetime.strftime(self.finish_time, "%Y.%m.%d %H:%M:00")
@@ -132,14 +131,14 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         _topic, _, _msg = data.split("&")
         """
         print('Data on Topic={} with Message={} and Balance={}'.format(_topic,
-                                                                       self.ff._Market_Data_DB[_topic][self.ff._timestamp],
-                                                                       self.ff._Balance
+                                                                       globals()[x]._Market_Data_DB[_topic][self.ff._timestamp],
+                                                                       globals()[x]._Balance
                                                                        ))
         """
-        if self.ff._Market_Data_DB[_topic][self.ff._timestamp][0] != self.p_time:
+        if globals()[x]._Market_Data_DB[_topic][globals()[x]._timestamp][0] != self.p_time:
             f1 = open("./" + config.DATA_SAVE_DIR + "/balance.txt", 'w')
-            f1.write(self.ff._Balance); f1.close()
-            self.p_time = self.ff._Market_Data_DB[_topic][self.ff._timestamp][0]
+            f1.write(globals()[x]._Balance); f1.close()
+            self.p_time = globals()[x]._Market_Data_DB[_topic][globals()[x]._timestamp][0]
 
         file = "./" + config.DATA_SAVE_DIR + "/data.csv"
         ohlc, indicator = _msg.split("|")
@@ -169,7 +168,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             print(processed)
             processed.to_csv(file)
 
-        _timestamp = pd.to_datetime(self.ff._timestamp, format="%Y-%m-%d %H:%M:%S.%f")
+        _timestamp = pd.to_datetime(globals()[x]._timestamp, format="%Y-%m-%d %H:%M:%S.%f")
         _timestamp = datetime.datetime.strftime(_timestamp, "%Y-%m-%d %H:%M:%S")
         _timestamp = datetime.datetime.strptime(_timestamp, "%Y-%m-%d %H:%M:%S")
 
@@ -197,7 +196,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         try:
             # Acquire lock
             self._lock.acquire()
-            self.ff._DWX_MTX_UNSUBSCRIBE_ALL_MARKETDATA_REQUESTS_()
+            globals()[x]._DWX_MTX_UNSUBSCRIBE_ALL_MARKETDATA_REQUESTS_()
             print('Unsubscribing from all topics')
           
         finally:
@@ -208,10 +207,10 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         try:
             # Acquire lock
             self._lock.acquire()
-            self.ff._DWX_MTX_SEND_TRACKPRICES_REQUEST_([])        
+            globals()[x]._DWX_MTX_SEND_TRACKPRICES_REQUEST_([])        
             print('Removing symbols list')
             sleep(self._delay)
-            self.ff._DWX_MTX_SEND_TRACKRATES_REQUEST_([])
+            globals()[x]._DWX_MTX_SEND_TRACKRATES_REQUEST_([])
             print('Removing instruments list')
 
         finally:
@@ -235,7 +234,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             try:
               # Acquire lock
               self._lock.acquire()
-              self.ff._DWX_MTX_SUBSCRIBE_MARKETDATA_(_instrument[0])
+              globals()[x]._DWX_MTX_SUBSCRIBE_MARKETDATA_(_instrument[0])
               print('Subscribed to {} rate feed'.format(_instrument))
               
             finally:
@@ -247,7 +246,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
           try:
             # Acquire lock
             self._lock.acquire()
-            self.ff._DWX_MTX_SEND_TRACKRATES_REQUEST_(self._instruments)
+            globals()[x]._DWX_MTX_SEND_TRACKRATES_REQUEST_(self._instruments)
             print('Configuring rate feed for {} instruments'.format(len(self._instruments)))
             
           finally:
