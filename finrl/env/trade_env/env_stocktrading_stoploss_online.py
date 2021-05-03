@@ -326,7 +326,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         # Waits example termination
         print('\nWaiting trading process termination...')
         sleep(10)
-        #func2._stop_()
+        func2._stop_()
 
     def step(self, actions):
         # let's just log what we're doing in terms of max actions at each step.
