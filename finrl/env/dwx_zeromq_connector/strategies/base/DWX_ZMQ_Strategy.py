@@ -47,8 +47,8 @@ class DWX_ZMQ_Strategy(object):
                                             _verbose=_verbose)
         
         # Modules
-        self._execution = DWX_ZMQ_Execution(_zmq)
-        self._reporting = DWX_ZMQ_Reporting(_zmq)
+        self._execution = DWX_ZMQ_Execution(value)
+        self._reporting = DWX_ZMQ_Reporting(value)
         
     ##########################################################################
     
