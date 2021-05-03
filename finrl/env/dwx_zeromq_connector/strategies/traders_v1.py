@@ -94,6 +94,9 @@ class t_class(DWX_ZMQ_Strategy):
          '_lots': 0.01,
          '_magic': 123456}
         """
+        print("11111111111111111111111111111")
+        print(sell)
+        print(buy)
         try:
             # Acquire lock
             self._lock.acquire()
@@ -101,56 +104,58 @@ class t_class(DWX_ZMQ_Strategy):
             self._ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
                                                          self._delay,
                                                          10)
+            print("22222222222222222222222222222")
+            print(self._ot)
             # Reset cycle if nothing received
             if self._zmq._valid_response_(self._ot) == False:
                 print("Nothing Received")
                 
             ###############################
             # SECTION - SELL TRADES #
-            ############################### 
-            if sell != 0:
-                for i in (self._ot.loc[self._ot["_symbol"] == _symbol].index):
-                    if sell < self._ot["_lots"].loc[self._ot.index == i]:
-                        _ret_cp = self._execution._execute_({'_action': 'CLOSE_PARTIAL',
-                                                             '_ticket': i,
-                                                             'size': sell,
-                                                             '_comment': '{}_Trader'.format(_symbol)},
-                                                            self._verbose,
-                                                            self._delay,
-                                                            10)
-                        # Reset cycle if nothing received
-                        if self._zmq._valid_response_(_ret_cp) == False:
-                            print("Nothing Received")
-                            continue   
-                        break
+            ###############################
+            if _ot.shape[0] < _max_trades:
+                if sell != 0:
+                    for i in (self._ot.loc[self._ot["_symbol"] == _symbol].index):
+                        if sell < self._ot["_lots"].loc[self._ot.index == i]:
+                            _ret_cp = self._execution._execute_({'_action': 'CLOSE_PARTIAL',
+                                                                 '_ticket': i,
+                                                                 'size': sell,
+                                                                 '_comment': '{}_Trader'.format(_symbol)},
+                                                                self._verbose,
+                                                                self._delay,
+                                                                10)
+                            # Reset cycle if nothing received
+                            if self._zmq._valid_response_(_ret_cp) == False:
+                                print("Nothing Received")
+                                continue   
+                            break
                         
-                    elif sell == self._ot["_lots"].loc[self._ot.index == i]:
-                        _ret_c = self._execution._execute_({'_action': 'CLOSE',
-                                                            '_ticket': i,
-                                                            'size': sell},
-                                                           self._verbose,
-                                                           self._delay,
-                                                           10)
-                        # Reset cycle if nothing received
-                        if self._zmq._valid_response_(_ret_c) == False:
-                            print("Nothing Received")
-                            continue
-                        break
-                                                            
-                    else:
-                        sell = sell - self._ot["_lots"].loc[self._ot["_symbol"] == _symbol]
-                        _ret_c = self._execution._execute_({'_action': 'CLOSE',
-                                                            '_ticket': i,
-                                                            'size': self._ot["_lots"].loc[self._ot.index == i]},
-                                                           self._verbose,
-                                                           self._delay,
-                                                           10)
-                        # Reset cycle if nothing received
-                        if self._zmq._valid_response_(_ret_c) == False:
-                            print("Nothing Received")
-                            continue   
-                        # Sleep between commands to MetaTrader
-                        sleep(self._delay)
+                        elif sell == self._ot["_lots"].loc[self._ot.index == i]:
+                            _ret_c = self._execution._execute_({'_action': 'CLOSE',
+                                                                '_ticket': i,
+                                                                'size': sell},
+                                                               self._verbose,
+                                                               self._delay,
+                                                               10)
+                            # Reset cycle if nothing received
+                            if self._zmq._valid_response_(_ret_c) == False:
+                                print("Nothing Received")
+                                continue
+                            break
+                        else:
+                            sell = sell - self._ot["_lots"].loc[self._ot["_symbol"] == _symbol]
+                            _ret_c = self._execution._execute_({'_action': 'CLOSE',
+                                                                '_ticket': i,
+                                                                'size': self._ot["_lots"].loc[self._ot.index == i]},
+                                                               self._verbose,
+                                                               self._delay,
+                                                               10)
+                            # Reset cycle if nothing received
+                            if self._zmq._valid_response_(_ret_c) == False:
+                                print("Nothing Received")
+                                continue   
+                            # Sleep between commands to MetaTrader
+                            sleep(self._delay)
                    
             #############################
             # SECTION - buy TRADES #
@@ -194,7 +199,7 @@ class t_class(DWX_ZMQ_Strategy):
         for _t in self._traders:      
             # wait for traders to finish.
             _t.join()
-        self._zmq._DWX_ZMQ_SHUTDOWN_()
+        #self._zmq._DWX_ZMQ_SHUTDOWN_()
         print("\ntraders finished.\n")
                                                             
     ##########################################################################
