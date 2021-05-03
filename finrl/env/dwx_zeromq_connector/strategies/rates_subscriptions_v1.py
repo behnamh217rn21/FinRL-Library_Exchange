@@ -89,7 +89,13 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         self._delay = _delay
         self._verbose = _verbose
         self._finished = False
-
+        
+        file1 = open("f.txt","r+") 
+        value = file1.read()
+        x = 'value'
+        print(globals()[x])
+        self.ff=globals()[x]
+        
         self.finish_time = Timestamp.now('UTC') + timedelta(days=365)
         self.finish_time = datetime.datetime.strftime(self.finish_time, "%Y.%m.%d %H:%M:00")
         self.finish_time = datetime.datetime.strptime(self.finish_time, "%Y.%m.%d %H:%M:00")
@@ -126,14 +132,14 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         _topic, _, _msg = data.split("&")
         """
         print('Data on Topic={} with Message={} and Balance={}'.format(_topic,
-                                                                       self._zmq._Market_Data_DB[_topic][self._zmq._timestamp],
-                                                                       self._zmq._Balance
+                                                                       self.ff._Market_Data_DB[_topic][self._zmq._timestamp],
+                                                                       self.ff._Balance
                                                                        ))
         """
-        if self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0] != self.p_time:
+        if self.ff._Market_Data_DB[_topic][self._zmq._timestamp][0] != self.p_time:
             f1 = open("./" + config.DATA_SAVE_DIR + "/balance.txt", 'w')
-            f1.write(self._zmq._Balance); f1.close()
-            self.p_time = self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0]
+            f1.write(self.ff._Balance); f1.close()
+            self.p_time = self.ff._Market_Data_DB[_topic][self.ff._timestamp][0]
 
         file = "./" + config.DATA_SAVE_DIR + "/data.csv"
         ohlc, indicator = _msg.split("|")
@@ -163,7 +169,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             print(processed)
             processed.to_csv(file)
 
-        _timestamp = pd.to_datetime(self._zmq._timestamp, format="%Y-%m-%d %H:%M:%S.%f")
+        _timestamp = pd.to_datetime(self.ff._timestamp, format="%Y-%m-%d %H:%M:%S.%f")
         _timestamp = datetime.datetime.strftime(_timestamp, "%Y-%m-%d %H:%M:%S")
         _timestamp = datetime.datetime.strptime(_timestamp, "%Y-%m-%d %H:%M:%S")
 
@@ -229,7 +235,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             try:
               # Acquire lock
               self._lock.acquire()
-              self._zmq._DWX_MTX_SUBSCRIBE_MARKETDATA_(_instrument[0])
+              self.ff._DWX_MTX_SUBSCRIBE_MARKETDATA_(_instrument[0])
               print('Subscribed to {} rate feed'.format(_instrument))
               
             finally:
@@ -241,7 +247,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
           try:
             # Acquire lock
             self._lock.acquire()
-            self._zmq._DWX_MTX_SEND_TRACKRATES_REQUEST_(self._instruments)
+            self.ff._DWX_MTX_SEND_TRACKRATES_REQUEST_(self._instruments)
             print('Configuring rate feed for {} instruments'.format(len(self._instruments)))
             
           finally:
