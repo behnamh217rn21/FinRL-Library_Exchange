@@ -39,23 +39,16 @@ class DWX_ZMQ_Strategy(object):
         self._symbols = _symbols
         self._broker_gmt = _broker_gmt
         
+        self._pulldata_handlers = _pulldata_handlers
+        self._subdata_handlers = _subdata_handlers
         # Not entirely necessary here.
-        import random
-        n = random.randint(1, 999)
-        value = "self._zmq_{}".format(str(n))
-        x = 'value'
-        print("1111111111111111111111111")
-        print(value)
-        file = open("f.txt","w")
-        file.writelines(value)
-        file.close()
-        globals()[x] = DWX_ZeroMQ_Connector(_pulldata_handlers=_pulldata_handlers,
-                                            _subdata_handlers=_subdata_handlers,
-                                            _verbose=_verbose)
+        self._zmq = DWX_ZeroMQ_Connector(_pulldata_handlers=self._pulldata_handlers,
+                                         _subdata_handlers=self._subdata_handlers,
+                                         _verbose=_verbose)
         
         # Modules
-        self._execution = DWX_ZMQ_Execution(globals()[x])
-        self._reporting = DWX_ZMQ_Reporting(globals()[x])
+        self._execution = DWX_ZMQ_Execution(self._zmq)
+        self._reporting = DWX_ZMQ_Reporting(self._zmq)
         
     ##########################################################################
     
