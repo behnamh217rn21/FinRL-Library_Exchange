@@ -132,11 +132,11 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         _topic, _, _msg = data.split("&")
         """
         print('Data on Topic={} with Message={} and Balance={}'.format(_topic,
-                                                                       self.ff._Market_Data_DB[_topic][self._zmq._timestamp],
+                                                                       self.ff._Market_Data_DB[_topic][self.ff._timestamp],
                                                                        self.ff._Balance
                                                                        ))
         """
-        if self.ff._Market_Data_DB[_topic][self._zmq._timestamp][0] != self.p_time:
+        if self.ff._Market_Data_DB[_topic][self.ff._timestamp][0] != self.p_time:
             f1 = open("./" + config.DATA_SAVE_DIR + "/balance.txt", 'w')
             f1.write(self.ff._Balance); f1.close()
             self.p_time = self.ff._Market_Data_DB[_topic][self.ff._timestamp][0]
@@ -197,7 +197,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         try:
             # Acquire lock
             self._lock.acquire()
-            self._zmq._DWX_MTX_UNSUBSCRIBE_ALL_MARKETDATA_REQUESTS_()
+            self.ff._DWX_MTX_UNSUBSCRIBE_ALL_MARKETDATA_REQUESTS_()
             print('Unsubscribing from all topics')
           
         finally:
@@ -208,10 +208,10 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         try:
             # Acquire lock
             self._lock.acquire()
-            self._zmq._DWX_MTX_SEND_TRACKPRICES_REQUEST_([])        
+            self.ff._DWX_MTX_SEND_TRACKPRICES_REQUEST_([])        
             print('Removing symbols list')
             sleep(self._delay)
-            self._zmq._DWX_MTX_SEND_TRACKRATES_REQUEST_([])
+            self.ff._DWX_MTX_SEND_TRACKRATES_REQUEST_([])
             print('Removing instruments list')
 
         finally:
