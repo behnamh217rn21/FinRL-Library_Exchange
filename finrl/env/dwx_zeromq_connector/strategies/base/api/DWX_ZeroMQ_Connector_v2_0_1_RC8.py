@@ -96,8 +96,8 @@ class DWX_ZeroMQ_Connector():
         
         # Initialize POLL set and register PULL and SUB sockets
         import random
-        x=random.randint(3, 500)
-        value = "self._zmq_{}".format(str(x))
+        _random_int = random.randint(3, 500)
+        value = "self._zmq_{}".format(str(_random_int))
         self.x = 'value'
         globals()[self.x] = zmq.Poller()
         globals()[self.x].register(self._PULL_SOCKET, zmq.POLLIN)
