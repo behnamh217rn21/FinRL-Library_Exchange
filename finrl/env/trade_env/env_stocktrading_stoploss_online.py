@@ -209,7 +209,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 sleep_t = (fetch_t - now_t).total_seconds()
                 print("sleep for {} second".format(sleep_t))
             #sleep(sleep_t) 
-            sleep(60)
+            sleep(5)
             
         path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
         os.chdir(path)
