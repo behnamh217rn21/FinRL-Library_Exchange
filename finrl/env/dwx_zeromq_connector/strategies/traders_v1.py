@@ -60,16 +60,11 @@ class t_class(DWX_ZMQ_Strategy):
         """      
         # Launch traders!
         for index, _symbol in enumerate(self._symbols):
-            _t = Thread(name="{}_Trader".format(_symbol),
-                        target=self._trader_, 
-                        args=(_symbol, 
-                              sells[index],
-                              buys[index]))
-            _t.daemon = True
-            _t.start()
+            self._trader_(_symbol, 
+                          sells[index],
+                          buys[index])
             
             print('[{}_Trader] Alright ...'.format(_symbol))
-            self._traders.append(_t)
             sleep(10)
         
     ##########################################################################
@@ -193,11 +188,4 @@ class t_class(DWX_ZMQ_Strategy):
         sleep(self._delay)
     
     ##########################################################################
-    def _stop_(self):        
-        for _t in self._traders:      
-            # wait for traders to finish.
-            _t.join()
-        #self._zmq._DWX_ZMQ_SHUTDOWN_()
-        print("\ntraders finished.\n")
-                                                            
-    ##########################################################################
+
