@@ -429,16 +429,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
             else:
                 self._trading_process(sells, buys)
                 sleep(5)
-                path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
-                os.chdir(path)
-                print("1111111111111111111")
-                print(os.getcwd())
-                print("rates subscriptions process ...")
-                with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
-                    _symbols = eval(file.readline())
-                process = multiprocessing.Process(target=rates_subscriptions, args=(_symbols,))
-                process.start()
-                sleep(5)
 
             self.transaction_memory.append(actions) # capture what the model's could do
 
@@ -464,8 +454,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            os.chdir("../../..)
-            path = "AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
+            path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
             os.chdir(path)
             order_data = pd.read_csv("OrdersReport.csv", sep=';')
             swap = 0
@@ -478,6 +467,16 @@ class StockTradingEnvStopLossOnline(gym.Env):
             holdings_updated = holdings + actions
             self.holdings_memory.append(holdings_updated * closings)
 
+            os.chdir("../../../../../../..)
+            path = "OneDrive/Desktop/FinRL-Library_Exchange"
+            os.chdir(path)
+            print("rates subscriptions process ...")
+            with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
+                 _symbols = eval(file.readline())
+            process = multiprocessing.Process(target=rates_subscriptions, args=(_symbols,))
+            process.start()
+            sleep(5)
+                     
             # Update average buy price
             buys = np.sign(buys)
             self.n_buys += buys
