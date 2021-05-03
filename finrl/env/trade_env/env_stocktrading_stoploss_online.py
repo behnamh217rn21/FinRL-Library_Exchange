@@ -467,7 +467,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             holdings_updated = holdings + actions
             self.holdings_memory.append(holdings_updated * closings)
 
-            os.chdir("../../../../../../..)
+            os.chdir("../../../../../../..")
             path = "OneDrive/Desktop/FinRL-Library_Exchange"
             os.chdir(path)
             print("rates subscriptions process ...")
