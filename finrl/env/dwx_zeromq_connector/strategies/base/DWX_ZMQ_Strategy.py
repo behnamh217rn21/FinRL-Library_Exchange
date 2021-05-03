@@ -45,7 +45,7 @@ class DWX_ZMQ_Strategy(object):
         value = "self._zmq_{}".format(str(n))
         x = 'value'
         file = open("f.txt","w")
-        file.writelines(globals()[name])
+        file.writelines(globals()[x])
         file.close()
         globals()[x] = DWX_ZeroMQ_Connector(_pulldata_handlers=_pulldata_handlers,
                                             _subdata_handlers=_subdata_handlers,
