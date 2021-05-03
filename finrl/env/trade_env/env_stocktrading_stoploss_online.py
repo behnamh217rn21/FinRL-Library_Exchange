@@ -204,11 +204,22 @@ class StockTradingEnvStopLossOnline(gym.Env):
             fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
             if fetch_t >= now_t:
                 sleep_t = (fetch_t - now_t).total_seconds()
+                sleep(sleep_t)
             else:
                 fetch_t = fetch_t + timedelta(hours=24)
                 sleep_t = (fetch_t - now_t).total_seconds()
                 print("sleep for {} second".format(sleep_t))
-                sleep(7)
+                #sleep(sleep_t)
+                
+            sleep(5)
+            path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
+            os.chdir(path)
+            print("rates subscriptions process ...")
+            with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
+                _symbols = eval(file.readline())
+            process = multiprocessing.Process(target=rates_subscriptions, args=(_symbols,))
+            process.start()
+            sleep(5)
         
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         date_time = trunc_df['date'][0]
@@ -428,14 +439,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
             else:
                 self._trading_process(sells, buys)
                 sleep(10)
-                path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
-                os.chdir(path)
-                print("****Start Fetching Data (rates subscriptions process)****")
-                with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
-                    _symbols = eval(file.readline())
-                process = multiprocessing.Process(target=rates_subscriptions, args=(_symbols,))
-                process.start()
-                sleep(10)
 
             self.transaction_memory.append(actions) # capture what the model's could do
 
@@ -461,12 +464,9 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            os.chdir("../../..")
-            path = "AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
+            path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
             os.chdir(path)
             order_data = pd.read_csv("OrdersReport.csv", sep=';')
-            os.chdir("../../../../../../..")
-            os.chdir("OneDrive/Desktop/FinRL-Library_Exchange")
             swap = 0
             commission = 0
             for i in range(0, len(order_data)):
