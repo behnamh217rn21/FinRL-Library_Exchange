@@ -167,7 +167,7 @@ class t_class(DWX_ZMQ_Strategy):
                     globals()[x_num]['_magic'] = random.getrandbits(6)
                     
                     # Send instruction to MetaTrader
-                    _ret_o = self._execution._execute_(_default_order,
+                    _ret_o = self._execution._execute_(globals()[x_num],
                                                        self._verbose,
                                                        self._delay,
                                                        10)
