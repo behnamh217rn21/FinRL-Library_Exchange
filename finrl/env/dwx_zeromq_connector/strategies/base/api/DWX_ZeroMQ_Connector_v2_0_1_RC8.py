@@ -95,9 +95,13 @@ class DWX_ZeroMQ_Connector():
         self._SUB_SOCKET.connect(self._URL + str(self._SUB_PORT))
         
         # Initialize POLL set and register PULL and SUB sockets
-        self._poller = zmq.Poller()
-        self._poller.register(self._PULL_SOCKET, zmq.POLLIN)
-        self._poller.register(self._SUB_SOCKET, zmq.POLLIN)
+        import random
+        x=random.randint(3, 500)
+        value = "self._zmq_{}".format(str(x))
+        x = 'value'
+        globals()[x] = zmq.Poller()
+        globals()[x].register(self._PULL_SOCKET, zmq.POLLIN)
+        globals()[x].register(self._SUB_SOCKET, zmq.POLLIN)
         
         # Start listening for responses to commands and new market data
         self._string_delimiter = _delimiter
@@ -191,8 +195,8 @@ class DWX_ZeroMQ_Connector():
             self._PULL_Monitor_Thread.join()
         
         # Unregister sockets from Poller
-        self._poller.unregister(self._PULL_SOCKET)
-        self._poller.unregister(self._SUB_SOCKET)
+        globals()[x].unregister(self._PULL_SOCKET)
+        globals()[x].unregister(self._SUB_SOCKET)
         print("\n++ [KERNEL] Sockets unregistered from ZMQ Poller()! ++")
         
         # Terminate context 
@@ -467,7 +471,7 @@ class DWX_ZeroMQ_Connector():
         while self._ACTIVE:
             sleep(self._sleep_delay) # poll timeout is in ms, sleep() is s.
             
-            sockets = dict(self._poller.poll(poll_timeout))
+            sockets = dict(globals()[x].poll(poll_timeout))
             
             # Process response to commands sent to MetaTrader
             if self._PULL_SOCKET in sockets and sockets[self._PULL_SOCKET] == zmq.POLLIN:
