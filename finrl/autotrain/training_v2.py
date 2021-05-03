@@ -50,8 +50,8 @@ def main():
     process.start()
     sleep(10)
     
-    print("****Environment Document****")
-    print(StockTradingEnvStopLossOnline.__doc__)
+    #print("****Environment Document****")
+    #print(StockTradingEnvStopLossOnline.__doc__)
     
     print("****Build Train Environment****")
     file = open("./" + config.DATA_SAVE_DIR + "/balance.txt","r+") 
