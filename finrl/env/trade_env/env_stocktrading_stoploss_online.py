@@ -209,17 +209,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 sleep_t = (fetch_t - now_t).total_seconds()
                 print("sleep for {} second".format(sleep_t))
             #sleep(sleep_t) 
-            sleep(5)
-            """
-            path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
-            os.chdir(path)
-            print("rates subscriptions process ...")
-            with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
-                 _symbols = eval(file.readline())
-            process = multiprocessing.Process(target=self.rates_subscriptions, args=(_symbols,))
-            process.start()
-            sleep(5)
-            """
+            sleep(60)
             
         path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
         os.chdir(path)
