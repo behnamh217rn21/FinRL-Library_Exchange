@@ -234,7 +234,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             try:
               # Acquire lock
               self._lock.acquire()
-              globals()[self.x]._DWX_MTX_SUBSCRIBE_MARKETDATA_(_instrument[0])
+              self.x._DWX_MTX_SUBSCRIBE_MARKETDATA_(_instrument[0])
               print('Subscribed to {} rate feed'.format(_instrument))
               
             finally:
