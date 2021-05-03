@@ -131,7 +131,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         _topic, _, _msg = data.split("&")
         """
         print('Data on Topic={} with Message={} and Balance={}'.format(_topic,
-                                                                       globals()[x]._Market_Data_DB[_topic][self.ff._timestamp],
+                                                                       globals()[x]._Market_Data_DB[_topic][globals()[x]._timestamp],
                                                                        globals()[x]._Balance
                                                                        ))
         """
