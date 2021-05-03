@@ -65,6 +65,7 @@ class t_class(DWX_ZMQ_Strategy):
                         args=(_symbol, 
                               sells[index],
                               buys[index]))
+            _t.daemon = True
             _t.start()
             
             print('[{}_Trader] Alright ...'.format(_symbol))        
