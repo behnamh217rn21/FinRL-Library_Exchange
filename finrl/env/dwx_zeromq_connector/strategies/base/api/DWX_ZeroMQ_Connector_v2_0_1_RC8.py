@@ -196,11 +196,11 @@ class DWX_ZeroMQ_Connector():
         
         # Unregister sockets from Poller
         globals()[self.x].unregister(self._PULL_SOCKET)
-        globals()[self.x].unregister(self._SUB_SOCKET)
+        #globals()[self.x].unregister(self._SUB_SOCKET)
         print("\n++ [KERNEL] Sockets unregistered from ZMQ Poller()! ++")
         
         # Terminate context 
-        self._ZMQ_CONTEXT.destroy(0)
+        #self._ZMQ_CONTEXT.destroy(0)
         print("\n++ [KERNEL] ZeroMQ Context Terminated.. shut down safely complete! :)")
         
     ##########################################################################
