@@ -74,7 +74,7 @@ class t_class(DWX_ZMQ_Strategy):
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
         _random_int  = random.randint(1, 999)
-        value = "_default_order_{}".format(str(x))
+        value = "_default_order_{}".format(str(_random_int))
         x_num = 'value'
         # Note: Just for this example, only the Order Type is dynamic.
         globals()[x_num] = self._zmq._generate_default_order_dict()
