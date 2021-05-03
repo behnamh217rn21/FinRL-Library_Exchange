@@ -473,8 +473,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             print("rates subscriptions process ...")
             with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
                  _symbols = eval(file.readline())
-            process = multiprocessing.Process(target=self.rates_subscriptions, args=(_symbols,))
-            process.start()
+            self.rates_subscriptions(_symbols)
             sleep(5)
                      
             # Update average buy price
