@@ -210,9 +210,11 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 print("sleep for {} second".format(sleep_t))
             #sleep(sleep_t) 
             sleep(5)
-            
-        path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
-        os.chdir(path)
+        
+        cwd = os.getcwd()
+        if cwd == "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange":
+            path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
+            os.chdir(path)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         date_time = trunc_df['date'][0]
         trunc_df= trunc_df.set_index('date')
@@ -456,8 +458,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
-            os.chdir(path)
+            cwd = os.getcwd()
+            if cwd == "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files":
+                path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
+                os.chdir(path)
             order_data = pd.read_csv("OrdersReport.csv", sep=';')
             swap = 0
             commission = 0
@@ -491,16 +495,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
             state = ([FreeMargin] + list(holdings_updated) + self.get_date_vector(self.date_index))
             self.state_memory.append(state)
             return state, reward, False, {}
-        
-    def rates_subscriptions(self, _symbols):
-        # creates object with a predefined configuration
-        print('running rates subscriptions process ...')
-        func = rates_subscriptions_v1.rates_subscriptions(_instruments=_symbols)
-        func.run()
-        # Waits example termination
-        print('Waiting rates subscriptions process termination...\n')
-        while not func.isFinished():
-            sleep(1)
             
             
     def get_sb_env(self):
