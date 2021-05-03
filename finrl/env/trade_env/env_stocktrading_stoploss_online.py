@@ -473,7 +473,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             print("rates subscriptions process ...")
             with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
                  _symbols = eval(file.readline())
-            process = multiprocessing.Process(target=self.rates_subscriptions, args=(_symbols))
+            process = multiprocessing.Process(target=self.rates_subscriptions, args=(_symbols,))
             process.start()
             sleep(5)
                      
@@ -500,7 +500,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.state_memory.append(state)
             return state, reward, False, {}
         
-    def rates_subscriptions(_symbols):
+    def rates_subscriptions(self, _symbols):
         # creates object with a predefined configuration
         print('running rates subscriptions process ...')
         func = rates_subscriptions_v1.rates_subscriptions(_instruments=_symbols)
