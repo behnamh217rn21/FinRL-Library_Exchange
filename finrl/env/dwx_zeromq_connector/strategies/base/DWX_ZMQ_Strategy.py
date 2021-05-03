@@ -40,7 +40,9 @@ class DWX_ZMQ_Strategy(object):
         self._broker_gmt = _broker_gmt
         
         # Not entirely necessary here.
-        value = "self._zmq_{}".format(str(x))
+        import random
+        n = random.randint(1, 999)
+        value = "self._zmq_{}".format(str(n))
         x = 'value'
         globals()[x] = DWX_ZeroMQ_Connector(_pulldata_handlers=_pulldata_handlers,
                                             _subdata_handlers=_subdata_handlers,
