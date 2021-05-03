@@ -14,7 +14,6 @@
     You may obtain a copy of the License at:    
     https://opensource.org/licenses/BSD-3-Clause
 """
-
 #############################################################################
 #############################################################################
 from finrl.env.dwx_zeromq_connector.strategies.base.DWX_ZMQ_Strategy import DWX_ZMQ_Strategy
@@ -74,13 +73,15 @@ class t_class(DWX_ZMQ_Strategy):
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
-        sleep(2)
+        _random_int  = random.randint(1, 999)
+        value = "_default_order_{}".format(str(x))
+        x_num = 'value'
         # Note: Just for this example, only the Order Type is dynamic.
-        _default_order = self._zmq._generate_default_order_dict()
-        _default_order['_symbol'] = _symbol
-        _default_order['_SL'] = 100
-        _default_order['_TP'] = 100
-        _default_order['_comment'] = '{}_Trader'.format(_symbol)
+        globals()[x_num] = self._zmq._generate_default_order_dict()
+        globals()[x_num]['_symbol'] = _symbol
+        globals()[x_num]['_SL'] = 100
+        globals()[x_num]['_TP'] = 100
+        globals()[x_num]['_comment'] = '{}_Trader'.format(_symbol)
         """
         Default Order:
         --
@@ -161,9 +162,9 @@ class t_class(DWX_ZMQ_Strategy):
             if buy != 0:
                 try:
                     # 1 (OP_BUY) or 0 (OP_SELL)
-                    _default_order['_type'] = 1    
-                    _default_order['_lots'] = buy
-                    _default_order['_magic'] = random.getrandbits(6)
+                    globals()[x_num]['_type'] = 1    
+                    globals()[x_num]['_lots'] = buy
+                    globals()[x_num]['_magic'] = random.getrandbits(6)
                     
                     # Send instruction to MetaTrader
                     _ret_o = self._execution._execute_(_default_order,
