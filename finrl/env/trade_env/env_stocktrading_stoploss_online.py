@@ -28,6 +28,7 @@ import os
 #############################################################################
 #############################################################################
 from finrl.env.dwx_zeromq_connector.strategies import traders_v1
+from finrl.env.dwx_zeromq_connector.strategies import rates_subscriptions_v1
 
 #############################################################################
 from finrl.config import config
@@ -427,6 +428,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
             else:
                 self._trading_process(sells, buys)
                 sleep(10)
+                path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
+                os.chdir(path)
+                print("****Start Fetching Data (rates subscriptions process)****")
+                with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
+                    _symbols = eval(file.readline())
+                process = multiprocessing.Process(target=rates_subscriptions, args=(_symbols,))
+                process.start()
+                sleep(10)
 
             self.transaction_memory.append(actions) # capture what the model's could do
 
@@ -452,7 +461,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
             # update our holdings
-            path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
+            os.chdir("../../..")
+            path = "AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
             os.chdir(path)
             order_data = pd.read_csv("OrdersReport.csv", sep=';')
             os.chdir("../../../../../../..")
@@ -490,7 +500,17 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.state_memory.append(state)
             return state, reward, False, {}
         
-        
+    def rates_subscriptions(_symbols):
+        # creates object with a predefined configuration
+        print('running rates subscriptions process ...')
+        func = rates_subscriptions_v1.rates_subscriptions(_instruments=_symbols)
+        func.run()
+        # Waits example termination
+        print('Waiting rates subscriptions process termination...\n')
+        while not func.isFinished():
+            sleep(1)
+            
+            
     def get_sb_env(self):
         def get_self():
             return deepcopy(self)
