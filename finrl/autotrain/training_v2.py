@@ -48,7 +48,7 @@ def main():
         _symbols = eval(file.readline())
     process = multiprocessing.Process(target=rates_subscriptions, args=(_symbols,))
     process.start()
-    sleep(60)
+    sleep(10)
     
     print("****Environment Document****")
     print(StockTradingEnvStopLossOnline.__doc__)
