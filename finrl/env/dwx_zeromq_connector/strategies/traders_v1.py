@@ -113,7 +113,7 @@ class t_class(DWX_ZMQ_Strategy):
             ###############################
             # SECTION - SELL TRADES #
             ###############################
-            if _ot.shape[0] < _max_trades:
+            if self._ot.shape[0] > 0:
                 if sell != 0:
                     for i in (self._ot.loc[self._ot["_symbol"] == _symbol].index):
                         if sell < self._ot["_lots"].loc[self._ot.index == i]:
