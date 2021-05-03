@@ -210,6 +210,15 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 print("sleep for {} second".format(sleep_t))
             #sleep(sleep_t) 
             sleep(5)
+            
+            path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
+            os.chdir(path)
+            print("rates subscriptions process ...")
+            with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
+                 _symbols = eval(file.readline())
+            process = multiprocessing.Process(target=self.rates_subscriptions, args=(_symbols,))
+            process.start()
+            sleep(5)
         
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         date_time = trunc_df['date'][0]
@@ -466,15 +475,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
             coh = coh - spend - costs - swap - commission
             holdings_updated = holdings + actions
             self.holdings_memory.append(holdings_updated * closings)
-
-            os.chdir("../../../../../../..")
-            path = "OneDrive/Desktop/FinRL-Library_Exchange"
-            os.chdir(path)
-            print("rates subscriptions process ...")
-            with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
-                 _symbols = eval(file.readline())
-            self.rates_subscriptions(_symbols)
-            sleep(5)
                      
             # Update average buy price
             buys = np.sign(buys)
