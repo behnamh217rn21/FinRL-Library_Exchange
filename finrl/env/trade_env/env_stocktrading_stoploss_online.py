@@ -179,7 +179,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         return init_state
 
     
-    def adjusted_prices(asset, close_p):
+    def adjusted_prices(self, asset, close_p):
         yahoo_financials = YahooFinancials(asset)
         statistics_data = yahoo_financials.get_key_statistics_data()
         
@@ -210,7 +210,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             else:
                 fetch_t = fetch_t + timedelta(hours=24)
                 sleep_t = (fetch_t - now_t).total_seconds()
-                print("sleep for {} second".format(sleep_t))
+            print("sleep for {} second".format(sleep_t))
             #sleep(sleep_t) 
             sleep(5)
         
@@ -226,6 +226,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         for a in self.assets:
             try:
                 subset = trunc_df[trunc_df[self.symbol] == a]
+                #subset.loc[date_time, "close"] =  adjusted_prices(a, subset.loc[date_time, "close"])
                 v += subset.loc[date_time, cols].tolist()
             except:
                 print("No data received on {}".format(date))
