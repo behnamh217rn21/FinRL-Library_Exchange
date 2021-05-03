@@ -63,14 +63,17 @@ class StockTradingEnvStopLossOnline(gym.Env):
         hmax (int): max number of share purchases allowed per asset
         discrete_actions (bool): option to choose whether perform dicretization on actions space or not
         shares_increment (int): multiples number of shares can be bought in each trade.
-        stoploss_penalty (float): Maximum loss we can tolerate. Valid value range is between 0 and 1. If x is specified, then agent will force sell all holdings for a particular asset if current price < x * avg_buy_price 
+        stoploss_penalty (float): Maximum loss we can tolerate. Valid value range is between 0 and 1. If x is specified, then agent will 
+            force sell all holdings for a particular asset if current price < x * avg_buy_price 
         profit_loss_ratio (int, float): Expected profit/loss ratio. Only applicable when stoploss_penalty < 1.
         turbulence_threshold (float): Maximum turbulence allowed in market for purchases to occur. If exceeded, positions are liquidated
         print_verbosity(int): When iterating (step), how often to print stats about state of env
         initial_amount: (int, float): Amount of cash initially available
-        daily_information_columns (list(str)): Columns to use when building state space from the dataframe. It could be OHLC columns or any other variables such as technical indicators and turbulence index
+        daily_information_columns (list(str)): Columns to use when building state space from the dataframe. It could be OHLC columns or any
+            other variables such as technical indicators and turbulence index
         cash_penalty_proportion (int, float): Penalty to apply if the algorithm runs out of cash
-        patient (bool): option to choose whether end the cycle when we're running out of cash or just don't buy anything until we got additional cash 
+        patient (bool): option to choose whether end the cycle when we're running out of cash or just don't buy anything until we got 
+            additional cash 
     action space: <share_dollar_purchases>
     TODO:
         add holdings to memory
