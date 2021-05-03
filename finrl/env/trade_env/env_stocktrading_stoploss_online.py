@@ -210,7 +210,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 print("sleep for {} second".format(sleep_t))
             #sleep(sleep_t) 
             sleep(5)
-            
+            """
             path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
             os.chdir(path)
             print("rates subscriptions process ...")
@@ -219,6 +219,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             process = multiprocessing.Process(target=self.rates_subscriptions, args=(_symbols,))
             process.start()
             sleep(5)
+            """
         
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         date_time = trunc_df['date'][0]
