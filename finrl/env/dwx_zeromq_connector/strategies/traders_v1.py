@@ -94,9 +94,7 @@ class t_class(DWX_ZMQ_Strategy):
          '_lots': 0.01,
          '_magic': 123456}
         """
-        print("11111111111111111111111111111")
-        print(sell)
-        print(buy)
+        print("symbol: {}; sell: {}; buy: {}".format(_symbol, sell, buy))
         try:
             # Acquire lock
             self._lock.acquire()
@@ -104,8 +102,8 @@ class t_class(DWX_ZMQ_Strategy):
             self._ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
                                                          self._delay,
                                                          10)
-            print("22222222222222222222222222222")
-            print(self._ot)
+            print("trade counter: {}".format(self._ot.shape[0]))
+            
             # Reset cycle if nothing received
             if self._zmq._valid_response_(self._ot) == False:
                 print("Nothing Received")
