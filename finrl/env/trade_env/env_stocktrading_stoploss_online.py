@@ -396,7 +396,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 #actions = np.where(closings > 0, actions / closings, 0)
                 actions = np.where(closings > 0, actions, 0)
                 actions = list(map(lambda x: round(x, ndigits=2), actions))
-                print("1111111111111111111111111"y)
+                print("1111111111111111111111111")
                 print(actions)
 
             # clip actions so we can't sell more assets than we hold
