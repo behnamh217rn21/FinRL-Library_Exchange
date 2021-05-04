@@ -67,7 +67,7 @@ def main():
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     
     from pathlib import Path
-    path = Path(__file__).resolve().parents[4].joinpath("AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/" \
+    path = Path(__file__).resolve().parents[5].joinpath("AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/" \
                                                         "MQL4/Files/Leverage.txt")
     with open(path, 'r') as reader:
         Leverage = reader.read()
@@ -76,7 +76,7 @@ def main():
                         'assets': _symbols_i1,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
-                        'hmax': 10,
+                        'hmax': 100,
                         'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 1, 
