@@ -386,18 +386,19 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # scale cash purchases to asset
             if self.discrete_actions:
                 # convert into integer because we can't buy fraction of shares
-                actions = np.where(closings > 0, actions // closings, 0)
+                #actions = np.where(closings > 0, actions // closings, 0)
                 actions = actions.astype(int)
                 # round down actions to the nearest multiplies of shares_increment
                 actions = np.where(actions >= 0,
                                    (actions // self.shares_increment) * self.shares_increment, 
                                    ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
+                print("1111111111111111111111111")
+                print(actions)
             else:
                 #actions = np.where(closings > 0, actions / closings, 0)
                 actions = np.where(closings > 0, actions, 0)
                 actions = list(map(lambda x: round(x, ndigits=2), actions))
-                print("1111111111111111111111111")
-                print(actions)
+
 
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
