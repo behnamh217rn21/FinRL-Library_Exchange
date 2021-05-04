@@ -375,8 +375,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.actions_memory.append(actions * closings) # capture what the model's trying to do
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
-            actions = np.where(closings > 0, 
-                               actions, 0)
+            actions = np.where(closings > 0, actions, 0)
             
             if self.turbulence_threshold is not None:
                 # if turbulence goes over threshold, just clear out all positions
@@ -387,16 +386,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # scale cash purchases to asset
             if self.discrete_actions:
                 # convert into integer because we can't buy fraction of shares
-                actions = np.where(closings > 0, 
-                                   actions // closings, 0)
+                actions = np.where(closings > 0, actions // closings, 0)
                 actions = actions.astype(int)
                 # round down actions to the nearest multiplies of shares_increment
                 actions = np.where(actions >= 0,
                                    (actions // self.shares_increment) * self.shares_increment, 
                                    ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
             else:
-                actions = np.where(closings > 0, 
-                                   actions / closings, 0)
+                #actions = np.where(closings > 0, actions / closings, 0)
                 actions = list(map(lambda x: round(x, ndigits=2), actions))
 
             # clip actions so we can't sell more assets than we hold
@@ -405,8 +402,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.closing_diff_avg_buy = closings - (self.stoploss_penalty * self.avg_buy_price)
             if begin_cash >= self.stoploss_penalty * self.initial_amount:
                 # clear out position if stop-loss criteria is met
-                actions = np.where(self.closing_diff_avg_buy < 0, 
-                                   -np.array(holdings), actions)
+                actions = np.where(self.closing_diff_avg_buy < 0, -np.array(holdings), actions)
                 
                 if any(np.clip(self.closing_diff_avg_buy, -np.inf, 0) < 0):
                     self.log_step(reason="STOP LOSS")
@@ -441,10 +437,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.transaction_memory.append(actions) # capture what the model's could do
 
             # get profitable sell actions
-            sell_closing_price = np.where(sells>0, 
-                                          closings, 0) # get closing price of assets that we sold
-            profit_sell = np.where(sell_closing_price - self.avg_buy_price > 0, 
-                                   1, 0) # mark the one which is profitable
+            sell_closing_price = np.where(sells>0, closings, 0) # get closing price of assets that we sold
+            profit_sell = np.where(sell_closing_price - self.avg_buy_price > 0, 1, 0) # mark the one which is profitable
 
             self.profit_sell_diff_avg_buy = np.where(profit_sell==1, 
                                                      closings - (self.min_profit_penalty * self.avg_buy_price), 0)
@@ -487,8 +481,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # set as zero when we don't have any holdings anymore
             self.n_buys = np.where(holdings_updated > 0, 
                                    self.n_buys, 0)
-            self.avg_buy_price = np.where(holdings_updated > 0, 
-                                          self.avg_buy_price, 0) 
+            self.avg_buy_price = np.where(holdings_updated > 0, self.avg_buy_price, 0) 
             
             self.date_index += 1
             if self.turbulence_threshold is not None:
