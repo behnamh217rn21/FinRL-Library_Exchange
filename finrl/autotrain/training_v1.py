@@ -72,8 +72,8 @@ def main():
     train_df = data_split(processed, config.START_DATE, config.END_DATE)
     print("train dataset length: {}".format(str(len(train_df))))
 
-    print("****Environment Document****")
-    print(StockTradingEnvStopLoss.__doc__)
+    #print("****Environment Document****")
+    #print(StockTradingEnvStopLoss.__doc__)
     
     print("****Build Train Environment****")
     file = open("./" + config.DATA_SAVE_DIR + "/balance.txt","r+") 
