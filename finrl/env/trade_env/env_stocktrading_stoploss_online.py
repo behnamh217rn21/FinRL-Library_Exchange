@@ -394,7 +394,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                    ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
             else:
                 #actions = np.where(closings > 0, actions / closings, 0)
+                actions = np.where(closings > 0, actions, 0)
                 actions = list(map(lambda x: round(x, ndigits=2), actions))
+                print("1111111111111111111111111"y)
+                print(actions)
 
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
@@ -409,12 +412,15 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
+
             proceeds = np.dot(sells, closings)
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
+            print("22222222222222222222222222")
+            print(buys)
             spend = np.dot(buys, closings)
             costs += spend * self.buy_cost_pct
             
