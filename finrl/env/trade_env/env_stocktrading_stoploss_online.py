@@ -165,7 +165,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
          
         now_t = Timestamp.now('UTC') + timedelta(hours=3)
         now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
-        _date = now_t.split(" ")[1]
+        _date = now_t.split(" ")[0]
         self.dates = pd.bdate_range(start=_date, periods=self.days)
         self.dates = self.dates + timedelta(minutes=990)
         
@@ -202,7 +202,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             now_t = Timestamp.now('UTC')+ timedelta(hours=3)
             now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
             now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d  %H:%M:%S')
-            fetch_t = self.dates[date] + timedelta(hours=self._h_cnt)
+            fetch_t = self.dates[date] + timedelta(hours=self._h_cnt-1)
             fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
             fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
             if fetch_t >= now_t:
