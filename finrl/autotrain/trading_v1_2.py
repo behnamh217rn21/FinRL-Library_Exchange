@@ -41,8 +41,8 @@ def main():
     print("==============Start Trading===========")
     DDPG_model = model.load("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
 
-    print("****Environment Document****")
-    print(StockTradingEnvStopLoss_online.__doc__)
+    #print("****Environment Document****")
+    #print(StockTradingEnvStopLoss_online.__doc__)
     
     print("****rates subscriptions process****")
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
