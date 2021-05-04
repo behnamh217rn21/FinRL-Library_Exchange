@@ -69,7 +69,6 @@ class t_class(DWX_ZMQ_Strategy):
             
             print('[{}_Trader] Alright ...'.format(_symbol))
             self._traders.append(_t)
-            sleep(10)
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
@@ -153,8 +152,8 @@ class t_class(DWX_ZMQ_Strategy):
                             if self._zmq._valid_response_(_ret_c) == False:
                                 print("Nothing Received")
                                 continue   
-                            # Sleep between commands to MetaTrader
-                            sleep(self._delay)
+                        # Sleep between commands to MetaTrader
+                        sleep(self._delay)
                    
             #############################
             # SECTION - buy TRADES #
