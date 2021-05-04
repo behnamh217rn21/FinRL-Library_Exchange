@@ -169,7 +169,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.dates = pd.bdate_range(start=_date, periods=self.days)
         self.dates = self.dates + timedelta(minutes=990)
         
-        self._m_cnt = 70
+        self._m_cnt = 75
         self.dates_cnt = self.days*1440
         
         init_state = np.array([self.initial_amount] 
@@ -203,7 +203,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             now_t = Timestamp.now('UTC')+ timedelta(hours=3)
             now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
             now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d  %H:%M:%S')
-            fetch_t = self.dates[date] + timedelta(hours=self._m_cnt-1)
+            fetch_t = self.dates[date] + timedelta(minutes=self._m_cnt-1)
             fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
             fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
             if fetch_t >= now_t:
