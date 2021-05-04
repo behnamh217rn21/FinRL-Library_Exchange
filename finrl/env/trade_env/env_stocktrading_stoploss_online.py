@@ -169,7 +169,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.dates = pd.bdate_range(start=_date, periods=self.days)
         self.dates = self.dates + timedelta(minutes=990)
         
-        self._m_cnt = 0
+        self._m_cnt = 70
         self.dates_cnt = self.days*1440
         
         init_state = np.array([self.initial_amount] 
