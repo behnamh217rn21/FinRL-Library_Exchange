@@ -211,7 +211,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 fetch_t = fetch_t + timedelta(hours=24)
                 sleep_t = (fetch_t - now_t).total_seconds()
             print("sleep for {} second".format(sleep_t))
-            sleep(sleep_t) 
+            #sleep(sleep_t) 
         sleep(5)
         
         cwd = os.getcwd()
