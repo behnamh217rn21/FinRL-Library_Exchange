@@ -212,22 +212,33 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 sleep_t = (fetch_t - now_t).total_seconds()
             print("sleep for {} second".format(sleep_t))
             sleep(sleep_t) 
-            #sleep(5)
+        sleep(5)
         
         cwd = os.getcwd()
         if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange":
+            print("111111111111111111")
             path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
             os.chdir(path)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         date_time = trunc_df['date'][0]
         trunc_df= trunc_df.set_index('date')
+        print("22222222222222222222222222222")
+        print(trunc_df)
+        print("33333333333333333333333333333")
+        print(date_time)
+        print("44444444444444444444444444444")
+        print(trunc_df)
 
         v = []
         for a in self.assets:
             try:
+                print("5555555555555555555555555555555")
                 subset = trunc_df[trunc_df[self.symbol] == a]
+                print(subset)
                 #subset.loc[date_time, "close"] =  adjusted_prices(a, subset.loc[date_time, "close"])
                 v += subset.loc[date_time, cols].tolist()
+                print("6666666666666666666666666666666")
+                print(v)
             except:
                 print("No data received on {}".format(date))
                 return self.get_date_vector(date, cols)
