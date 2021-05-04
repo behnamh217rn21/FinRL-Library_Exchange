@@ -211,21 +211,16 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 fetch_t = fetch_t + timedelta(hours=24)
                 sleep_t = (fetch_t - now_t).total_seconds()
             print("sleep for {} second".format(sleep_t))
-            #sleep(sleep_t) 
-        sleep(5)
+            sleep(sleep_t) 
+            #sleep(5)
         
         cwd = os.getcwd()
         if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange":
-            print("111111111111111111")
             path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
             os.chdir(path)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         date_time = trunc_df['date'][0]
         trunc_df= trunc_df.set_index('date')
-        print("33333333333333333333333333333")
-        print(date_time)
-        print("44444444444444444444444444444")
-        print(trunc_df)
 
         v = []
         for a in self.assets:
