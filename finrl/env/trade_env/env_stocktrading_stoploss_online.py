@@ -169,7 +169,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.dates = pd.bdate_range(start=_date, periods=self.days)
         self.dates = self.dates + timedelta(minutes=990)
         
-        self._h_cnt = 3
+        self._h_cnt = 0
         self.dates_cnt = self.days*24
         
         init_state = np.array([self.initial_amount] 
@@ -212,11 +212,11 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 sleep_t = (fetch_t - now_t).total_seconds()
             print("sleep for {} second".format(sleep_t))
             sleep(sleep_t) 
-            #sleep(5)
         
+        sleep(5)
         cwd = os.getcwd()
-        if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange":
-            path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
+        if cwd != "/mnt/c/Users/Administrator/Desktop/FinRL-Library_Exchange":
+            path = "/mnt/c/Users/Administrator/Desktop/FinRL-Library_Exchange"
             os.chdir(path)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         date_time = trunc_df['date'][0]
@@ -463,8 +463,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # update our holdings
             cwd = os.getcwd()
-            if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files":
-                path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
+            if cwd != "/mnt/c/Users/Administrator/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files":
+                path = "/mnt/c/Users/Administrator/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
                 os.chdir(path)
             order_data = pd.read_csv("OrdersReport.csv", sep=';')
             swap = 0
