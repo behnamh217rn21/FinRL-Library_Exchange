@@ -96,7 +96,7 @@ def main():
     env_train_kwargs = {'initial_amount': initial_amount*float(Leverage),
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
-                        'hmax': 100,
+                        'hmax': 10,
                         'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols,
                         'print_verbosity': 500, 
