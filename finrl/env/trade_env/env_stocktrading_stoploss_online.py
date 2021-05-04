@@ -386,14 +386,15 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # scale cash purchases to asset
             if self.discrete_actions:
                 # convert into integer because we can't buy fraction of shares
-                #actions = np.where(closings > 0, actions // closings, 0)
+                actions = np.where(closings > 0, actions // closings, 0)
                 actions = actions.astype(int)
                 # round down actions to the nearest multiplies of shares_increment
                 actions = np.where(actions >= 0,
                                    (actions // self.shares_increment) * self.shares_increment, 
                                    ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
             else:
-                actions = np.where(closings > 0, actions / closings, 0)
+                #actions = np.where(closings > 0, actions / closings, 0)
+                actions = list(map(lambda x: round(x, ndigits=2), actions))
 
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
@@ -409,30 +410,30 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
             proceeds = np.dot(sells, closings)
+            proceeds *= 100000
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             spend = np.dot(buys, closings)
+            spend *= 100000
             costs += spend * self.buy_cost_pct
-            print("222222222222222222222222222222")
-            print(actions)
+            
             # if we run out of cash...
             if (spend + costs) > coh:
                 if self.patient:
                     # ... just don't buy anything until we got additional cash
                     self.log_step(reason="CASH SHORTAGE")
-                    actions = np.where(actions>0, 
-                                       0, actions)
+                    actions = np.where(actions>0, 0, actions)
                     spend = 0
                     costs = 0
                 else:
                     # ... end the cycle and penalize
                     return self.return_terminal(reason="CASH SHORTAGE", reward=self.get_reward())
             else:
-                #self._trading_process(sells, buys)
-                sleep(1)
+                self._trading_process(sells, buys)
+                sleep(5)
 
             self.transaction_memory.append(actions) # capture what the model's could do
 
@@ -455,7 +456,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # log actual total trades we did up to current step
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
-            # update our holdings
             cwd = os.getcwd()
             if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files":
                 path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
@@ -468,6 +468,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 commission += order_data.loc[i, 'commission']
                 swap += order_data.loc[i, 'swap']
             coh = coh - spend - costs - swap - commission
+            
+            # update our holdings
             holdings_updated = holdings + actions
             self.holdings_memory.append(holdings_updated * closings)
                      
@@ -479,8 +481,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                           self.avg_buy_price) # incremental average
             
             # set as zero when we don't have any holdings anymore
-            self.n_buys = np.where(holdings_updated > 0, 
-                                   self.n_buys, 0)
+            self.n_buys = np.where(holdings_updated > 0, self.n_buys, 0)
             self.avg_buy_price = np.where(holdings_updated > 0, self.avg_buy_price, 0) 
             
             self.date_index += 1
