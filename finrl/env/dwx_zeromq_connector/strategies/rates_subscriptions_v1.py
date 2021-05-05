@@ -60,6 +60,7 @@ import numpy as np
 from threading import Lock
 from time import sleep
 import csv
+import random
 
 ###############################
 
@@ -137,37 +138,28 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
 
         file = "./" + config.DATA_SAVE_DIR + "/data.csv"
         ohlc, indicator = _msg.split("|")
-        print("111111111111111")
-        print(ohlc)
-        print("222222222222222")
-        print(indicator)
         _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = ohlc.split(",")
         _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = indicator.split(";")
-        print("333333333333333")
-        print(_time)
-        print("444444444444444")
-        print(ohlc.split(","))
-        print(indicator.split(";"))
 
         _time = pd.to_datetime(_time, format="%Y.%m.%d %H:%M")
         _time = datetime.datetime.strftime(_time, "%Y-%m-%d %H:%M:00")
         _time = datetime.datetime.strptime(_time, "%Y-%m-%d %H:%M:00")
-        print("5555555555555")
-        print(_time)
 
         self.cnt += 1
-        self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
+        _random_int  = random.randint(1, 999)
+        value = "self.data_df_{}".format(str(_random_int))
+        x_num = 'value'
+        globals()[x_num].loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
                                          float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
         print("ooooooooooooooooooooooo")
         print(self.data_df)
         if ((self.cnt+1) % len(self._instruments)) == 0:
-            df = self.data_df
-            df.drop(["spread", "real_volume"], axis=1, inplace=True)
+            globals()[x_num].drop(["spread", "real_volume"], axis=1, inplace=True)
             fe = FeatureEngineer(use_technical_indicator=False,
                                  tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
                                  use_turbulence=False,
                                  user_defined_feature=False)
-            processed = fe.preprocess_data(df)
+            processed = fe.preprocess_data(globals()[x_num])
             np.seterr(divide = 'ignore')
             processed['log_volume'] = np.where((processed.volume * processed.close) > 0, \
                                                np.log(processed.volume * processed.close), 0)
@@ -180,7 +172,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         _timestamp = pd.to_datetime(self._zmq._timestamp, format="%Y-%m-%d %H:%M:%S.%f")
         _timestamp = datetime.datetime.strftime(_timestamp, "%Y-%m-%d %H:%M:%S")
         _timestamp = datetime.datetime.strptime(_timestamp, "%Y-%m-%d %H:%M:%S")
-
+        
         if _timestamp >= self.finish_time:
             # finishes (removes all subscriptions)  
             self.stop()
