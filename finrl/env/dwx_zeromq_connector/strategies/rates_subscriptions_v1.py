@@ -124,8 +124,6 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         """
         # split data to get topic and message and balance
         _topic, _, _msg = data.split("&")
-        print("mmmmmmmmmmmmmmmmmm")
-        print(_msg)
         """
         print('Data on Topic={} with Message={} and Balance={}'.format(_topic,
                                                                        self._zmq._Market_Data_DB[_topic][self._zmq._timestamp],
