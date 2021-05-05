@@ -195,27 +195,25 @@ class StockTradingEnvStopLossOnline(gym.Env):
     def get_date_vector(self, date, cols=None):
         if cols is None:
             cols = self.daily_information_cols
-        """"
-            if self._h_cnt == 7: self._h_cnt = 0
-            else: 
-                self._h_cnt = self._h_cnt + 1
-                
-            date //= 7
-            now_t = Timestamp.now('UTC')+ timedelta(hours=3)
-            now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
-            now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d  %H:%M:%S')
-            fetch_t = self.dates[date] + timedelta(hours=self._h_cnt-1)
-            fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
-            fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
-            if fetch_t >= now_t:
-                sleep_t = (fetch_t - now_t).total_seconds()
-            else:
-                fetch_t = fetch_t + timedelta(hours=24)
-                sleep_t = (fetch_t - now_t).total_seconds()
-            print("sleep for {} second".format(sleep_t))
+        
+            #if self._h_cnt == 7: self._h_cnt = 0
+            #else: 
+                #self._h_cnt = self._h_cnt + 1                
+            #date //= 7
+            #now_t = Timestamp.now('UTC')+ timedelta(hours=3)
+            #now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
+            #now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d  %H:%M:%S')
+            #fetch_t = self.dates[date] + timedelta(hours=self._h_cnt-1)
+            #fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
+            #fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
+            #if fetch_t >= now_t:
+                #sleep_t = (fetch_t - now_t).total_seconds()
+            #else:
+                #fetch_t = fetch_t + timedelta(hours=24)
+                #sleep_t = (fetch_t - now_t).total_seconds()
+            #print("sleep for {} second".format(sleep_t))
             #sleep(sleep_t)
-        """"
-            
+
             cwd = os.getcwd()
             if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange":
                 path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
