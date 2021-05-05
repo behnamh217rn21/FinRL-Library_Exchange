@@ -39,12 +39,11 @@
 #############################################################################
 # DWX-ZMQ required imports 
 #############################################################################
-# Append path for main project folder
-import sys
-sys.path.append('../../..')
-
 # Import ZMQ-Strategy from relative path
-from examples.template.strategies.base.DWX_ZMQ_Strategy import DWX_ZMQ_Strategy
+from finrl.env.dwx_zeromq_connector.strategies.base.DWX_ZMQ_Strategy import DWX_ZMQ_Strategy
+
+from finrl.preprocessing.preprocessors import FeatureEngineer
+from finrl.config import config
 
 #################################################################################
 from pandas import Timestamp
