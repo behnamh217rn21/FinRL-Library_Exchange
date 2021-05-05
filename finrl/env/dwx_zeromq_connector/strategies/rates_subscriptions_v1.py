@@ -123,12 +123,15 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         Callback to process new data received through the SUB port
         """
         # split data to get topic and message and balance
+        print("mmmmmmmmmmmmmmmmmm")
+        print(data)
         _topic, _, _msg = data.split("&")
+        """
         print('Data on Topic={} with Message={} and Balance={}'.format(_topic,
                                                                        self._zmq._Market_Data_DB[_topic][self._zmq._timestamp],
                                                                        self._zmq._Balance
                                                                        ))
-
+        """
         if self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0] != self.p_time:
             f1 = open("./" + config.DATA_SAVE_DIR + "/balance.txt", 'w')
             f1.write(self._zmq._Balance); f1.close()
@@ -146,15 +149,21 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         self.cnt += 1
         self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
                                          float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
-        print("kkkkkkkkkkkkkkkkkkkkkkkk")
-        print(self.cnt)
-        print(len(self._instruments))
+
         if ((self.cnt+1) % len(self._instruments)) == 0:
             self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
-            self.data_df["change"] = (self.data_df.close-self.data_df.open)/self.data_df.close
-            self.data_df["log_volume"] = np.log(self.data_df.volume*self.data_df.close)
-            self.data_df["daily_variance"] = (self.data_df.high-self.data_df.low)/self.data_df.close
-            self.data_df.to_csv(file)
+            fe = FeatureEngineer(use_technical_indicator=False,
+                                 tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
+                                 use_turbulence=False,
+                                 user_defined_feature=False)
+            processed = fe.preprocess_data(self.data_df)
+            np.seterr(divide = 'ignore')
+            processed['log_volume'] = np.where((processed.volume * processed.close) > 0, \
+                                               np.log(processed.volume * processed.close), 0)
+            processed['change'] = (processed.close - processed.open) / processed.close
+            processed['daily_variance'] = (processed.high - processed.low) / processed.close
+            print(processed)
+            processed.to_csv(file)
 
         _timestamp = pd.to_datetime(self._zmq._timestamp, format="%Y-%m-%d %H:%M:%S.%f")
         _timestamp = datetime.datetime.strftime(_timestamp, "%Y-%m-%d %H:%M:%S")
