@@ -209,11 +209,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 print("88888888888888888888888")
                 print(self.date_time)
                 print(now_t)
-                print(self.date_time)
-                fetch_t = self.date_time + timedelta(minutes=5*(date+1))
+                fetch_t = self.date_time + timedelta(minutes=10*(date+1))
                 fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
                 fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
-                
+                print(fetch_t)
                 sleep_t = (fetch_t - now_t).total_seconds()
                 print("sleep for {} second ...".format(sleep_t))
                 sleep(sleep_t)          
