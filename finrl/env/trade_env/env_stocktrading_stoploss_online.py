@@ -197,6 +197,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             cols = self.daily_information_cols
             
             time = self.dt.split(" ")[1]
+            print("555555555555555555555")
+            print(time)
             if (datetime.datetime.today().weekday() == 4) & (time == "23:55:00"):
                 print("sleep for two days ...")
                 sleep(172800+300)
@@ -207,7 +209,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d %H:%M:%S')
                 self.dt = datetime.datetime.strptime(self.dt, '%Y-%m-%d %H:%M:%S')
                 
-                fetch_t = self.dt + timedelta(minutes=10*(date+1))
+                fetch_t = self.dt + timedelta(minutes=5*(date+2))
                 fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
                 fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
                 
