@@ -150,12 +150,13 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         print("ooooooooooooooooooooooo")
         print(self.data_df)
         if ((self.cnt+1) % len(self._instruments)) == 0:
-            self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
+            df = self.data_df
+            df.drop(["spread", "real_volume"], axis=1, inplace=True)
             fe = FeatureEngineer(use_technical_indicator=False,
                                  tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
                                  use_turbulence=False,
                                  user_defined_feature=False)
-            processed = fe.preprocess_data(self.data_df)
+            processed = fe.preprocess_data(df)
             np.seterr(divide = 'ignore')
             processed['log_volume'] = np.where((processed.volume * processed.close) > 0, \
                                                np.log(processed.volume * processed.close), 0)
