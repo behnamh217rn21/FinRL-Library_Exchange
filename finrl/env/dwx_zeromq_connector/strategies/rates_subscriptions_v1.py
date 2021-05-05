@@ -123,9 +123,9 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         Callback to process new data received through the SUB port
         """
         # split data to get topic and message and balance
-        print("mmmmmmmmmmmmmmmmmm")
-        print(data)
         _topic, _, _msg = data.split("&")
+        print("mmmmmmmmmmmmmmmmmm")
+        print(_msg)
         """
         print('Data on Topic={} with Message={} and Balance={}'.format(_topic,
                                                                        self._zmq._Market_Data_DB[_topic][self._zmq._timestamp],
