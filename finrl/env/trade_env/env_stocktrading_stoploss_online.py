@@ -173,7 +173,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
         """
         
         mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
-        self.mtime_temp = mtime
+        self.mtime_temp = datetime.fromtimestamp(mtime, timezone.utc)
+        self.mtime_temp = self.mtime_temp.strftime('%Y-%m-%d %H:%M:%S')
+        self.mtime_temp = datetime.strptime(self.mtime_temp, '%Y-%m-%d %H:%M:%S')
+
         self.dates_cnt = self.days*24
         
         init_state = np.array([self.initial_amount] 
@@ -440,14 +443,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             print("111111111111111111111111")
-            print(buys)
+            print(sells)
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             spend = np.dot(buys, closings)
             spend *= 100000
             costs += spend * self.buy_cost_pct
             print("222222222222222222222222")
-            print(sells)
+            print(buys)
             # if we run out of cash...
             if (spend + costs) > coh:
                 if self.patient:
