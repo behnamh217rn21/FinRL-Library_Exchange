@@ -137,6 +137,8 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
 
         file = "./" + config.DATA_SAVE_DIR + "/data.csv"
         ohlc, indicator = _msg.split("|")
+        print("yyyyyyyyyyyyyyyy")
+        print(ohlc)
         _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = ohlc.split(",")
         _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = indicator.split(";")
 
@@ -147,7 +149,8 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         self.cnt += 1
         self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
                                          float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
-
+        print("ooooooooooooooooooooooo")
+        print(self.data_df)
         if ((self.cnt+1) % len(self._instruments)) == 0:
             self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
             fe = FeatureEngineer(use_technical_indicator=False,
