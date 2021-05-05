@@ -225,8 +225,13 @@ class StockTradingEnvStopLossOnline(gym.Env):
             mtime = datetime.fromtimestamp(mtime, timezone.utc)
             mtime = mtime.strftime('%Y-%m-%d %H:%M:%S')
             mtime = datetime.strptime(mtime, '%Y-%m-%d %H:%M:%S')
+            
+            print("111111111111111111")
+            print(mtime)
+            print(self.mtime_temp)
 
             while mtime == self.mtime_temp:
+                print("7777777777777777777")
                 _, _, _, _, _, _, size, _, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
                 self.mtime_temp = datetime.fromtimestamp(mtime, timezone.utc)
                 self.mtime_temp = self.mtime_temp.strftime('%Y-%m-%d %H:%M:%S')
@@ -239,7 +244,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         trunc_df = trunc_df.set_index('date')
 
         time = self.fetch_dt.split(" ")[1]
-        if (datetime.datetime.today().weekday() == 4) & (time == "23:55:00"):
+        if (datetime.today().weekday() == 4) and (time == "23:55:00"):
             print("sleep for two days ...")
             sleep(172800+300)   
             
