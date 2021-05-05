@@ -133,6 +133,8 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         if self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0] != self.p_time:
             f1 = open("./" + config.DATA_SAVE_DIR + "/balance.txt", 'w')
             f1.write(self._zmq._Balance); f1.close()
+            print("pppppppppppppppppppppppp")
+            print(self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0])
             self.p_time = self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0]
 
         file = "./" + config.DATA_SAVE_DIR + "/data.csv"
