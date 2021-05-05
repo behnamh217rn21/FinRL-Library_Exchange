@@ -226,8 +226,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 
             _, _, _, _, _, _, size, _, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
             mtime_p = datetime.fromtimestamp(mtime, timezone.utc)
-            mtime_p = mtime.strftime('%Y-%m-%d %H:%M:%S')
-            mtime_p = datetime.strptime(mtime, '%Y-%m-%d %H:%M:%S')
+            mtime_p = mtime_p.strftime('%Y-%m-%d %H:%M:%S')
+            mtime_p = datetime.strptime(mtime_p, '%Y-%m-%d %H:%M:%S')
             
             print("111111111111111111")
             print(mtime)
