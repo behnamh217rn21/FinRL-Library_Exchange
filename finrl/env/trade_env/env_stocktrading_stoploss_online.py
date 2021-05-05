@@ -170,7 +170,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.dates = self.dates + timedelta(minutes=990)
         """
         ff_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
-        self.date_time = ff_df['date'][0]
+        self.dt = ff_df['date'][0]
         
         self.dates_cnt = self.days*24
         
@@ -209,7 +209,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 print("88888888888888888888888")
                 print(self.date_time)
                 print(now_t)
-                fetch_t = self.date_time + timedelta(minutes=10*(date+1))
+                fetch_t = self.dt + timedelta(minutes=10*(date+1))
                 fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
                 fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
                 print(fetch_t)
@@ -223,15 +223,15 @@ class StockTradingEnvStopLossOnline(gym.Env):
             path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
             os.chdir(path)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
-        self.date_time = trunc_df['date'][0]
-        trunc_df= trunc_df.set_index('date')
+        datetime = trunc_df['date'][0]
+        trunc_df = trunc_df.set_index('date')
 
         v = []
         for a in self.assets:
             try:
                 subset = trunc_df[trunc_df[self.symbol] == a]
                 #subset.loc[date_time, "close"] =  adjusted_prices(a, subset.loc[date_time, "close"])
-                v += subset.loc[self.date_time, cols].tolist()
+                v += subset.loc[datetime, cols].tolist()
             except:
                 print("No data received on {}".format(date))
                 return self.get_date_vector(date, cols)
