@@ -197,7 +197,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             cols = self.daily_information_cols
             
             time = self.date_time.split(" ")[0]
-            if (datetime.datetime.today().weekday() == 4) & (time == "23:55:00"):
+            if (datetime.datetime.today().weekday() == 4) & (time == "23:55"):
                 print("sleep for two days ...")
                 sleep(172800+300)
             
@@ -385,7 +385,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # scale cash purchases to asset
             if self.discrete_actions:
                 # convert into integer because we can't buy fraction of shares
-                actions = np.where(closings > 0, actions // closings, 0)
+                #actions = np.where(closings > 0, actions // closings, 0)
                 actions = actions.astype(int)
                 # round down actions to the nearest multiplies of shares_increment
                 actions = np.where(actions >= 0,
@@ -412,13 +412,15 @@ class StockTradingEnvStopLossOnline(gym.Env):
             proceeds *= 100000
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
-            
+            print("111111111111111111111111")
+            print(buys)
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             spend = np.dot(buys, closings)
             spend *= 100000
             costs += spend * self.buy_cost_pct
-            
+            print("222222222222222222222222")
+            print(sells)
             # if we run out of cash...
             if (spend + costs) > coh:
                 if self.patient:
