@@ -196,7 +196,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if cols is None:
             cols = self.daily_information_cols
             
-            time = self.date_time.split(" ")[0]
+            time = self.fetch_dt.split(" ")[1]
             if (datetime.datetime.today().weekday() == 4) & (time == "23:55:00"):
                 print("sleep for two days ...")
                 sleep(172800+300)
@@ -205,14 +205,16 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 now_t = Timestamp.now('UTC')+ timedelta(hours=3)
                 now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
                 now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d %H:%M:%S')
-                self.date_time = datetime.datetime.strptime(self.date_time, '%Y-%m-%d %H:%M:%S')
-                print("88888888888888888888888")
-                print(self.date_time)
-                print(now_t)
+                self.dt = datetime.datetime.strptime(self.dt, '%Y-%m-%d %H:%M:%S')
+                
                 fetch_t = self.dt + timedelta(minutes=10*(date+1))
                 fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
                 fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
+                
+                print("88888888888888888888888")
                 print(fetch_t)
+                print(now_t)
+                
                 sleep_t = (fetch_t - now_t).total_seconds()
                 print("sleep for {} second ...".format(sleep_t))
                 sleep(sleep_t)          
@@ -223,7 +225,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
             os.chdir(path)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
-        datetime = trunc_df['date'][0]
+        self.fetch_dt = trunc_df['date'][0]
         trunc_df = trunc_df.set_index('date')
 
         v = []
@@ -231,7 +233,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             try:
                 subset = trunc_df[trunc_df[self.symbol] == a]
                 #subset.loc[date_time, "close"] =  adjusted_prices(a, subset.loc[date_time, "close"])
-                v += subset.loc[datetime, cols].tolist()
+                v += subset.loc[self.fetch_dt, cols].tolist()
             except:
                 print("No data received on {}".format(date))
                 return self.get_date_vector(date, cols)
