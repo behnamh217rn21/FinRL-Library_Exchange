@@ -130,11 +130,11 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                                                                        ))
 
         if self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0] != self.p_time:
-            f1 = open("./data_info" + "/balance.txt", 'w')
+            f1 = open("./" + config.DATA_SAVE_DIR + "/balance.txt", 'w')
             f1.write(self._zmq._Balance); f1.close()
             self.p_time = self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0]
 
-        file = "./data_info" + "/data.csv"
+        file = "./" + config.DATA_SAVE_DIR + "/data.csv"
         ohlc, indicator = _msg.split("|")
         _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = ohlc.split(",")
         _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = indicator.split(";")
