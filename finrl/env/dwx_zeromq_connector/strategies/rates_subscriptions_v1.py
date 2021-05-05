@@ -152,7 +152,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         globals()[x_num].loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
                                          float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
         print("ooooooooooooooooooooooo")
-        print(self.data_df)
+        print(globals()[x_num])
         if ((self.cnt+1) % len(self._instruments)) == 0:
             globals()[x_num].drop(["spread", "real_volume"], axis=1, inplace=True)
             fe = FeatureEngineer(use_technical_indicator=False,
