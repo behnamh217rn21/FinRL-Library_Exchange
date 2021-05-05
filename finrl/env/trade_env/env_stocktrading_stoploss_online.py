@@ -223,7 +223,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange":
                 path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
                 os.chdir(path)
-                
+            print("333333333333333333")
+            print(os.getcwd())
             _, _, _, _, _, _, size, _, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
             mtime_p = datetime.fromtimestamp(mtime, timezone.utc)
             mtime_p = mtime_p.strftime('%Y-%m-%d %H:%M:%S')
