@@ -135,13 +135,11 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             f1 = open("./" + config.DATA_SAVE_DIR + "/balance.txt", 'w')
             f1.write(self._zmq._Balance); f1.close()
             self.p_time = self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0]
-            
-            _random_int  = random.randint(1, 999)
-            value = "self.data_df_{}".format(str(_random_int))
-            x_num = 'value'
+            self.data_df = pd.DataFrame(columns=self.cols, dtype=float)
 
         file = "./" + config.DATA_SAVE_DIR + "/data.csv"
         ohlc, indicator = _msg.split("|")
+        
         _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = ohlc.split(",")
         _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = indicator.split(";")
 
@@ -150,18 +148,17 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         _time = datetime.datetime.strptime(_time, "%Y-%m-%d %H:%M:00")
 
         self.cnt += 1
-        globals()[x_num] = pd.DataFrame(columns=self.cols, dtype=float)
-        globals()[x_num].loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
-                                             float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
+        self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
+                                         float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
         print("ooooooooooooooooooooooo")
         print(globals()[x_num])
         if ((self.cnt+1) % len(self._instruments)) == 0:
-            globals()[x_num].drop(["spread", "real_volume"], axis=1, inplace=True)
+            self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
             fe = FeatureEngineer(use_technical_indicator=False,
                                  tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
                                  use_turbulence=False,
                                  user_defined_feature=False)
-            processed = fe.preprocess_data(globals()[x_num])
+            processed = fe.preprocess_data(self.data_df)
             np.seterr(divide = 'ignore')
             processed['log_volume'] = np.where((processed.volume * processed.close) > 0, \
                                                np.log(processed.volume * processed.close), 0)
