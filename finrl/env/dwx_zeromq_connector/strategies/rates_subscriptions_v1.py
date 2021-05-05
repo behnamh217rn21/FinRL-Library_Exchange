@@ -94,7 +94,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         self.finish_time = datetime.datetime.strftime(self.finish_time, "%Y.%m.%d %H:%M:00")
         self.finish_time = datetime.datetime.strptime(self.finish_time, "%Y.%m.%d %H:%M:00")
 
-        self.p_time= '2000-01-01 00:00'
+        self.p_time= "2000-01-01 00:00"
 
         cols = ["date", "open", "high", "low", "close", "volume", "spread", "real_volume", "tic",
                 "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma"]
