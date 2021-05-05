@@ -234,8 +234,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 self.mtime_temp = datetime.fromtimestamp(mtime, timezone.utc)
                 self.mtime_temp = self.mtime_temp.strftime('%Y-%m-%d %H:%M:%S')
                 self.mtime_temp = datetime.strptime(self.mtime_temp, '%Y-%m-%d %H:%M:%S')
-                print("sleep for 5 second")
-                sleep(5)
+                #print("sleep for 5 second")
+                #sleep(5)
                 
         #sleep(5)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
