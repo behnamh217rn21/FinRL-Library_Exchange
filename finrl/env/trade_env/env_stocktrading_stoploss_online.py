@@ -228,17 +228,13 @@ class StockTradingEnvStopLossOnline(gym.Env):
             mtime_p = datetime.fromtimestamp(mtime, timezone.utc)
             mtime_p = mtime_p.strftime('%Y-%m-%d %H:%M:%S')
             mtime_p = datetime.strptime(mtime_p, '%Y-%m-%d %H:%M:%S')
-            
-            print("111111111111111111")
-            print(mtime)
-            print(self.mtime_temp)
 
             while mtime_p == self.mtime_temp:
-                print("7777777777777777777")
                 _, _, _, _, _, _, size, _, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
                 self.mtime_temp = datetime.fromtimestamp(mtime, timezone.utc)
                 self.mtime_temp = self.mtime_temp.strftime('%Y-%m-%d %H:%M:%S')
                 self.mtime_temp = datetime.strptime(self.mtime_temp, '%Y-%m-%d %H:%M:%S')
+                print("sleep for 5 second")
                 sleep(5)
                 
         #sleep(5)
