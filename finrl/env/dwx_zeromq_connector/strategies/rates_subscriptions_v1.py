@@ -135,6 +135,10 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             f1 = open("./" + config.DATA_SAVE_DIR + "/balance.txt", 'w')
             f1.write(self._zmq._Balance); f1.close()
             self.p_time = self._zmq._Market_Data_DB[_topic][self._zmq._timestamp][0]
+            
+            _random_int  = random.randint(1, 999)
+            value = "self.data_df_{}".format(str(_random_int))
+            x_num = 'value'
 
         file = "./" + config.DATA_SAVE_DIR + "/data.csv"
         ohlc, indicator = _msg.split("|")
@@ -146,9 +150,6 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         _time = datetime.datetime.strptime(_time, "%Y-%m-%d %H:%M:00")
 
         self.cnt += 1
-        _random_int  = random.randint(1, 999)
-        value = "self.data_df_{}".format(str(_random_int))
-        x_num = 'value'
         globals()[x_num] = pd.DataFrame(columns=self.cols, dtype=float)
         globals()[x_num].loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
                                              float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
