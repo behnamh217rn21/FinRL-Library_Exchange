@@ -522,6 +522,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # Update State
             state = ([FreeMargin*1000] + list(holdings_updated) + self.get_date_vector(self.date_index))
+            print("gggggggggggggggggggggggggggggggggggg")
+            print(state)
             self.state_memory.append(state)
             return state, reward, False, {}
             
