@@ -69,6 +69,7 @@ class t_class(DWX_ZMQ_Strategy):
             
             print('[{}_Trader] Alright ...'.format(_symbol))
             self._traders.append(_t)
+            sleep(self._delay)
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
