@@ -172,7 +172,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self._h_cnt = 0
         """
         
-        self.mtime_temp = ""
+        mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
+        self.mtime_temp = mtime
         self.dates_cnt = self.days*24
         
         init_state = np.array([self.initial_amount] 
@@ -220,13 +221,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
                 os.chdir(path)
                 
-            mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
+            _, _, _, _, _, _, size, _, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
             mtime = datetime.fromtimestamp(mtime, timezone.utc)
             mtime = mtime.strftime('%Y-%m-%d %H:%M:%S')
             mtime = datetime.strptime(mtime, '%Y-%m-%d %H:%M:%S')
 
-            while mtime != self.mtime_temp:
-                self.mtime_temp = datetime.fromtimestamp(self.mtime_temp, timezone.utc)
+            while mtime == self.mtime_temp:
+                _, _, _, _, _, _, size, _, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
+                self.mtime_temp = datetime.fromtimestamp(mtime, timezone.utc)
                 self.mtime_temp = self.mtime_temp.strftime('%Y-%m-%d %H:%M:%S')
                 self.mtime_temp = datetime.strptime(self.mtime_temp, '%Y-%m-%d %H:%M:%S')
                 sleep(5)
