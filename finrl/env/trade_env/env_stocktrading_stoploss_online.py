@@ -195,7 +195,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
     def get_date_vector(self, date, cols=None):
         if cols is None:
             cols = self.daily_information_cols
-            """"
+        """"
             if self._h_cnt == 7: self._h_cnt = 0
             else: 
                 self._h_cnt = self._h_cnt + 1
@@ -214,7 +214,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 sleep_t = (fetch_t - now_t).total_seconds()
             print("sleep for {} second".format(sleep_t))
             #sleep(sleep_t)
-            """"
+        """"
             
             cwd = os.getcwd()
             if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange":
