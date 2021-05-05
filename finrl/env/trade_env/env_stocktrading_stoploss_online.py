@@ -172,6 +172,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self._h_cnt = 0
         """
         
+        self.mtime_temp = ""
         self.dates_cnt = self.days*24
         
         init_state = np.array([self.initial_amount] 
