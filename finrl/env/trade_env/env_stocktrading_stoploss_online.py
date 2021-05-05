@@ -162,14 +162,16 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                     "total_assets": [],
                                     "reward": [],
                                    }
-         
+        """
         now_t = Timestamp.now('UTC') + timedelta(hours=3)
         now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
         _date = now_t.split(" ")[0]
         self.dates = pd.bdate_range(start=_date, periods=self.days)
         self.dates = self.dates + timedelta(minutes=990)
+        """
+        ff_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
+        self.date_time = ff_df['date'][0]
         
-        self._h_cnt = 0
         self.dates_cnt = self.days*24
         
         init_state = np.array([self.initial_amount] 
@@ -194,24 +196,21 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if cols is None:
             cols = self.daily_information_cols
             
-            if self._h_cnt == 7: self._h_cnt = 0
-            else: 
-                self._h_cnt = self._h_cnt + 1
-                
-            date //= 7
-            now_t = Timestamp.now('UTC')+ timedelta(hours=3)
-            now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
-            now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d  %H:%M:%S')
-            fetch_t = self.dates[date] + timedelta(hours=self._h_cnt-1)
-            fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
-            fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
-            if fetch_t >= now_t:
-                sleep_t = (fetch_t - now_t).total_seconds()
+            time = self.date_time.split(" ")[0]
+            if (datetime.datetime.today().weekday() == 4) & (time == "23:55:00"):
+                print("sleep for two days ...")
+                sleep(172800+300)
+            
             else:
-                fetch_t = fetch_t + timedelta(hours=24)
+                now_t = Timestamp.now('UTC')+ timedelta(hours=3)
+                now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
+                now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d  %H:%M:%S')
+                fetch_t = self.date_time + timedelta(minutes=5*(date+1))
+                fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
+                fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
                 sleep_t = (fetch_t - now_t).total_seconds()
-            print("sleep for {} second".format(sleep_t))
-            #sleep(sleep_t) 
+                print("sleep for {} second ...".format(sleep_t))
+                sleep(sleep_t)          
         
         sleep(5)
         cwd = os.getcwd()
@@ -219,7 +218,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
             os.chdir(path)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
-        date_time = trunc_df['date'][0]
+        self.date_time = trunc_df['date'][0]
         trunc_df= trunc_df.set_index('date')
 
         v = []
@@ -227,7 +226,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             try:
                 subset = trunc_df[trunc_df[self.symbol] == a]
                 #subset.loc[date_time, "close"] =  adjusted_prices(a, subset.loc[date_time, "close"])
-                v += subset.loc[date_time, cols].tolist()
+                v += subset.loc[self.date_time, cols].tolist()
             except:
                 print("No data received on {}".format(date))
                 return self.get_date_vector(date, cols)
