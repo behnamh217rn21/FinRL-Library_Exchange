@@ -225,15 +225,15 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 os.chdir(path)
                 
             _, _, _, _, _, _, size, _, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
-            mtime = datetime.fromtimestamp(mtime, timezone.utc)
-            mtime = mtime.strftime('%Y-%m-%d %H:%M:%S')
-            mtime = datetime.strptime(mtime, '%Y-%m-%d %H:%M:%S')
+            mtime_p = datetime.fromtimestamp(mtime, timezone.utc)
+            mtime_p = mtime.strftime('%Y-%m-%d %H:%M:%S')
+            mtime_p = datetime.strptime(mtime, '%Y-%m-%d %H:%M:%S')
             
             print("111111111111111111")
             print(mtime)
             print(self.mtime_temp)
 
-            while mtime == self.mtime_temp:
+            while mtime_p == self.mtime_temp:
                 print("7777777777777777777")
                 _, _, _, _, _, _, size, _, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
                 self.mtime_temp = datetime.fromtimestamp(mtime, timezone.utc)
@@ -438,6 +438,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
+            sells = list(map(lambda x: round(x, ndigits=2), sells))
             proceeds = np.dot(sells, closings)
             proceeds *= 100000
             costs = proceeds * self.sell_cost_pct
@@ -446,6 +447,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             print(sells)
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
+            buys = list(map(lambda x: round(x, ndigits=2), buys))
             spend = np.dot(buys, closings)
             spend *= 100000
             costs += spend * self.buy_cost_pct
@@ -499,7 +501,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 commission += order_data.loc[i, 'commission']
                 swap += order_data.loc[i, 'swap']
             coh = coh - spend - costs - swap - commission
-            
+            print("tttttttttttttttttttttttt")
+            print(FreeMargin)
             # update our holdings
             holdings_updated = holdings + actions
             self.holdings_memory.append(holdings_updated * closings)
