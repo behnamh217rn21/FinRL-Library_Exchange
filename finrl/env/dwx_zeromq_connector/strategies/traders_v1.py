@@ -27,7 +27,7 @@ import pandas as pd
 class t_class(DWX_ZMQ_Strategy):
     def __init__(self, _name="ONLINE_TRADERS",
                  _symbols=['#INTC', '#AAPL'],
-                 _delay=2,
+                 _delay=5,
                  _broker_gmt=3.5,
                  _verbose=False
                  ):
@@ -103,7 +103,7 @@ class t_class(DWX_ZMQ_Strategy):
                                                          self._delay,
                                                          10)
             
-            sleep(10)
+            sleep(self._delay*2)
             print("trade counter: {}".format(self._ot.shape[0]))
             
             # Reset cycle if nothing received
