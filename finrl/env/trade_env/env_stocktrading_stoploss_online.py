@@ -223,8 +223,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange":
                 path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
                 os.chdir(path)
-            print("333333333333333333")
-            print(os.getcwd())
+                
             _, _, _, _, _, _, size, _, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
             mtime_p = datetime.fromtimestamp(mtime, timezone.utc)
             mtime_p = mtime_p.strftime('%Y-%m-%d %H:%M:%S')
@@ -440,16 +439,20 @@ class StockTradingEnvStopLossOnline(gym.Env):
             proceeds *= 100000
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
+            
             print("111111111111111111111111")
             print(sells)
+            
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             buys = list(map(lambda x: round(x, ndigits=2), buys))
             spend = np.dot(buys, closings)
             spend *= 100000
             costs += spend * self.buy_cost_pct
+            
             print("222222222222222222222222")
             print(buys)
+            
             # if we run out of cash...
             if (spend + costs) > coh:
                 if self.patient:
@@ -498,8 +501,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 commission += order_data.loc[i, 'commission']
                 swap += order_data.loc[i, 'swap']
             coh = coh - spend - costs - swap - commission
+            
             print("tttttttttttttttttttttttt")
             print(FreeMargin)
+            
             # update our holdings
             holdings_updated = holdings + actions
             self.holdings_memory.append(holdings_updated * closings)
@@ -522,8 +527,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # Update State
             state = ([FreeMargin*1000] + list(holdings_updated) + self.get_date_vector(self.date_index))
+            
             print("gggggggggggggggggggggggggggggggggggg")
             print(state)
+            
             self.state_memory.append(state)
             return state, reward, False, {}
             
