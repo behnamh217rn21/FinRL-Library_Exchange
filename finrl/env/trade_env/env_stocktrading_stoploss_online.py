@@ -196,7 +196,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if cols is None:
             cols = self.daily_information_cols
             
-            time = self.fetch_dt.split(" ")[1]
+            time = self.dt.split(" ")[1]
             if (datetime.datetime.today().weekday() == 4) & (time == "23:55:00"):
                 print("sleep for two days ...")
                 sleep(172800+300)
