@@ -3,7 +3,7 @@ from pandas import Timestamp
 import datetime
 from copy import deepcopy
 import pandas as pd
-from datetime import timedelta
+from datetime import timedelta, datetime, timezone
 import random
 
 from gym.utils import seeding
@@ -168,9 +168,9 @@ class StockTradingEnvStopLossOnline(gym.Env):
         _date = now_t.split(" ")[0]
         self.dates = pd.bdate_range(start=_date, periods=self.days)
         self.dates = self.dates + timedelta(minutes=990)
+        
+        self._h_cnt = 0
         """
-        ff_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
-        self.dt = ff_df['date'][0]
         
         self.dates_cnt = self.days*24
         
@@ -195,41 +195,53 @@ class StockTradingEnvStopLossOnline(gym.Env):
     def get_date_vector(self, date, cols=None):
         if cols is None:
             cols = self.daily_information_cols
-            
-            time = self.dt.split(" ")[1]
-            print("555555555555555555555")
-            print(time)
-            if (datetime.datetime.today().weekday() == 4) & (time == "23:55:00"):
-                print("sleep for two days ...")
-                sleep(172800+300)
-            
-            else:
-                now_t = Timestamp.now('UTC')+ timedelta(hours=3)
-                now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
-                now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d %H:%M:%S')
-                self.dt = datetime.datetime.strptime(self.dt, '%Y-%m-%d %H:%M:%S')
+            """"
+            if self._h_cnt == 7: self._h_cnt = 0
+            else: 
+                self._h_cnt = self._h_cnt + 1
                 
-                fetch_t = self.dt + timedelta(minutes=5*(date+2))
-                fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
-                fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
-                
-                print("88888888888888888888888")
-                print(fetch_t)
-                print(now_t)
-                
+            date //= 7
+            now_t = Timestamp.now('UTC')+ timedelta(hours=3)
+            now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
+            now_t = datetime.datetime.strptime(now_t, '%Y-%m-%d  %H:%M:%S')
+            fetch_t = self.dates[date] + timedelta(hours=self._h_cnt-1)
+            fetch_t = fetch_t.strftime('%Y-%m-%d %H:%M:%S')
+            fetch_t = datetime.datetime.strptime(fetch_t, '%Y-%m-%d %H:%M:%S')
+            if fetch_t >= now_t:
                 sleep_t = (fetch_t - now_t).total_seconds()
-                print("sleep for {} second ...".format(sleep_t))
-                sleep(sleep_t)          
-        
-        sleep(5)
-        cwd = os.getcwd()
-        if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange":
-            path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
-            os.chdir(path)
+            else:
+                fetch_t = fetch_t + timedelta(hours=24)
+                sleep_t = (fetch_t - now_t).total_seconds()
+            print("sleep for {} second".format(sleep_t))
+            #sleep(sleep_t)
+            """"
+            
+            cwd = os.getcwd()
+            if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange":
+                path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
+                os.chdir(path)
+                
+            mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
+            mtime = datetime.fromtimestamp(mtime, timezone.utc)
+            mtime = mtime.strftime('%Y-%m-%d %H:%M:%S')
+            mtime = datetime.strptime(mtime, '%Y-%m-%d %H:%M:%S')
+
+            while mtime != self.mtime_temp:
+                self.mtime_temp = datetime.fromtimestamp(self.mtime_temp, timezone.utc)
+                self.mtime_temp = self.mtime_temp.strftime('%Y-%m-%d %H:%M:%S')
+                self.mtime_temp = datetime.strptime(self.mtime_temp, '%Y-%m-%d %H:%M:%S')
+                sleep(5)
+                
+        #sleep(5)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         self.fetch_dt = trunc_df['date'][0]
         trunc_df = trunc_df.set_index('date')
 
+        time = self.fetch_dt.split(" ")[1]
+        if (datetime.datetime.today().weekday() == 4) & (time == "23:55:00"):
+            print("sleep for two days ...")
+            sleep(172800+300)   
+            
         v = []
         for a in self.assets:
             try:
