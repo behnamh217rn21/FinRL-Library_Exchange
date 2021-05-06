@@ -106,9 +106,7 @@ class t_class(DWX_ZMQ_Strategy):
             # Acquire lock
             self._lock.acquire()
             
-            self._ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
-                                                         self._delay,
-                                                         10)
+            self._ot = self._reporting._get_open_trades_(self._delay, 10)
                         
             # Reset cycle if nothing received
             if self._zmq._valid_response_(self._ot) == False:
