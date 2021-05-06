@@ -14,6 +14,8 @@
 """
 
 from finrl.env.dwx_zeromq_connector.strategies.base.api.DWX_ZeroMQ_Connector_v2_0_1_RC8 import DWX_ZeroMQ_Connector
+from finrl.env.dwx_zeromq_connector.strategies.base.api.DWX_ZeroMQ_Connector_v2_0_1_RC8 import _DWX_ZMQ_CLEANUP_
+
 from finrl.env.dwx_zeromq_connector.strategies.base.modules.DWX_ZMQ_Execution import DWX_ZMQ_Execution
 from finrl.env.dwx_zeromq_connector.strategies.base.modules.DWX_ZMQ_Reporting import DWX_ZMQ_Reporting
 
@@ -48,6 +50,8 @@ class DWX_ZMQ_Strategy(object):
         self._execution = DWX_ZMQ_Execution(self._zmq)
         self._reporting = DWX_ZMQ_Reporting(self._zmq)
         
+        
+        self._cleanup = _DWX_ZMQ_CLEANUP_()
     ##########################################################################
     
     def _run_(self):
