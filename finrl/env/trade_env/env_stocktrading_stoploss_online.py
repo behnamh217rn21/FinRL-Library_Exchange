@@ -104,7 +104,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self._symbols = eval(file.readline())
         _symbols_i1 = []
         for i in range(0, len(self._symbols)):
-            _symbols_i1.append(_symbols[i][1])
+            _symbols_i1.append(self._symbols[i][1])
         self.assets = _symbols_i1
         self.discrete_actions = discrete_actions
         self.patient = patient
