@@ -383,7 +383,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
             
-            asset_value = np.dot(holdings, closings)
+            asset_value = np.dot(holdings*100000, closings)
             
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
             reward = self.get_reward()
@@ -396,7 +396,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # multiply action values by our scalar multiplier and save
             actions = actions * self.hmax
-            self.actions_memory.append(actions * closings) # capture what the model's trying to do
+            self.actions_memory.append((actions*100000) * closings) # capture what the model's trying to do
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, actions, 0)
@@ -418,7 +418,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                    ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
             else:
                 #actions = np.where(closings > 0, actions / closings, 0)
-                actions = list(map(lambda x: round(x, ndigits=2), actions))
+                #actions = list(map(lambda x: round(x, ndigits=2), actions))
+                pass
 
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
@@ -434,8 +435,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
             sells = list(map(lambda x: round(x, ndigits=2), sells))
-            proceeds = np.dot(sells, closings)
-            proceeds *= 100000
+            proceeds = np.dot(sells*100000, closings)
+            proceeds /= 1000
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             
@@ -445,8 +446,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             buys = list(map(lambda x: round(x, ndigits=2), buys))
-            spend = np.dot(buys, closings)
-            spend *= 100000
+            spend = np.dot(buys*100000, closings)
+            spend /= 1000
             costs += spend * self.buy_cost_pct
             
             print("222222222222222222222222")
@@ -506,7 +507,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # update our holdings
             holdings_updated = holdings + actions
-            self.holdings_memory.append(holdings_updated * closings)
+            self.holdings_memory.append((holdings_updated*100000) * closings)
                      
             # Update average buy price
             buys = np.sign(buys)
