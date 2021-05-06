@@ -86,21 +86,16 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                          _verbose)
         
         # This strategy's variables
+        self._finished = False
         self._instruments = _instruments
         self._delay = _delay
         self._verbose = _verbose
-        self._finished = False
 
-        self.finish_time = Timestamp.now('UTC') + timedelta(days=365)
-        self.finish_time = datetime.datetime.strftime(self.finish_time, "%Y.%m.%d %H:%M:00")
-        self.finish_time = datetime.datetime.strptime(self.finish_time, "%Y.%m.%d %H:%M:00")
-
-        self.p_time= '2000-01-01 00:00'
+        self.cnt = -1
+        self.p_time= "2000-01-01 00:00"
 
         self.cols = ["date", "open", "high", "low", "close", "volume", "spread", "real_volume", "tic",
                      "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma"]
-
-        self.cnt = -1
 
         # lock for acquire/release of ZeroMQ connector
         self._lock = Lock()
@@ -166,12 +161,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             print(processed)
             processed.to_csv(file)
             self.cnt = -1
-
-        _timestamp = pd.to_datetime(self._zmq._timestamp, format="%Y-%m-%d %H:%M:%S.%f")
-        _timestamp = datetime.datetime.strftime(_timestamp, "%Y-%m-%d %H:%M:%S")
-        _timestamp = datetime.datetime.strptime(_timestamp, "%Y-%m-%d %H:%M:%S")
-        
-        if _timestamp >= self.finish_time:
+            
             # finishes (removes all subscriptions)  
             self.stop()
         
