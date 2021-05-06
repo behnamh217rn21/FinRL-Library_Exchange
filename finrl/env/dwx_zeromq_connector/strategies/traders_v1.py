@@ -59,7 +59,7 @@ class t_class(DWX_ZMQ_Strategy):
         # Launch traders!
         for index, _symbol in enumerate(self._symbols):
             self._trader_(_symbol, 
-                          sells[index], buys[index]))
+                          sells[index], buys[index])
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
