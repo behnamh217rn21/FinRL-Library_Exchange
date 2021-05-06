@@ -382,8 +382,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             assert min(holdings) >= 0
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
-            
-            asset_value = np.dot(holdings*100000, closings)
+
+            asset_value = np.dot([100000 * i for i in holdings], closings)
             
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
             reward = self.get_reward()
@@ -396,7 +396,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # multiply action values by our scalar multiplier and save
             actions = actions * self.hmax
-            self.actions_memory.append((actions*100000) * closings) # capture what the model's trying to do
+            self.actions_memory.append(([100000 * i for i in actions]) * closings) # capture what the model's trying to do
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, actions, 0)
@@ -435,7 +435,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
             sells = list(map(lambda x: round(x, ndigits=2), sells))
-            proceeds = np.dot(sells*100000, closings)
+            proceeds = np.dot([100000 * i for i in sells], closings)
             proceeds /= 1000
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
@@ -446,7 +446,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             buys = list(map(lambda x: round(x, ndigits=2), buys))
-            spend = np.dot(buys*100000, closings)
+            spend = np.dot([100000 * i for i in buys], closings)
             spend /= 1000
             costs += spend * self.buy_cost_pct
             
