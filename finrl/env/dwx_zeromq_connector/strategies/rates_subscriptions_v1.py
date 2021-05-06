@@ -151,6 +151,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         f_time = f1.read(); f1.close()
         
         if (self.cnt+1) % len(self._instruments) == 0:
+            self.cnt = -1
             if f_time != str(_time):
                 self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
                 fe = FeatureEngineer(use_technical_indicator=False,
@@ -170,9 +171,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                     f2.write('%s' % str(_time))
                 # finishes (removes all subscriptions)  
                 self.stop()
-                
-            self.cnt = -1
-                
+                                
         
     ##########################################################################    
     def run(self):        
@@ -215,7 +214,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             self._lock.release()
             sleep(self._delay)
         
-        #_DWX_ZMQ_CLEANUP_()
+        _DWX_ZMQ_CLEANUP_()
         self._finished = True
                                                             
     ##########################################################################
