@@ -467,37 +467,23 @@ class DWX_ZeroMQ_Connector():
     """
     def _DWX_ZMQ_Poll_Data_(self, 
                             string_delimiter=';',
-                            poll_timeout=10000):
-        print("22222222222222222222222222222")
+                            poll_timeout=1000):
         while self._ACTIVE:
-            print("3333333333333333333333333333")
             sleep(self._sleep_delay) # poll timeout is in ms, sleep() is s.
             
             sockets = dict(globals()[self.x].poll(poll_timeout))
-            print("44444444444444444444444444444444")
-            print(sockets)
-            print("55555555555555555555555555555555")
-            print(self._PULL_SOCKET)
-            print("66666666666666666666666666666666")
-            print(sockets[self._PULL_SOCKET])
-            print("77777777777777777777777777777777")
-            print(zmq.POLLIN)
+            
             # Process response to commands sent to MetaTrader
             if self._PULL_SOCKET in sockets and sockets[self._PULL_SOCKET] == zmq.POLLIN:
-                print("88888888888888888888888888888888888888")
-                
                 if self._PULL_SOCKET_STATUS['state'] == True:
-                    print("9999999999999999999999999999999")
                     try:
                         # msg = self._PULL_SOCKET.recv_string(zmq.DONTWAIT)
                         msg = self.remote_recv(self._PULL_SOCKET)
-                        print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-                        print(msg)
+                        
                         # If data is returned, store as pandas Series
                         if msg != '' and msg != None:
                             try: 
                                 _data = eval(msg)
-                                print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                                 if '_action' in _data and _data['_action'] == 'HIST':
                                     _symbol = _data['_symbol']
                                     if '_data' in _data.keys():
