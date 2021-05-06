@@ -169,7 +169,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             
             print("999999999999999999")
             print(_str(_time))
-            with open('f_time.txt', 'w') as file:
+            with open('./finrl/marketdata/f_time.txt', 'w') as file:
                 file.write('%s' % str(_time))
             sleep(5)
             # finishes (removes all subscriptions)  
