@@ -171,7 +171,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
         
         self._h_cnt = 0
         """
-
         self.dates_cnt = self.days*24
         
         init_state = np.array([self.initial_amount] 
@@ -192,16 +191,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
         adj_close = (1/XY)*close_p       
         return adj_close
     
-    
-    def rates_subscriptions(self, _symbols):
-        # creates object with a predefined configuration
-        print('running rates subscriptions process ...')
-        func = rates_subscriptions_v1.rates_subscriptions(_instruments=_symbols)
-        func.run()
-        # Waits example termination
-        print('Waiting rates subscriptions process termination...\n')
-        while not func.isFinished():
-            sleep(1)
             
     def get_date_vector(self, date, cols=None):
         if cols is None:
@@ -233,7 +222,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             print("****Start Fetching Data (rates subscriptions process)****")
             with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
                 _symbols = eval(file.readline())
-            rates_subscriptions(_symbols,)
+            self.rates_subscriptions(_symbols,)
                 
         sleep(5)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
@@ -256,8 +245,19 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 return self.get_date_vector(date, cols)
         assert len(v) == len(self.assets) * len(cols)
         return v
-        
-        
+
+    
+    def rates_subscriptions(self, _symbols):
+        # creates object with a predefined configuration
+        print('running rates subscriptions process ...')
+        func = rates_subscriptions_v1.rates_subscriptions(_instruments=_symbols)
+        func.run()
+        # Waits example termination
+        print('Waiting rates subscriptions process termination...\n')
+        while not func.isFinished():
+            sleep(1)
+            
+            
     def return_terminal(self, reason="Last Date", reward=0):
         state = self.state_memory[-1]
         
