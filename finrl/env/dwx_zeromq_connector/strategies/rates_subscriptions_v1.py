@@ -152,8 +152,10 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         print("111111111111111111111111")
         print(f_time)
         print(_time)
+        print(type(f_time))
+        print(type(_time))
         
-        if (((self.cnt+1) % len(self._instruments)) == 0) and (f_time != _time):
+        if (((self.cnt+1) % len(self._instruments)) == 0) and (f_time != str(_time)):
             self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
             fe = FeatureEngineer(use_technical_indicator=False,
                                  tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
