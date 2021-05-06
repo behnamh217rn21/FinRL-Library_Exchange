@@ -482,8 +482,7 @@ class DWX_ZeroMQ_Connector():
                         if msg != '' and msg != None:
                             try: 
                                 _data = eval(msg)
-                                print("22222222222222222222222222")
-                                print(_data)
+
                                 if '_action' in _data and _data['_action'] == 'HIST':
                                     _symbol = _data['_symbol']
                                     if '_data' in _data.keys():
@@ -495,12 +494,7 @@ class DWX_ZeroMQ_Connector():
                                         print('message: ' + msg)
                                 
                                 # invokes data handlers on pull port
-
-                                print("44444444444444444444444444444")
-                                print(self._pulldata_handlers)
                                 for hnd in self._pulldata_handlers:
-                                    print("33333333333333333333333333333")
-                                    print(hnd)
                                     hnd.onPullData(_data)
                                 
                                 self._thread_data_output = _data
