@@ -27,8 +27,8 @@ import pandas as pd
 class t_class(DWX_ZMQ_Strategy):
     def __init__(self, _name="ONLINE_TRADERS",
                  _symbols=['#INTC', '#AAPL'],
-                 _delay=5,
-                 _broker_gmt=3.5,
+                 _delay=2.5,
+                 _broker_gmt=3,
                  _verbose=False
                  ):
         super().__init__(_name, _symbols, _broker_gmt, _verbose)
@@ -58,29 +58,22 @@ class t_class(DWX_ZMQ_Strategy):
         """      
         # Launch traders!
         for index, _symbol in enumerate(self._symbols):
-            _t = Thread(name="{}_Trader".format(_symbol),
-                        target=self._trader_, 
-                        args=(_symbol, 
-                              sells[index],
-                              buys[index]))
-            _t.daemon = True
-            _t.start()
-            
-            print('[{}_Trader] Alright ...'.format(_symbol))
-            self._traders.append(_t)
-            sleep(self._delay)
+            self._trader_(_symbol, 
+                          sells[index], buys[index]))
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
         _random_int  = random.randint(1, 999)
         value = "_default_order_{}".format(str(_random_int))
         x_num = 'value'
+        
         # Note: Just for this example, only the Order Type is dynamic.
         globals()[x_num] = self._zmq._generate_default_order_dict()
         globals()[x_num]['_symbol'] = _symbol
         globals()[x_num]['_SL'] = 100
         globals()[x_num]['_TP'] = 100
         globals()[x_num]['_comment'] = '{}_Trader'.format(_symbol)
+        
         """
         Default Order:
         --
@@ -94,6 +87,7 @@ class t_class(DWX_ZMQ_Strategy):
          '_lots': 0.01,
          '_magic': 123456}
         """
+        
         print("symbol: {}; sell: {}; buy: {}".format(_symbol, sell, buy))
         try:
             # Acquire lock
@@ -104,6 +98,10 @@ class t_class(DWX_ZMQ_Strategy):
                                                          10)
             
             sleep(self._delay*2)
+            
+            print("111111111111111111111111")
+            print(self._ot)
+            
             print("trade counter: {}".format(self._ot.shape[0]))
             
             # Reset cycle if nothing received
@@ -165,7 +163,7 @@ class t_class(DWX_ZMQ_Strategy):
                     # 1 (OP_BUY) or 0 (OP_SELL)
                     globals()[x_num]['_type'] = 1    
                     globals()[x_num]['_lots'] = buy
-                    globals()[x_num]['_magic'] = random.getrandbits(6)
+                    globals()[x_num]['_magic'] = random.getrandbits(20)
                     
                     # Send instruction to MetaTrader
                     _ret_o = self._execution._execute_(globals()[x_num],
