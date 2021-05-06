@@ -95,13 +95,9 @@ class DWX_ZeroMQ_Connector():
         self._SUB_SOCKET.connect(self._URL + str(self._SUB_PORT))
         
         # Initialize POLL set and register PULL and SUB sockets
-        import random
-        _random_int = random.randint(1, 999)
-        value = "self._zmq_{}".format(str(_random_int))
-        self.x = 'value'
-        globals()[self.x] = zmq.Poller()
-        globals()[self.x].register(self._PULL_SOCKET, zmq.POLLIN)
-        globals()[self.x].register(self._SUB_SOCKET, zmq.POLLIN)
+        self._poller = zmq.Poller()
+        self._poller.register(self._PULL_SOCKET, zmq.POLLIN)
+        self._poller.register(self._SUB_SOCKET, zmq.POLLIN)
         
         # Start listening for responses to commands and new market data
         self._string_delimiter = _delimiter
@@ -195,13 +191,13 @@ class DWX_ZeroMQ_Connector():
             self._PULL_Monitor_Thread.join()
         
         # Unregister sockets from Poller
-        globals()[self.x].unregister(self._PULL_SOCKET)
-        #globals()[self.x].unregister(self._SUB_SOCKET)
-        print("\n++ [KERNEL] Pull socket unregistered from ZMQ Poller()! ++")
+        self._poller.unregister(self._PULL_SOCKET)
+        self._poller.unregister(self._SUB_SOCKET)
+        print("\n++ [KERNEL] Sockets unregistered from ZMQ Poller()! ++")
         
         # Terminate context 
-        #self._ZMQ_CONTEXT.destroy(0)
-        #print("\n++ [KERNEL] ZeroMQ Context Terminated.. shut down safely complete! :)")
+        self._ZMQ_CONTEXT.destroy(0)
+        print("\n++ [KERNEL] ZeroMQ Context Terminated.. shut down safely complete! :)")
         
     ##########################################################################
     """
@@ -471,7 +467,7 @@ class DWX_ZeroMQ_Connector():
         while self._ACTIVE:
             sleep(self._sleep_delay) # poll timeout is in ms, sleep() is s.
             
-            sockets = dict(globals()[self.x].poll(poll_timeout))
+            sockets = dict(self._poller.poll(poll_timeout))
             
             # Process response to commands sent to MetaTrader
             if self._PULL_SOCKET in sockets and sockets[self._PULL_SOCKET] == zmq.POLLIN:
@@ -484,6 +480,8 @@ class DWX_ZeroMQ_Connector():
                         if msg != '' and msg != None:
                             try: 
                                 _data = eval(msg)
+                                print("22222222222222222222222222")
+                                print(_data)
                                 if '_action' in _data and _data['_action'] == 'HIST':
                                     _symbol = _data['_symbol']
                                     if '_data' in _data.keys():
@@ -495,6 +493,10 @@ class DWX_ZeroMQ_Connector():
                                         print('message: ' + msg)
                                 
                                 # invokes data handlers on pull port
+                                print("33333333333333333333333333333")
+                                print(hnd)
+                                print("44444444444444444444444444444")
+                                print(self._pulldata_handlers)
                                 for hnd in self._pulldata_handlers:
                                     hnd.onPullData(_data)
                                 
@@ -576,7 +578,7 @@ class DWX_ZeroMQ_Connector():
         # Subscribe to SYMBOL first.
         self._SUB_SOCKET.setsockopt_string(zmq.SUBSCRIBE, _symbol)
         
-        #print("[KERNEL] Subscribed to {} BID/ASK updates. See self._Market_Data_DB.".format(_symbol))
+        print("[KERNEL] Subscribed to {} BID/ASK updates. See self._Market_Data_DB.".format(_symbol))
     
     """
     Function to unsubscribe to given Symbol's BID/ASK feed from MetaTrader
