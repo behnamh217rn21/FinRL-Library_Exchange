@@ -180,6 +180,7 @@ class DWX_ZeroMQ_Connector():
         # Set INACTIVE
         self._ACTIVE = False
         
+        """"
         # Get all threads to shutdown
         if self._MarketData_Thread is not None:
             self._MarketData_Thread.join()
@@ -189,6 +190,7 @@ class DWX_ZeroMQ_Connector():
             
         if self._PULL_Monitor_Thread is not None:            
             self._PULL_Monitor_Thread.join()
+        """"
         
         # Unregister sockets from Poller
         self._poller.unregister(self._PULL_SOCKET)
