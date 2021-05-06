@@ -172,7 +172,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             print(_time)
             
             f1 = open("./finrl/marketdata/f_time.txt", 'w')
-            f1.write(_time); f1.close()
+            f1.write(str(_time)); f1.close()
             
             # finishes (removes all subscriptions)  
             self.stop()
