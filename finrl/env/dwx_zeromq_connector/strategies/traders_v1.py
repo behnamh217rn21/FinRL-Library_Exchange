@@ -33,8 +33,6 @@ class t_class(DWX_ZMQ_Strategy):
                  _verbose=False
                  ):
         super().__init__(_name, _symbols, _broker_gmt, _verbose)
-        self._zmq._DWX_ZMQ_SHUTDOWN_()
-        DWX_ZMQ_Strategy(_name, _symbols, _broker_gmt, _verbose)
         
         # This strategy's variables
         self._delay = _delay
@@ -60,6 +58,7 @@ class t_class(DWX_ZMQ_Strategy):
                 5) Lot size per trade = 0.01
                 6) SL/TP = 10 pips each
         """
+        self._zmq._DWX_ZMQ_SHUTDOWN_()
         sleep(5)
         # Launch traders!
         for index, _symbol in enumerate(self._symbols):
