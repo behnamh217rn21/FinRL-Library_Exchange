@@ -57,7 +57,9 @@ class t_class(DWX_ZMQ_Strategy):
                 4) Plot Open P&L in real-time
                 5) Lot size per trade = 0.01
                 6) SL/TP = 10 pips each
-        """      
+        """
+        self._zmq._DWX_ZMQ_SHUTDOWN_()
+        sleep(5)
         # Launch traders!
         for index, _symbol in enumerate(self._symbols):
             _t = Thread(name="{}_Trader".format(_symbol),
