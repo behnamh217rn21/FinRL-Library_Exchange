@@ -42,10 +42,6 @@ def main():
     initial_amount = file.read()
     initial_amount = float(initial_amount)
     file.close()
-    
-    _symbols_i1 = []
-    for i in range(0, len(_symbols)):
-        _symbols_i1.append(_symbols[i][1])
         
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", \
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
@@ -57,7 +53,6 @@ def main():
         Leverage = reader.read()
     print("Leverage : {}".format(Leverage))
     env_train_kwargs = {'initial_amount': initial_amount*float(Leverage),
-                        'assets': _symbols_i1,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
                         'hmax': 10,
