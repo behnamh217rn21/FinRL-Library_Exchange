@@ -171,11 +171,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
         
         self._h_cnt = 0
         """
-        
-        mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
-        self.mtime_temp = datetime.fromtimestamp(mtime, timezone.utc)
-        self.mtime_temp = self.mtime_temp.strftime('%Y-%m-%d %H:%M:%S')
-        self.mtime_temp = datetime.strptime(self.mtime_temp, '%Y-%m-%d %H:%M:%S')
 
         self.dates_cnt = self.days*24
         
@@ -197,6 +192,17 @@ class StockTradingEnvStopLossOnline(gym.Env):
         adj_close = (1/XY)*close_p       
         return adj_close
     
+    
+    def rates_subscriptions(self, _symbols):
+        # creates object with a predefined configuration
+        print('running rates subscriptions process ...')
+        func = rates_subscriptions_v1.rates_subscriptions(_instruments=_symbols)
+        func.run()
+        # Waits example termination
+        print('Waiting rates subscriptions process termination...\n')
+        while not func.isFinished():
+            sleep(1)
+            
     def get_date_vector(self, date, cols=None):
         if cols is None:
             cols = self.daily_information_cols
@@ -224,17 +230,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
                 os.chdir(path)
                 
-            _, _, _, _, _, _, size, _, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
-            mtime_p = datetime.fromtimestamp(mtime, timezone.utc)
-            mtime_p = mtime_p.strftime('%Y-%m-%d %H:%M:%S')
-            mtime_p = datetime.strptime(mtime_p, '%Y-%m-%d %H:%M:%S')
-
-            while mtime_p == self.mtime_temp:
-                _, _, _, _, _, _, size, _, mtime, ctime = os.stat("./" + config.DATA_SAVE_DIR + "/data.csv")
-                self.mtime_temp = datetime.fromtimestamp(mtime, timezone.utc)
-                self.mtime_temp = self.mtime_temp.strftime('%Y-%m-%d %H:%M:%S')
-                self.mtime_temp = datetime.strptime(self.mtime_temp, '%Y-%m-%d %H:%M:%S')
-                #print("waiting ...")
+            print("****Start Fetching Data (rates subscriptions process)****")
+            with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
+                _symbols = eval(file.readline())
+            rates_subscriptions(_symbols,)
                 
         sleep(5)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
