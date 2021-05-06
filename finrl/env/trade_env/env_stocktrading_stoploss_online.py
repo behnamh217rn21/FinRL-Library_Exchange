@@ -436,7 +436,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
             sells = list(map(lambda x: round(x, ndigits=2), sells))
-            proceeds = np.dot([100000 * i for i in sells], closings)
+            proceeds = np.dot(np.array(sells)*100000, closings)
             proceeds /= 1000
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
@@ -444,7 +444,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             buys = list(map(lambda x: round(x, ndigits=2), buys))
-            spend = np.dot([100000 * i for i in buys], closings)
+            spend = np.dot(np.array(buys)*100000, closings)
             spend /= 1000
             costs += spend * self.buy_cost_pct
             
