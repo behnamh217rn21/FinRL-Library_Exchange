@@ -28,8 +28,8 @@ import pandas as pd
 class t_class(DWX_ZMQ_Strategy):
     def __init__(self, _name="ONLINE_TRADERS",
                  _symbols=['#INTC', '#AAPL'],
-                 _delay=0.1,
-                 _broker_gmt=2,
+                 _delay=2,
+                 _broker_gmt=3,
                  _verbose=False
                  ):
         super().__init__(_name, _symbols, _broker_gmt, _verbose)
@@ -70,7 +70,6 @@ class t_class(DWX_ZMQ_Strategy):
             
             print('[{}_Trader] Alright ...'.format(_symbol))
             self._traders.append(_t)
-            sleep(10)
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
@@ -104,6 +103,8 @@ class t_class(DWX_ZMQ_Strategy):
             self._ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
                                                          self._delay,
                                                          10)
+            
+            sleep(self._delay)
             print("trade counter: {}".format(self._ot.shape[0]))
             
             # Reset cycle if nothing received
@@ -163,7 +164,7 @@ class t_class(DWX_ZMQ_Strategy):
             if buy != 0:
                 try:
                     # 1 (OP_BUY) or 0 (OP_SELL)
-                    globals()[x_num]['_type'] = 1    
+                    globals()[x_num]['_type'] = 0    
                     globals()[x_num]['_lots'] = buy
                     globals()[x_num]['_magic'] = random.getrandbits(6)
                     
