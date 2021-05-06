@@ -32,6 +32,7 @@ class t_class(DWX_ZMQ_Strategy):
                  _broker_gmt=3,
                  _verbose=False
                  ):
+        super().__init__(_name, _symbols, _broker_gmt, _verbose)
         self._zmq._DWX_ZMQ_SHUTDOWN_()
         DWX_ZMQ_Strategy(_name, _symbols, _broker_gmt, _verbose)
         
