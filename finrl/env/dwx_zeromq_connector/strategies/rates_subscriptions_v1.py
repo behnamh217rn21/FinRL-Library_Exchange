@@ -148,6 +148,9 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
 
         file = open("./finrl/marketdata/f_time.txt", "r+") 
         f_time = file.read(); file.close()
+        print("111111111111111111111111")
+        print(f_time)
+        print(_time)
         if (((self.cnt+1) % len(self._instruments)) == 0) and (f_time != _time):
             self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
             fe = FeatureEngineer(use_technical_indicator=False,
@@ -164,6 +167,10 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             processed.to_csv(file)
             self.cnt = -1
                     
+            print("222222222222222222222222")
+            print(f_time)
+            print(_time)
+            
             f1 = open("./finrl/marketdata/f_time.txt", 'w')
             f1.write(_time); f1.close()
             
