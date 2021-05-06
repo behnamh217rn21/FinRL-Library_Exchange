@@ -146,8 +146,8 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
                                          float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
 
-        file = open("./finrl/marketdata/f_time.txt", "r+") 
-        f_time = file.read(); file.close()
+        f1 = open("./finrl/marketdata/f_time.txt", "r+") 
+        f_time = f1.read(); f1.close()
         print("111111111111111111111111")
         print(f_time)
         print(_time)
@@ -169,8 +169,8 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             
             print("999999999999999999")
             print(_str(_time))
-            with open('./finrl/marketdata/f_time.txt', 'w') as file:
-                file.write('%s' % str(_time))
+            with open('./finrl/marketdata/f_time.txt', 'w') as f2:
+                f2.write('%s' % str(_time))
             sleep(5)
             # finishes (removes all subscriptions)  
             self.stop()
