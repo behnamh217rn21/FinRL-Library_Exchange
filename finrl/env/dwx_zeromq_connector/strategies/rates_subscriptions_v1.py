@@ -216,7 +216,6 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         
         self._zmq._DWX_ZMQ_SHUTDOWN_()
         self._finished = True
-        sleep(10)
                                                             
     ##########################################################################
 
