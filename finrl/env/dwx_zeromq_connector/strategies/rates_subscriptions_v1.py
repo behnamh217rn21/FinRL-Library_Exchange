@@ -137,7 +137,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         
         _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = ohlc.split(",")
         _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = indicator.split(";")
-
+        
         _time = pd.to_datetime(_time, format="%Y.%m.%d %H:%M")
         _time = datetime.datetime.strftime(_time, "%Y-%m-%d %H:%M:00")
         _time = datetime.datetime.strptime(_time, "%Y-%m-%d %H:%M:00")
@@ -146,7 +146,9 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
                                          float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
 
-        if ((self.cnt+1) % len(self._instruments)) == 0:
+        file = open("f_time.txt", "r+") 
+        f_time = file.read(); file.close()
+        if (((self.cnt+1) % len(self._instruments)) == 0) and (f_time == _time):
             self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
             fe = FeatureEngineer(use_technical_indicator=False,
                                  tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
@@ -161,6 +163,9 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             print(processed)
             processed.to_csv(file)
             self.cnt = -1
+                    
+            f1 = open("f_time.txt", 'w')
+            f1.write(_time); f1.close()
             
             # finishes (removes all subscriptions)  
             self.stop()
