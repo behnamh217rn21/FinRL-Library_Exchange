@@ -32,7 +32,13 @@ class t_class(DWX_ZMQ_Strategy):
                  _broker_gmt=3,
                  _verbose=False
                  ):
-        super().__init__(_name, _symbols, _broker_gmt, _verbose)
+        # call DWX_ZMQ_Strategy constructor and passes itself as data processor for handling
+        # received data on PULL and SUB ports 
+        super().__init__(_name,
+                         _symbols,          # Empty symbol list (not needed for this example)
+                         _broker_gmt,
+                         [self],      # Registers itself as handler of pull data via self.onPullData()
+                         _verbose)
         
         # This strategy's variables
         self._delay = _delay
