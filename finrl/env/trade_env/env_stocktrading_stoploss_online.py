@@ -94,14 +94,18 @@ class StockTradingEnvStopLossOnline(gym.Env):
                  turbulence_threshold=None,
                  print_verbosity=10,
                  initial_amount=1e6,
-                 assets=[],
                  daily_information_cols=["open", "close", "high", "low", "volume"],
                  cash_penalty_proportion=0.1,
                  patient=False,
                  currency="$",
                 ):
         self.symbol = "tic"
-        self.assets = assets
+        with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
+            self._symbols = eval(file.readline())
+        _symbols_i1 = []
+        for i in range(0, len(self._symbols)):
+            _symbols_i1.append(_symbols[i][1])
+        self.assets = _symbols_i1
         self.discrete_actions = discrete_actions
         self.patient = patient
         self.currency = currency
@@ -220,9 +224,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 os.chdir(path)
                 
             print("****Start Fetching Data (rates subscriptions process)****")
-            with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
-                _symbols = eval(file.readline())
-            self.rates_subscriptions(_symbols,)
+            self.rates_subscriptions(self._symbols,)
                 
         sleep(5)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
