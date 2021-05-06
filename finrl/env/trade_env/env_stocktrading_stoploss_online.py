@@ -440,18 +440,12 @@ class StockTradingEnvStopLossOnline(gym.Env):
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             
-            print("111111111111111111111111")
-            print(sells)
-            
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             buys = list(map(lambda x: round(x, ndigits=2), buys))
             spend = np.dot([100000 * i for i in buys], closings)
             spend /= 1000
             costs += spend * self.buy_cost_pct
-            
-            print("222222222222222222222222")
-            print(buys)
             
             # if we run out of cash...
             if (spend + costs) > coh:
@@ -502,9 +496,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 swap += order_data.loc[i, 'swap']
             coh = coh - spend - costs - swap - commission
             
-            print("tttttttttttttttttttttttt")
-            print(FreeMargin)
-            
             # update our holdings
             holdings_updated = holdings + actions
             self.holdings_memory.append((holdings_updated*100000) * closings)
@@ -527,9 +518,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # Update State
             state = ([FreeMargin*1000] + list(holdings_updated) + self.get_date_vector(self.date_index))
-            
-            print("gggggggggggggggggggggggggggggggggggg")
-            print(state)
             
             self.state_memory.append(state)
             return state, reward, False, {}
