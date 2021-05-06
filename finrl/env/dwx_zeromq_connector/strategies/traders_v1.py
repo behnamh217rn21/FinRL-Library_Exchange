@@ -199,7 +199,7 @@ class t_class(DWX_ZMQ_Strategy):
         for _t in self._traders:      
             # wait for traders to finish.
             _t.join()
-        #self._zmq._DWX_ZMQ_CLEANUP_()
+        self._zmq._DWX_ZMQ_SHUTDOWN_()
         print("\ntraders finished.\n")
                                                             
     ##########################################################################
