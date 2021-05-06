@@ -169,6 +169,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                 
                 with open('./finrl/marketdata/f_time.txt', 'w') as f2:
                     f2.write('%s' % str(_time))
+               
                 # finishes (removes all subscriptions)  
                 self.stop()
                                 
@@ -228,6 +229,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         2) Starts price feeding through self._zmq._DWX_MTX_SEND_TRACKRATES_REQUEST_
         """
         if len(self._instruments) > 0:
+            
           # subscribe to all instruments' rate feeds
           for _instrument in self._instruments:
             try:
