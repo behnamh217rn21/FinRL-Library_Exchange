@@ -167,9 +167,11 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             processed.to_csv(file)
             self.cnt = -1
             
+            print("999999999999999999")
+            print(_str(_time))
             with open('f_time.txt', 'w') as file:
                 file.write('%s' % str(_time))
-            
+            sleep(5)
             # finishes (removes all subscriptions)  
             self.stop()
         
