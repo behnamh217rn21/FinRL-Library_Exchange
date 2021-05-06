@@ -583,7 +583,7 @@ class DWX_ZeroMQ_Connector():
     def _DWX_MTX_UNSUBSCRIBE_MARKETDATA_(self, _symbol):
         
         self._SUB_SOCKET.setsockopt_string(zmq.UNSUBSCRIBE, _symbol)
-        print("\n**\n[KERNEL] Unsubscribing from " + _symbol + "\n**\n")   
+        print("**\n[KERNEL] Unsubscribing from " + _symbol)   
         
     """
     Function to unsubscribe from ALL MetaTrader Symbols
