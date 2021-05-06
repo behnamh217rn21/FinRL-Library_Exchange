@@ -189,7 +189,6 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         """
         unsubscribe from all market symbols and exits
         """
-        _DWX_ZMQ_CLEANUP_()
         # remove subscriptions and stop symbols price feeding
         try:
             # Acquire lock
@@ -216,6 +215,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             self._lock.release()
             sleep(self._delay)
         
+        _DWX_ZMQ_CLEANUP_()
         self._finished = True
                                                             
     ##########################################################################
