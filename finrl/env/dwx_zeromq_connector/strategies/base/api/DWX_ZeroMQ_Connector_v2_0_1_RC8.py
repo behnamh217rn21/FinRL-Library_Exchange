@@ -493,11 +493,12 @@ class DWX_ZeroMQ_Connector():
                                         print('message: ' + msg)
                                 
                                 # invokes data handlers on pull port
-                                print("33333333333333333333333333333")
-                                print(hnd)
+
                                 print("44444444444444444444444444444")
                                 print(self._pulldata_handlers)
                                 for hnd in self._pulldata_handlers:
+                                    print("33333333333333333333333333333")
+                                    print(hnd)
                                     hnd.onPullData(_data)
                                 
                                 self._thread_data_output = _data
