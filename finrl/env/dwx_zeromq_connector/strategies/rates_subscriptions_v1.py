@@ -219,6 +219,10 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
 
         self._finished = True
 
+        self._zmq._DWX_ZMQ_CLEANUP_()
+                                                            
+    ##########################################################################
+
 
     ##########################################################################
     def __subscribe_to_rate_feeds(self):
