@@ -27,7 +27,7 @@ import pandas as pd
 class t_class(DWX_ZMQ_Strategy):
     def __init__(self, _name="ONLINE_TRADERS",
                  _symbols=['#INTC', '#AAPL'],
-                 _delay=2.5,
+                 _delay=5,
                  _broker_gmt=3.5,
                  _verbose=False
                  ):
@@ -39,6 +39,9 @@ class t_class(DWX_ZMQ_Strategy):
         self._verbose = _verbose
         
         self._symbols = _symbols
+        
+        # lock for acquire/release of ZeroMQ connector
+        self._lock = Lock()
         
     ##########################################################################
     def _run_(self, sells, buys):
@@ -55,8 +58,17 @@ class t_class(DWX_ZMQ_Strategy):
         """      
         # Launch traders!
         for index, _symbol in enumerate(self._symbols):
-            self._trader_(_symbol, sells[index], buys[index])
+            _t = Thread(name="{}_Trader".format(_symbol),
+                        target=self._trader_, 
+                        args=(_symbol, 
+                              sells[index],
+                              buys[index]))
+            _t.daemon = True
+            _t.start()
+            
             print('[{}_Trader] Alright ...'.format(_symbol))
+            self._traders.append(_t)
+            sleep(self._delay)
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
@@ -84,12 +96,12 @@ class t_class(DWX_ZMQ_Strategy):
         """
         print("symbol: {}; sell: {}; buy: {}".format(_symbol, sell, buy))
         try:
+            # Acquire lock
+            self._lock.acquire()
             
             self._ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
                                                          self._delay,
                                                          10)
-            print("222222222222222222222222233")
-            print(self._ot)
             
             sleep(self._delay*2)
             print("trade counter: {}".format(self._ot.shape[0]))
@@ -176,15 +188,18 @@ class t_class(DWX_ZMQ_Strategy):
                         print("Nothing Received")
         
         finally:
-            # Sleep between cycles
-            sleep(self._delay)
+            # Release lock
+            self._lock.release()
+            
+        # Sleep between cycles
+        sleep(self._delay)
     
     ##########################################################################
     def _stop_(self):        
         for _t in self._traders:      
             # wait for traders to finish.
             _t.join()
-        self._zmq._DWX_ZMQ_SHUTDOWN_()
+        #self._zmq._DWX_ZMQ_CLEANUP_()
         print("\ntraders finished.\n")
                                                             
     ##########################################################################
