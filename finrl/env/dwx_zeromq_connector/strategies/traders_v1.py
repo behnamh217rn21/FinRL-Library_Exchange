@@ -28,17 +28,18 @@ import pandas as pd
 class t_class(DWX_ZMQ_Strategy):
     def __init__(self, _name="ONLINE_TRADERS",
                  _symbols=['#INTC', '#AAPL'],
-                 _delay=0.1,
+                 _delay=0.2,
                  _broker_gmt=3,
                  _verbose=False
                  ):
+        
         # call DWX_ZMQ_Strategy constructor and passes itself as data processor for handling
         # received data on PULL and SUB ports 
         super().__init__(_name,
-                         _symbols,          # Empty symbol list (not needed for this example)
+                         _symbols,       # Empty symbol list (not needed for this example)
                          _broker_gmt,
-                         [],      # Registers itself as handler of pull data via self.onPullData()
-                         [],      # Registers itself as handler of pull data via self.onPullData()
+                         [],             # Registers itself as handler of pull data via self.onPullData()
+                         [],             # Registers itself as handler of pull data via self.onPullData()
                          _verbose)
         
         # This strategy's variables
@@ -57,13 +58,10 @@ class t_class(DWX_ZMQ_Strategy):
         """
         Logic:
             For each symbol in self._symbols:
-                
-                1) Open a new Market Order every 2 seconds
-                2) Close any orders that have been running for 10 seconds
-                3) Calculate Open P&L every second
-                4) Plot Open P&L in real-time
-                5) Lot size per trade = 0.01
-                6) SL/TP = 10 pips each
+                1) Calculate Open P&L every second
+                2) Plot Open P&L in real-time
+                3) Lot size per trade = 0.01
+                4) SL/TP = 10 pips each
         """
         # Launch traders!
         for index, _symbol in enumerate(self._symbols):
@@ -77,6 +75,7 @@ class t_class(DWX_ZMQ_Strategy):
             
             print('[{}_Trader] Alright ...'.format(_symbol))
             self._traders.append(_t)
+            sleep(5)
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
@@ -110,13 +109,12 @@ class t_class(DWX_ZMQ_Strategy):
             self._ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
                                                          self._delay,
                                                          10)
-            
-            sleep(self._delay)
-            print("trade counter: {}".format(self._ot.shape[0]))
-            
+                        
             # Reset cycle if nothing received
             if self._zmq._valid_response_(self._ot) == False:
                 print("Nothing Received")
+                
+            print("trade counter: {}".format(self._ot.shape[0]))
                 
             ###############################
             # SECTION - SELL TRADES #
@@ -161,46 +159,36 @@ class t_class(DWX_ZMQ_Strategy):
                             # Reset cycle if nothing received
                             if self._zmq._valid_response_(_ret_c) == False:
                                 print("Nothing Received")
-                                continue   
-                            # Sleep between commands to MetaTrader
-                            sleep(self._delay)
+                                continue 
+                                
+                        # Sleep between commands to MetaTrader
+                        sleep(self._delay)
                    
             #############################
             # SECTION - buy TRADES #
             #############################
             if buy != 0:
-                try:
-                    # 1 (OP_BUY) or 0 (OP_SELL)
-                    globals()[x_num]['_type'] = 0    
-                    globals()[x_num]['_lots'] = buy
-                    globals()[x_num]['_magic'] = random.getrandbits(6)
+                # 0 (OP_BUY) or 1 (OP_SELL)
+                globals()[x_num]['_type'] = 0    
+                globals()[x_num]['_lots'] = buy
+                globals()[x_num]['_magic'] = random.getrandbits(6)
                     
-                    # Send instruction to MetaTrader
-                    _ret_o = self._execution._execute_(globals()[x_num],
-                                                       self._verbose,
-                                                       self._delay,
-                                                       10)
-                    # Reset cycle if nothing received
-                    if self._zmq._valid_response_(_ret_o) == False:
-                        print("Nothing Received")
-                        
-                finally:
-                    #############################
-                    # SECTION - GET OPEN TRADES #
-                    #############################
-                    self._ot = self._reporting._get_open_trades_('{}_Trader'.format(_symbol),
-                                                                 self._delay,
-                                                                 10)
-                    # Reset cycle if nothing received
-                    if self._zmq._valid_response_(self._ot) == False:
-                        print("Nothing Received")
+                # Send instruction to MetaTrader
+                _ret_o = self._execution._execute_(globals()[x_num],
+                                                   self._verbose,
+                                                   self._delay,
+                                                   10)
+                # Reset cycle if nothing received
+                if self._zmq._valid_response_(_ret_o) == False:
+                    print("Nothing Received")
         
         finally:
             # Release lock
             self._lock.release()
-            
+
         # Sleep between cycles
         sleep(self._delay)
+    
     
     ##########################################################################
     def _stop_(self):        
