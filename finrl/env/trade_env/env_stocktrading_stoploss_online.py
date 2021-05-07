@@ -435,7 +435,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
+            print("111111111111111111111")
+            print(type(sells))
             sells = list(map(lambda x: round(x, ndigits=2), sells))
+            print("222222222222222222222")
+            print(type(sells))
+            sells = np.asarray(sells, dtype=np.float32)
+            print("333333333333333333333")
+            print(type(sells))
             proceeds = np.dot(np.array(sells)*100000, closings)
             proceeds /= 1000
             costs = proceeds * self.sell_cost_pct
@@ -443,7 +450,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
+            print("444444444444444444444")
+            print(type(buys))
             buys = list(map(lambda x: round(x, ndigits=2), buys))
+            print("555555555555555555555")
+            print(type(buys))
+            buys = np.asarray(buys, dtype=np.float32)
+            print("666666666666666666666")
+            print(type(buys))
             spend = np.dot(np.array(buys)*100000, closings)
             spend /= 1000
             costs += spend * self.buy_cost_pct
@@ -466,6 +480,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.transaction_memory.append(actions) # capture what the model's could do
 
             # get profitable sell actions
+            print("7777777777777777777777")
+            print(type(sells))
             sell_closing_price = np.where(sells>0, closings, 0) # get closing price of assets that we sold
             profit_sell = np.where(sell_closing_price - self.avg_buy_price > 0, 1, 0) # mark the one which is profitable
 
