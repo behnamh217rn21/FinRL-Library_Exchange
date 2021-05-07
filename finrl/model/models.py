@@ -54,20 +54,35 @@ class DRLAgent:
     """
     @staticmethod
     def DRL_prediction(model, environment):
-        test_env, test_obs = environment.get_sb_env()
-        """make a prediction"""
-        account_memory = []
-        actions_memory = []
-        test_env.reset()
-        for i in range(len(environment.df.index.unique())):
-            action, _states = model.predict(test_obs)
-            account_memory = test_env.env_method(method_name="save_asset_memory")
-            actions_memory = test_env.env_method(method_name="save_action_memory")
-            test_obs, rewards, dones, info = test_env.step(action)
-            if dones[0]:
-                print("hit end!")
+        def function_1():
+            test_env, test_obs = environment.get_sb_env()
+            """make a prediction"""
+            account_memory = []
+            actions_memory = []
+            test_env.reset()
+            start_time = time.time()
+            while True:
+                action, _states = model.predict(test_obs)
+                account_memory = test_env.env_method(method_name="save_asset_memory")
+                actions_memory = test_env.env_method(method_name="save_action_memory")
+                test_obs, rewards, dones, info = test_env.step(action)
+                if dones[0]:
+                    print("hit end!")
+                    break                    
+                running_time = time.time() - start_time
+                if running_time > 2 * 60 * 60: # 2 hours
+                    print("Stop predicting ...")
+                    start_time = time.time()                
+            return account_memory[0], actions_memory[0]
+                    
+        runner = function_1()
+        while True:
+            try:
+                runner.next()
+            except StopIteration:
+                # function_1 had got to the end
                 break
-        return account_memory[0], actions_memory[0]
+                    
 
     def __init__(self, env):
         self.env = env
