@@ -176,7 +176,7 @@ class DWX_ZeroMQ_Connector():
             self._PULL_Monitor_Thread.start()
        
     ##########################################################################
-    def _DWX_ZMQ_SHUTDOWN_(self):
+    def _DWX_ZMQ_SHUTDOWN_S_(self):
         # Set INACTIVE
         self._ACTIVE = False
         
@@ -190,6 +190,32 @@ class DWX_ZeroMQ_Connector():
             
         #if self._PULL_Monitor_Thread is not None:            
             #self._PULL_Monitor_Thread.join()
+        
+        
+        # Unregister sockets from Poller
+        self._poller.unregister(self._PULL_SOCKET)
+        self._poller.unregister(self._SUB_SOCKET)
+        print("\n++ [KERNEL] Sockets unregistered from ZMQ Poller()! ++")
+        
+        # Terminate context 
+        self._ZMQ_CONTEXT.destroy(0)
+        print("\n++ [KERNEL] ZeroMQ Context Terminated.. shut down safely complete! :)")
+        
+    ##########################################################################
+        def _DWX_ZMQ_SHUTDOWN_T_(self):
+        # Set INACTIVE
+        self._ACTIVE = False
+        
+        
+        # Get all threads to shutdown
+        if self._MarketData_Thread is not None:
+            self._MarketData_Thread.join()
+            
+        if self._PUSH_Monitor_Thread is not None:
+            self._PUSH_Monitor_Thread.join()
+            
+        if self._PULL_Monitor_Thread is not None:            
+            self._PULL_Monitor_Thread.join()
         
         
         # Unregister sockets from Poller
