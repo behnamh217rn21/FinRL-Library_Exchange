@@ -232,7 +232,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         trunc_df = trunc_df.set_index('date')
 
         time = self.fetch_dt.split(" ")[1]
-        if (datetime.today().weekday() == 4) and (time == "23:55:00"):
+        if (datetime.today().weekday() == 4) and (time == "23:50:00"):
             print("sleep for two days ...")
             sleep(172800+300)   
             
