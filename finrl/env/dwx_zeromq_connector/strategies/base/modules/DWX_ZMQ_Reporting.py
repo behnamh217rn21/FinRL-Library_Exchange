@@ -50,8 +50,9 @@ class DWX_ZMQ_Reporting():
                 
                 print(_response['_trades'].values())
                 print(_response['_trades'].keys())
+                return _df
 
-                return _df[_df['_comment'] == _trader]
+                #return _df[_df['_comment'] == _trader]
             
         # Default
         return DataFrame()
