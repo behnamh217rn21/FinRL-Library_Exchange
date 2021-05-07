@@ -61,7 +61,7 @@ def main():
                         'print_verbosity': 1, 
                         'discrete_actions': False}
     e_train_gym = StockTradingEnvStopLossOnline(**env_train_kwargs)
-    # this is our training env. It allows multiprocessing
+    # this is our training env.
     env_train, _ = e_train_gym.get_sb_env()
 
     print("****Implement DRL Algorithms****")
