@@ -36,11 +36,11 @@ def Data_Downloader(_symbols):
 def main():
     """
     train an agent
-    """ 
+    """
     print("==============Start Training===========")
     print("****Start Fetching Data****")
     #df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, \
-                         #ticker_list=CUSTOM_US_TICKER, interval_period="1h").fetch_data()
+                         #ticker_list=config.CUSTOM_US_TICKER, interval_period="1h").fetch_data()
     """
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
@@ -50,9 +50,10 @@ def main():
     #Data_Downloader(_symbols_i1)
     #df = load_dataset(file_name="mt4_dataset.csv")
     """
+    """
     df = load_dataset(file_name="data.csv")
     print(df.head())
-
+     
     print("****Start Feature Engineering****")
     fe = FeatureEngineer(use_technical_indicator=True,
                          tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
@@ -65,11 +66,14 @@ def main():
     processed['change'] = (processed.close - processed.open) / processed.close
     processed['daily_variance'] = (processed.high - processed.low) / processed.close
     print(processed.head())
-    processed.to_csv("./" + config.DATA_SAVE_DIR + "/Dataframe/data_df.csv")
+    processed.to_csv("./" + config.DATASET_DIR + "data.csv")
+    """
+    processed = load_dataset(file_name="data.csv")
+    print(processed.head())
         
     print("****Training & Trading data split****")
     # Training data split
-    train_df = data_split(processed, config.START_DATE, config.END_DATE)
+    train_df = data_split(processed, config.S_SPLIT, config.T_SPLIT)
     print("train dataset length: {}".format(str(len(train_df))))
 
     #print("****Environment Document****")
@@ -118,11 +122,12 @@ def main():
     
     print("****Implement DRL Algorithms****")
     agent = DRLAgent(env=env_train)
-    ddpg_params ={"actor_lr": 5e-06,
-                  "critic_lr": 5e-06,
-                  "gamma": 0.99,
-                  "batch_size": 1024,
-                  "eval_env": env_trade}  
+    ddpg_params = {"actor_lr": 5e-06,
+                   "critic_lr": 5e-06,
+                   "gamma": 0.99,
+                   "batch_size": 1024,
+                   "eval_env": env_trade}
+    
     policy_kwargs = {"net_arch": ["lstm", \
                                   "lstm", \
                                   dict(pi=[dict(lstm_L1=24, \
@@ -132,6 +137,7 @@ def main():
                                        vf=[dict(dense_L1=64, \
                                                 dense_L2=16)])],
                      "n_lstm": 10}
+    
     DDPG_model = agent.get_model("ddpg",
                                  model_kwargs = ddpg_params,
                                  policy="LstmLstmPolicy",
@@ -140,7 +146,7 @@ def main():
     
     print("****Train_Model****")
     DDPG_model = agent.train_model(model=DDPG_model, 
-                                   total_timesteps=32600000,
+                                   total_timesteps=500000,
                                    log_interval=1)
     
     print("****Model Saving****")
