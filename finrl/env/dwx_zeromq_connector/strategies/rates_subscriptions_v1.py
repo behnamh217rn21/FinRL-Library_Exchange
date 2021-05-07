@@ -136,7 +136,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             self.data_df = pd.DataFrame(columns=self.cols, dtype=float)
 
         file = "./" + config.DATA_SAVE_DIR + "/data.csv"
-        ohlc, indicator = _msg.split("|")
+        ohlc, indicator = list(self._zmq._Market_Data_DB[_topic][self._zmq._timestamp]).split("|")
         
         _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = ohlc.split(",")
         _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = indicator.split(";")
@@ -145,10 +145,9 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         _time = datetime.datetime.strftime(_time, "%Y-%m-%d %H:%M:00")
         _time = datetime.datetime.strptime(_time, "%Y-%m-%d %H:%M:00")
 
-        print("444444444444444444444444444444444")
-        print(type(self._zmq._Market_Data_DB[_topic][self._zmq._timestamp]))
         self.cnt += 1
-        self.data_df.loc[self.cnt, :] = self._zmq._Market_Data_DB[_topic][self._zmq._timestamp]
+        self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
+                                         float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
         sleep(7)
         f1 = open("./finrl/marketdata/f_time.txt", "r+") 
         f_time = f1.read(); f1.close()
