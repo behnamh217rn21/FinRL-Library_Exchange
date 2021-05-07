@@ -30,6 +30,16 @@ sys.path.append("..\\FinRL-Library_Exchange")
 
 #############################################################################
 #############################################################################
+def Data_Downloader(_symbols):
+    # creates object with a predefined configuration
+    print('running rates_historic process ...')
+    func = MT4_Data_Downloader.rates_historic(_instruments=_symbols)
+    func.run()
+    # Waits example termination
+    print('Waiting rates_historic process termination...\n')
+    while not func.isFinished():
+        sleep(1)
+        
 def main():
     """
     train an agent
@@ -37,7 +47,7 @@ def main():
     print("==============Start Training===========")
     print("****Start Fetching Data****")
     #df = YahooDownloader(start_date=config.START_DATE, end_date=config.END_DATE, \
-                         #ticker_list=config.CUSTOM_US_TICKER, interval_period="1h").fetch_data()
+                          #ticker_list=config.CUSTOM_US_TICKER, interval_period="1h").fetch_data()
     """
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
