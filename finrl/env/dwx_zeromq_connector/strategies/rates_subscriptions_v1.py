@@ -223,7 +223,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             self._lock.release()
             sleep(self._delay)
         
-        self._zmq._DWX_ZMQ_SHUTDOWN_()
+        self._zmq._DWX_ZMQ_SHUTDOWN_S_()
         self._finished = True
                                                             
     ##########################################################################
