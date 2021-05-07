@@ -121,8 +121,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         """
         # split data to get topic and message and balance
         _topic, _, _msg = data.split("&")
-        print("1111111111111111111111")
-        print(_msg)
+
         """
         print('Data on Topic={} with Message={} and Balance={}'.format(_topic,
                                                                        self._zmq._Market_Data_DB[_topic][self._zmq._timestamp],
@@ -136,7 +135,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             self.data_df = pd.DataFrame(columns=self.cols, dtype=float)
 
         file = "./" + config.DATA_SAVE_DIR + "/data.csv"
-        ohlc, indicator = str(self._zmq._Market_Data_DB[_topic][self._zmq._timestamp]).split("|")
+        ohlc, indicator = _msg.split("|")
         
         _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = ohlc.split(",")
         _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = indicator.split(";")
@@ -148,14 +147,12 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         self.cnt += 1
         self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
                                          float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
-        sleep(7)
+        
         f1 = open("./finrl/marketdata/f_time.txt", "r+") 
         f_time = f1.read(); f1.close()
-        print("333333333333333333")
-        print(self.cnt)
-        print(self.data_df)
-        if (self.cnt+1) % len(self._instruments) == 0:
-            self.cnt = -1
+
+        try:
+            assert len(self.data_df) == len(self._instruments)
             if f_time != str(_time):
                 self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
                 fe = FeatureEngineer(use_technical_indicator=False,
@@ -170,12 +167,17 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                 processed['daily_variance'] = (processed.high - processed.low) / processed.close
                 print(processed)
                 processed.to_csv(file)
-                
+                    
                 with open('./finrl/marketdata/f_time.txt', 'w') as f2:
                     f2.write('%s' % str(_time))
-               
+                    
                 # finishes (removes all subscriptions)  
                 self.stop()
+                    
+        except AssertionError:
+            print("received data is corrupted")
+            self.cnt = -1
+                    
                                 
         
     ##########################################################################    
