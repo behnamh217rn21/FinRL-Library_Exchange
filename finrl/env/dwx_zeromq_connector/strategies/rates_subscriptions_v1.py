@@ -96,6 +96,8 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
 
         self.cols = ["date", "open", "high", "low", "close", "volume", "spread", "real_volume", "tic",
                      "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma"]
+        
+        self._error = False
 
         # lock for acquire/release of ZeroMQ connector
         self._lock = Lock()
@@ -104,6 +106,11 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
     def isFinished(self):        
         """ Check if execution finished"""
         return self._finished
+        
+    ##########################################################################
+    def Error(self):        
+        """ Check if the execution is wrong"""
+        return self._error
         
     ##########################################################################    
     def onPullData(self, data):        
@@ -152,7 +159,8 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
 
         try:
             if (self.cnt+1) % len(self._instruments) == 0:
-                assert len(self.data_df) == len(self._instruments)
+                assert len(self.data_df) == len(self._instruments) 
+                assert self.data_df.index[0] == 0
                 self.cnt = -1
                 if f_time != str(_time):
                     self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
@@ -176,10 +184,10 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                     self.stop()
                     
         except AssertionError:
-            print("received data is corrupted, restart process ...")
-            self.cnt = -1
-            self.run()
-                    
+            print("\nreceived data is corrupted!")
+            self._error = True
+            # finishes (removes all subscriptions)
+            self.stop()                
                                 
         
     ##########################################################################    
