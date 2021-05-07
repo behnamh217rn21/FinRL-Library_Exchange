@@ -28,16 +28,10 @@ sys.path.append("..\\FinRL-Library_Master")
 #############################################################################
 #############################################################################                 
 def main():
-    def rates_subscriptions(_symbols):
-        # creates object with a predefined configuration
-        print('running rates subscriptions process ...')
-        func = rates_subscriptions_v1.rates_subscriptions(_instruments=_symbols)
-        func.run()
-        # Waits example termination
-        print('Waiting rates subscriptions process termination...\n')
-        while not func.isFinished():
-            sleep(1)
-            
+    """
+    agent trading
+    """
+    
     print("==============Start Trading===========")
     DDPG_model = model.load("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
 
