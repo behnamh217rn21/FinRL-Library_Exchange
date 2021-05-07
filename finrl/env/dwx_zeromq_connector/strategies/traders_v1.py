@@ -191,7 +191,7 @@ class t_class(DWX_ZMQ_Strategy):
                 self._lock.release()
 
             # Sleep between cycles
-            sleep(10)
+            sleep(self._delay)
     
     
     ##########################################################################
