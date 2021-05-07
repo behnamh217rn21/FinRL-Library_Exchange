@@ -62,8 +62,6 @@ def main():
                         'print_verbosity': 1, 
                         'discrete_actions': False}
     e_trade_gym = StockTradingEnvStopLossOnline(**env_trade_kwargs)
-    # this is our trading env.
-    env_trade, _ = e_trade_gym.get_sb_env()
     
     print("==============Start Trading===========")
     print("****Model Prediction****")
