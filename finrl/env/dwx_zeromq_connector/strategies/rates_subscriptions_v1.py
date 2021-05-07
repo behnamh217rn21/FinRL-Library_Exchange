@@ -41,7 +41,6 @@
 #############################################################################
 # Import ZMQ-Strategy from relative path
 from finrl.env.dwx_zeromq_connector.strategies.base.DWX_ZMQ_Strategy import DWX_ZMQ_Strategy
-from finrl.env.dwx_zeromq_connector.strategies.base.api.DWX_ZeroMQ_Connector_v2_0_1_RC8 import _DWX_ZMQ_CLEANUP_
 
 from finrl.preprocessing.preprocessors import FeatureEngineer
 from finrl.config import config
