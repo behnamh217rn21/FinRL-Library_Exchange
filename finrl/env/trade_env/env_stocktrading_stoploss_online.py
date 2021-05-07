@@ -517,9 +517,16 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 self.turbulence = self.get_date_vector(self.date_index, 
                                                        cols=["turbulence"])[0]
 
+            print("1111111111111111111111111111111")
+            print(FreeMargin*1000)
+            print("2222222222222222222222222222222")
+            print(holdings_updated)
             # Update State
             state = ([FreeMargin*1000] + list(holdings_updated) + self.get_date_vector(self.date_index))
-            
+            print("3333333333333333333333333333333")
+            print(state)
+            print("4444444444444444444444444444444")
+            print(reward)
             self.state_memory.append(state)
             return state, reward, False, {}
             
