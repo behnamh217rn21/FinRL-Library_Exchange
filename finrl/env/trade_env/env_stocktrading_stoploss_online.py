@@ -491,16 +491,26 @@ class StockTradingEnvStopLossOnline(gym.Env):
             order_data = pd.read_csv("OrdersReport.csv", sep=';')
             swap = 0
             commission = 0
+            print("777777777777777777")
+            print(os.getcwd())
+            print("888888888888888888")
+            print(order_data)
+
             for i in range(0, len(order_data)):
-                FreeMargin = order_data.loc[i, 'FreeMargin']
                 commission += order_data.loc[i, 'commission']
                 swap += order_data.loc[i, 'swap']
             coh = coh - spend - costs - swap - commission
             
             # update our holdings
+            print("ppppppppppppppppp")
+            print(actions)
+            actions = np.round(actions, 2)
+            print("kkkkkkkkkkkkkkkkk")
+            print(actions)
             holdings_updated = holdings + actions
             self.holdings_memory.append((holdings_updated*100000) * closings)
-                     
+
+            _f_margin = order_data.loc[len(order_data)-1, 'FreeMargin']   
             # Update average buy price
             buys = np.sign(buys)
             self.n_buys += buys
@@ -518,11 +528,11 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                                        cols=["turbulence"])[0]
 
             print("1111111111111111111111111111111")
-            print(FreeMargin*1000)
+            print(_f_margin*1000)
             print("2222222222222222222222222222222")
             print(holdings_updated)
             # Update State
-            state = ([FreeMargin*1000] + list(holdings_updated) + self.get_date_vector(self.date_index))
+            state = ([_f_margin*1000] + list(holdings_updated) + self.get_date_vector(self.date_index))
             print("3333333333333333333333333333333")
             print(state)
             print("4444444444444444444444444444444")
