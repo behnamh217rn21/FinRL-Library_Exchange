@@ -136,7 +136,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
             self.data_df = pd.DataFrame(columns=self.cols, dtype=float)
 
         file = "./" + config.DATA_SAVE_DIR + "/data.csv"
-        ohlc, indicator = list(self._zmq._Market_Data_DB[_topic][self._zmq._timestamp]).split("|")
+        ohlc, indicator = str(self._zmq._Market_Data_DB[_topic][self._zmq._timestamp]).split("|")
         
         _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = ohlc.split(",")
         _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = indicator.split(";")
