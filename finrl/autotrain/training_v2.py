@@ -15,7 +15,6 @@ import datetime
 from finrl.config import config
 from finrl.model.models import DRLAgent
 from finrl.env.trade_env.env_stocktrading_stoploss_online import StockTradingEnvStopLossOnline
-from finrl.env.dwx_zeromq_connector.strategies import rates_subscriptions_v1
 
 #############################################################################
 import multiprocessing
