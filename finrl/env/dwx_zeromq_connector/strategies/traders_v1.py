@@ -104,9 +104,6 @@ class t_class(DWX_ZMQ_Strategy):
                     print("Nothing Received")
                     continue  
                 
-                print("trade counter: {}".format(_ot.shape[0]))
-                print(_ot)
-                
                 ###############################
                 # SECTION - SELL TRADES #
                 ###############################
@@ -182,7 +179,10 @@ class t_class(DWX_ZMQ_Strategy):
                         print("Nothing Received")
                         break
         
-            finally:
+            finally:              
+                print("trade counter: {}".format(_ot.shape[0]))
+                print(self._reporting._get_open_trades_(self._delay, 10))
+                
                 # Release lock
                 self._lock.release()
 
