@@ -1,24 +1,28 @@
-import os
+import pandas as pd
 import numpy as np
 
+#############################################################################
 import warnings
 warnings.filterwarnings('ignore')
+import datetime
 
+#############################################################################
 from finrl.config import config
 from finrl.marketdata.yahoodownloader import YahooDownloader
 from finrl.preprocessing.preprocessors import FeatureEngineer
 from finrl.preprocessing.data import data_split, load_dataset
-from finrl.env.StockTradingEnvStopLoss import StockTradingEnvStopLoss
+from finrl.env.env_stocktrading_stoploss import StockTradingEnvStopLoss
 from finrl.model.models import DRLAgent
+from finrl.trade.backtest import backtest_plot, backtest_stats
 
 from finrl.marketdata import MT4_Data_Downloader
 
+#############################################################################
 import multiprocessing
 
-#############################################################################
 # Append path for main project folder
 import sys
-sys.path.append("..\\FinRL-Library_Master")
+sys.path.append("..\\FinRL-Library_Exchange")
 
 
 #############################################################################
@@ -151,6 +155,21 @@ def main():
     
     print("****Model Saving****")
     DDPG_model.save("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
+    
+    print("==============Start Trading===========")
+    print("****Model Prediction****")
+    df_account_value, df_actions = DRLAgent.DRL_prediction(model=DDPG_model, 
+                                                           environment = e_trade_gym)
+    
+    print("****Prediction Resault Saving****")
+    now = datetime.datetime.now().strftime("%Y-%m-%d-%HH%MM")
+    df_account_value.to_csv("./" + config.RESULTS_DIR + "/_df_account_value_" + now + ".csv")
+    df_actions.to_csv("./" + config.RESULTS_DIR + "/_df_actions_" + now + ".csv")
+    
+    print("****Get Backtest Results****")
+    perf_stats_all = backtest_stats(account_value=df_account_value, value_col_name = 'total_assets')
+    perf_stats_all = pd.DataFrame(perf_stats_all)
+    perf_stats_all.to_csv("./" + config.RESULTS_DIR + "/_perf_stats_all_" + now + ".csv")
     
     
 if __name__ == "__main__":
