@@ -98,25 +98,25 @@ class t_class(DWX_ZMQ_Strategy):
                 # Acquire lock
                 self._lock.acquire()
             
-                self._ot = self._reporting._get_open_trades_(self._delay, 10)
+                _ot = self._reporting._get_open_trades_(self._delay, 10)
                         
                 # Reset cycle if nothing received
-                if self._zmq._valid_response_(self._ot) == False:
+                if self._zmq._valid_response_(_ot) == False:
                     print("Nothing Received")
                     continue
                 
                 print("2222222222222222222222222")
-                print(self._ot)
+                print(_ot)
                 
-                print("trade counter: {}".format(self._ot.shape[0]))
+                print("trade counter: {}".format(_ot.shape[0]))
                 
                 ###############################
                 # SECTION - SELL TRADES #
                 ###############################
-                if self._ot.shape[0] > 0:
+                if _ot.shape[0] > 0:
                     if sell != 0:
-                        for i in (self._ot.loc[self._ot["_symbol"] == _symbol].index):
-                            if sell < self._ot["_lots"].loc[self._ot.index == i]:
+                        for i in (_ot.loc[_ot["_symbol"] == _symbol].index):
+                            if sell < _ot["_lots"].loc[_ot.index == i]:
                                 _ret_cp = self._execution._execute_({'_action': 'CLOSE_PARTIAL',
                                                                      '_ticket': i,
                                                                      'size': sell,
@@ -129,7 +129,7 @@ class t_class(DWX_ZMQ_Strategy):
                                     print("Nothing Received")
                                     break   
                         
-                            elif sell == self._ot["_lots"].loc[self._ot.index == i]:
+                            elif sell == _ot["_lots"].loc[_ot.index == i]:
                                 _ret_c = self._execution._execute_({'_action': 'CLOSE',
                                                                     '_ticket': i,
                                                                     'size': sell},
@@ -142,10 +142,10 @@ class t_class(DWX_ZMQ_Strategy):
                                     break
                             
                             else:
-                                sell = sell - self._ot["_lots"].loc[self._ot["_symbol"] == _symbol]
+                                sell = sell - _ot["_lots"].loc[_ot["_symbol"] == _symbol]
                                 _ret_c = self._execution._execute_({'_action': 'CLOSE',
                                                                     '_ticket': i,
-                                                                    'size': self._ot["_lots"].loc[self._ot.index == i]},
+                                                                    'size': _ot["_lots"].loc[_ot.index == i]},
                                                                    self._verbose,
                                                                    self._delay,
                                                                    10)
