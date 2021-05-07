@@ -200,6 +200,7 @@ class t_class(DWX_ZMQ_Strategy):
             _t.join()
         
         #_DWX_ZMQ_CLEANUP_()
+        self._zmq._DWX_ZMQ_SHUTDOWN_()
         print("\ntraders finished.\n")
                                                             
     ##########################################################################
