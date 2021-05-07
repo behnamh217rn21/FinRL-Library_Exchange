@@ -1,8 +1,7 @@
 import pandas as pd
 import datetime
-import matplotlib
-matplotlib.use("Agg")
 
+#############################################################################
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -12,11 +11,6 @@ from finrl.model.models import DRLAgent
 from finrl.trade.backtest import backtest_plot, backtest_stats
 
 from finrl.env.trade_env.env_stocktrading_stoploss_online import StockTradingEnvStopLossOnline
-
-#############################################################################
-#############################################################################
-import multiprocessing
-from time import sleep
 
 #############################################################################
 # Append path for main project folder
