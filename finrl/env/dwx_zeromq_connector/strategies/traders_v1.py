@@ -38,8 +38,8 @@ class t_class(DWX_ZMQ_Strategy):
         super().__init__(_name,
                          _symbols,       # Empty symbol list (not needed for this example)
                          _broker_gmt,
-                         [self],             # Registers itself as handler of pull data via self.onPullData()
-                         [self],             # Registers itself as handler of pull data via self.onPullData()
+                         [],             # Registers itself as handler of pull data via self.onPullData()
+                         [],             # Registers itself as handler of pull data via self.onPullData()
                          _verbose)
         
         # This strategy's variables
@@ -68,8 +68,7 @@ class t_class(DWX_ZMQ_Strategy):
             _t = Thread(name="{}_Trader".format(_symbol),
                         target=self._trader_, 
                         args=(_symbol, 
-                              sells[index],
-                              buys[index]))
+                              sells[index], buys[index]))
             _t.daemon = True
             _t.start()
             
@@ -103,12 +102,10 @@ class t_class(DWX_ZMQ_Strategy):
                 # Reset cycle if nothing received
                 if self._zmq._valid_response_(_ot) == False:
                     print("Nothing Received")
-                    continue
-                
-                print("2222222222222222222222222")
-                print(_ot)
+                    continue  
                 
                 print("trade counter: {}".format(_ot.shape[0]))
+                print(_ot)
                 
                 ###############################
                 # SECTION - SELL TRADES #
