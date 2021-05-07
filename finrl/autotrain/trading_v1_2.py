@@ -26,7 +26,7 @@ def main():
     """
     
     print("==============Start Trading===========")
-    DDPG_model = model.load("./" + config.TRAINED_MODEL_DIR + "/DDPG.model")
+    DDPG_model = "./" + config.TRAINED_MODEL_DIR + "/DDPG.model"
 
     #print("****Environment Document****")
     #print(StockTradingEnvStopLoss_online.__doc__)
@@ -56,7 +56,6 @@ def main():
                         'discrete_actions': False}
     e_trade_gym = StockTradingEnvStopLossOnline(**env_trade_kwargs)
     
-    print("==============Start Trading===========")
     print("****Model Prediction****")
     df_account_value, df_actions = DRLAgent.DRL_prediction(model=DDPG_model, 
                                                            environment = e_trade_gym)
