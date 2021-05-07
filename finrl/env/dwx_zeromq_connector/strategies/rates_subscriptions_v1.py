@@ -177,13 +177,13 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                     self.stop()
                     
         except AssertionError:
-            print("received data is corrupted")
-            self.cnt = -1
+            print("received data is corrupted, restart process ...")
+            self.run()
                     
                                 
         
     ##########################################################################    
-    def run(self):        
+    def run(self):
         """
         Starts price subscriptions
         """        
