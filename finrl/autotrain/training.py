@@ -16,10 +16,10 @@ from finrl.config import config
 from finrl.marketdata.yahoodownloader import YahooDownloader
 from finrl.preprocessing.preprocessors import FeatureEngineer
 from finrl.preprocessing.data import data_split, load_dataset
+from finrl.env.env_stocktrading_stoploss import StockTradingEnvStopLoss
 from finrl.model.models import DRLAgent
 from finrl.trade.backtest import backtest_plot, backtest_stats
 
-from finrl.env.env_stocktrading_stoploss import StockTradingEnvStopLoss
 from finrl.marketdata import MT4_Data_Downloader
 
 #############################################################################
