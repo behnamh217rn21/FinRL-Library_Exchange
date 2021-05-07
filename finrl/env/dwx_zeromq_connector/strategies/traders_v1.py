@@ -49,7 +49,6 @@ class t_class(DWX_ZMQ_Strategy):
         self._verbose = _verbose
         
         self._symbols = _symbols
-        self._ot = pd.DataFrame()
         
         # lock for acquire/release of ZeroMQ connector
         self._lock = Lock()
