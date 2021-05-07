@@ -152,27 +152,28 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         f_time = f1.read(); f1.close()
 
         try:
-            assert len(self.data_df) == len(self._instruments)
-            if f_time != str(_time):
-                self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
-                fe = FeatureEngineer(use_technical_indicator=False,
-                                     tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
-                                     use_turbulence=False,
-                                     user_defined_feature=False)
-                processed = fe.preprocess_data(self.data_df)
-                np.seterr(divide = 'ignore')
-                processed['log_volume'] = np.where((processed.volume * processed.close) > 0, \
-                                                   np.log(processed.volume * processed.close), 0)
-                processed['change'] = (processed.close - processed.open) / processed.close
-                processed['daily_variance'] = (processed.high - processed.low) / processed.close
-                print(processed)
-                processed.to_csv(file)
+            if (self.cnt+1) % len(self._instruments) == 0:
+                assert len(self.data_df) == len(self._instruments)
+                if f_time != str(_time):
+                    self.data_df.drop(["spread", "real_volume"], axis=1, inplace=True)
+                    fe = FeatureEngineer(use_technical_indicator=False,
+                                         tech_indicator_list=config.TECHNICAL_INDICATORS_LIST,
+                                         use_turbulence=False,
+                                         user_defined_feature=False)
+                    processed = fe.preprocess_data(self.data_df)
+                    np.seterr(divide = 'ignore')
+                    processed['log_volume'] = np.where((processed.volume * processed.close) > 0, \
+                                                       np.log(processed.volume * processed.close), 0)
+                    processed['change'] = (processed.close - processed.open) / processed.close
+                    processed['daily_variance'] = (processed.high - processed.low) / processed.close
+                    print(processed)
+                    processed.to_csv(file)
                     
-                with open('./finrl/marketdata/f_time.txt', 'w') as f2:
-                    f2.write('%s' % str(_time))
+                    with open('./finrl/marketdata/f_time.txt', 'w') as f2:
+                        f2.write('%s' % str(_time))
                     
-                # finishes (removes all subscriptions)  
-                self.stop()
+                    # finishes (removes all subscriptions)  
+                    self.stop()
                     
         except AssertionError:
             print("received data is corrupted")
