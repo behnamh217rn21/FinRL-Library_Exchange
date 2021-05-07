@@ -48,11 +48,8 @@ class DWX_ZMQ_Reporting():
                 _df = DataFrame(data=_response['_trades'].values(),
                                 index=_response['_trades'].keys())
                 
-                print(_response['_trades'].values())
-                print(_response['_trades'].keys())
-                return _df
-
                 #return _df[_df['_comment'] == _trader]
+                return _df
             
         # Default
         return DataFrame()
