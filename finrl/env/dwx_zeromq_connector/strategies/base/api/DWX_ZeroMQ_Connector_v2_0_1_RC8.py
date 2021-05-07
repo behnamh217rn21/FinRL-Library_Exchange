@@ -202,10 +202,9 @@ class DWX_ZeroMQ_Connector():
         print("\n++ [KERNEL] ZeroMQ Context Terminated.. shut down safely complete! :)")
         
     ##########################################################################
-        def _DWX_ZMQ_SHUTDOWN_T_(self):
+    def _DWX_ZMQ_SHUTDOWN_T_(self):
         # Set INACTIVE
         self._ACTIVE = False
-        
         
         # Get all threads to shutdown
         if self._MarketData_Thread is not None:
