@@ -697,7 +697,7 @@ def _DWX_ZMQ_CLEANUP_(_name='DWX_ZeroMQ_Connector',
         for _func, _instance in _locals:
             if isinstance(_instance, _class): 
                 print(f'\n++ [KERNEL] Found & Destroying {_func} object before __init__()')
-                eval(_func)._DWX_ZMQ_SHUTDOWN_()
+                eval(_func)._DWX_ZMQ_SHUTDOWN_T_()
                 print('\n++ [KERNEL] Cleanup Complete -> OK to initialize DWX_ZeroMQ_Connector if NETSTAT diagnostics == True. ++\n')
            
     except Exception as ex:
