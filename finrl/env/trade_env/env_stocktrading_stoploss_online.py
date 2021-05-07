@@ -226,7 +226,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             print("****Start Fetching Data (rates subscriptions process)****")
             self.rates_subscriptions(self._symbols,)
                 
-        sleep(5)
+        sleep(0.2)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         self.fetch_dt = trunc_df['date'][0]
         trunc_df = trunc_df.set_index('date')
@@ -248,7 +248,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
         assert len(v) == len(self.assets) * len(cols)
         return v
 
-    
     def rates_subscriptions(self, _symbols):
         # creates object with a predefined configuration
         print('running rates subscriptions process ...')
@@ -258,6 +257,9 @@ class StockTradingEnvStopLossOnline(gym.Env):
         print('Waiting rates subscriptions process termination...\n')
         while not func.isFinished():
             sleep(1)
+        if func.Error() == True:
+            print("rates subscriptions process restarting ...")
+            self.rates_subscriptions(self._symbols,)
             
             
     def return_terminal(self, reason="Last Date", reward=0):
