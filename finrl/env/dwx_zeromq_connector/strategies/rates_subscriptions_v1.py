@@ -177,6 +177,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                     
         except AssertionError:
             print("received data is corrupted, restart process ...")
+            self.cnt = -1
             self.run()
                     
                                 
