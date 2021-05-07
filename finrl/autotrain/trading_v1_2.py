@@ -11,7 +11,7 @@ from finrl.config import config
 from finrl.model.models import DRLAgent
 from finrl.trade.backtest import backtest_plot, backtest_stats
 
-from finrl.env.env_stocktrading_stoploss_online import StockTradingEnvStopLoss_online
+from finrl.env.env_stocktrading_stoploss_online import StockTradingEnvStopLossOnline
 from finrl.env.dwx_zeromq_connector.strategies import rates_subscriptions_v1
 
 #############################################################################
