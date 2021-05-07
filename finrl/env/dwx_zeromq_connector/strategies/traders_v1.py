@@ -75,19 +75,10 @@ class t_class(DWX_ZMQ_Strategy):
             
             print('[{}_Trader] Alright ...'.format(_symbol))
             self._traders.append(_t)
-            sleep(10)
+            sleep(self._delay)
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
-        _random_int  = random.randint(1, 999)
-        value = "_default_order_{}".format(str(_random_int))
-        x_num = 'value'
-        # Note: Just for this example, only the Order Type is dynamic.
-        globals()[x_num] = self._zmq._generate_default_order_dict()
-        globals()[x_num]['_symbol'] = _symbol
-        globals()[x_num]['_SL'] = 100
-        globals()[x_num]['_TP'] = 100
-        globals()[x_num]['_comment'] = '{}_Trader'.format(_symbol)
         """
         Default Order:
         --
@@ -102,6 +93,7 @@ class t_class(DWX_ZMQ_Strategy):
          '_magic': 123456}
         """
         print("symbol: {}; sell: {}; buy: {}".format(_symbol, sell, buy))
+        
         try:
             # Acquire lock
             self._lock.acquire()
@@ -168,6 +160,15 @@ class t_class(DWX_ZMQ_Strategy):
             # SECTION - buy TRADES #
             #############################
             if buy != 0:
+                _random_int  = random.randint(1, 999)
+                value = "_default_order_{}".format(str(_random_int))
+                x_num = 'value'
+                # Note: Just for this example, only the Order Type is dynamic.
+                globals()[x_num] = self._zmq._generate_default_order_dict()
+                globals()[x_num]['_symbol'] = _symbol
+                globals()[x_num]['_SL'] = 100
+                globals()[x_num]['_TP'] = 100
+                globals()[x_num]['_comment'] = '{}_Trader'.format(_symbol)
                 # 0 (OP_BUY) or 1 (OP_SELL)
                 globals()[x_num]['_type'] = 0    
                 globals()[x_num]['_lots'] = buy
@@ -187,7 +188,7 @@ class t_class(DWX_ZMQ_Strategy):
             self._lock.release()
 
         # Sleep between cycles
-        sleep(self._delay)
+        sleep(10)
     
     
     ##########################################################################
