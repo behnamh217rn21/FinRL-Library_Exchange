@@ -75,7 +75,7 @@ class t_class(DWX_ZMQ_Strategy):
             
             print('[{}_Trader] Alright ...'.format(_symbol))
             self._traders.append(_t)
-            sleep(2)
+            sleep(10)
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
@@ -112,7 +112,8 @@ class t_class(DWX_ZMQ_Strategy):
             if self._zmq._valid_response_(self._ot) == False:
                 print("Nothing Received")
             
-            sleep(5)
+            print("2222222222222222222222222")
+            print(self._ot)
             print("trade counter: {}".format(self._ot.shape[0]))
                 
             ###############################
