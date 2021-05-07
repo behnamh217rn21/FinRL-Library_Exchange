@@ -38,8 +38,8 @@ class t_class(DWX_ZMQ_Strategy):
         super().__init__(_name,
                          _symbols,       # Empty symbol list (not needed for this example)
                          _broker_gmt,
-                         [],             # Registers itself as handler of pull data via self.onPullData()
-                         [],             # Registers itself as handler of pull data via self.onPullData()
+                         [self],             # Registers itself as handler of pull data via self.onPullData()
+                         [self],             # Registers itself as handler of pull data via self.onPullData()
                          _verbose)
         
         # This strategy's variables
