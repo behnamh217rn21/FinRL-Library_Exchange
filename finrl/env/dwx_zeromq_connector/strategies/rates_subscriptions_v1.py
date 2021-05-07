@@ -121,6 +121,9 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         """
         # split data to get topic and message and balance
         _topic, _, _msg = data.split("&")
+        sleep(5)
+        print("1111111111111111111111")
+        print(_msg)
         """
         print('Data on Topic={} with Message={} and Balance={}'.format(_topic,
                                                                        self._zmq._Market_Data_DB[_topic][self._zmq._timestamp],
@@ -149,7 +152,9 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
 
         f1 = open("./finrl/marketdata/f_time.txt", "r+") 
         f_time = f1.read(); f1.close()
-        
+        print("333333333333333333")
+        print(self.cnt)
+        print(self.data_df)
         if (self.cnt+1) % len(self._instruments) == 0:
             self.cnt = -1
             if f_time != str(_time):
