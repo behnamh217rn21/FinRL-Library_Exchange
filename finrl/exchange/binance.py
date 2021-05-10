@@ -5,7 +5,7 @@ from typing import Dict
 import ccxt
 
 from finrl.exceptions import (DDosProtection, InsufficientFundsError, InvalidOrderException,
-                             OperationalException, TemporaryError)
+                              OperationalException, TemporaryError)
 from finrl.exchange import Exchange
 from finrl.exchange.common import retrier
 
