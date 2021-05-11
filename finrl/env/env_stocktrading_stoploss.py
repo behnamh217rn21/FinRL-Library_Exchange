@@ -132,7 +132,7 @@ class StockTradingEnvStopLoss(gym.Env):
             os.chdir(path)
         with open("Leverage.txt", 'r') as reader:
             Leverage = reader.read()
-        self.Leverage = Leverage
+        self.Leverage = float(Leverage)
             
     def seed(self, seed=None):
         if seed is None:
