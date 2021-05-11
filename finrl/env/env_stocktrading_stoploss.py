@@ -364,14 +364,14 @@ class StockTradingEnvStopLoss(gym.Env):
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
             sells = np.round(sells, 2)
-            proceeds = np.dot(sells*100000, closings) / 1000
+            proceeds = np.dot(sells*100000, closings) / float(Leverage)
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             buys = np.round(buys, 2)
-            spend = np.dot(buys*100000, closings) / 1000
+            spend = np.dot(buys*100000, closings) / float(Leverage)
             costs += spend * self.buy_cost_pct
             
             # if we run out of cash...
