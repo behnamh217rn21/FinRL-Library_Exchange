@@ -310,7 +310,7 @@ class StockTradingEnvStopLoss(gym.Env):
             if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files":
                 path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
                 os.chdir(path)
-            with open(path, 'r') as reader:
+            with open("Leverage.txt", 'r') as reader:
                 Leverage = reader.read()
             asset_value = np.dot([100000 * i for i in holdings], closings) / Leverage
                         
