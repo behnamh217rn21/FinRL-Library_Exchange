@@ -385,7 +385,13 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
 
-            asset_value = np.dot([100000 * i for i in holdings], closings)
+            cwd = os.getcwd()
+            if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files":
+                path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
+                os.chdir(path)
+            with open(path, 'r') as reader:
+                Leverage = reader.read()
+            asset_value = np.dot([100000 * i for i in holdings], closings) / Leverage
             
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
             reward = self.get_reward()
@@ -398,7 +404,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # multiply action values by our scalar multiplier and save
             actions = actions * self.hmax
-            self.actions_memory.append(([100000 * i for i in actions]) * closings) # capture what the model's trying to do
+            self.actions_memory.append((([100000 * i for i in actions]) * closings)/Leverage) # capture what the model's trying to do
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, actions, 0)
@@ -420,7 +426,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                    ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
             else:
                 #actions = np.where(closings > 0, actions / closings, 0)
-                #actions = list(map(lambda x: round(x, ndigits=2), actions))
+                actions = list(map(lambda x: round(x, ndigits=2), actions))
                 pass
 
             # clip actions so we can't sell more assets than we hold
@@ -437,16 +443,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
             sells = np.round(sells, 2)
-            proceeds = np.dot(sells*100000, closings)
-            proceeds /= 1000
+            proceeds = np.dot(sells*100000, closings) / 1000
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
 
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             buys = np.round(buys, 2)
-            spend = np.dot(buys*100000, closings)
-            spend /= 1000
+            spend = np.dot(buys*100000, closings) / 1000
             costs += spend * self.buy_cost_pct
             
             # if we run out of cash...
@@ -485,22 +489,19 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # log actual total trades we did up to current step
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
-            cwd = os.getcwd()
-            if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files":
-                path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
-                os.chdir(path)
             order_data = pd.read_csv("OrdersReport.csv", sep=';')
-            swap = 0
-            commission = 0
-            for i in range(0, len(order_data)):
-                commission += order_data.loc[i, 'commission']
-                swap += order_data.loc[i, 'swap']
-            coh = coh - spend - costs - swap - commission
-            _f_margin = order_data.loc[len(order_data)-1, 'FreeMargin']   
-
+            #swap = 0
+            #commission = 0
+            #for i in range(0, len(order_data)):
+                #commission += order_data.loc[i, 'commission']
+                #swap += order_data.loc[i, 'swap']
+            _f_margin = order_data.loc[len(order_data)-1, 'FreeMargin']
+            coh = _f_margin
+            #coh = coh - spend - costs - swap - commission
             
             # update our holdings
             actions = np.round(actions, 2)
+            actions = np.round(holdings, 2)
             holdings_updated = holdings + actions
 
             # Update average buy price
