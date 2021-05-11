@@ -122,7 +122,7 @@ class StockTradingEnvStopLoss(gym.Env):
             self.cached_data = [
                 self.get_date_vector(i) for i, _ in enumerate(self.dates)
             ]
-            if self.edit = True:
+            if self.edit == True:
                 self.cached_data = list(filter(None, self.cached_data))
                 self.df.reset_index(inplace=True)
                 self.dates = self.df[date_cn].sort_values().unique()
