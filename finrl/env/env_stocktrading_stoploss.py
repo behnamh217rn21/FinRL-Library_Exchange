@@ -408,7 +408,7 @@ class StockTradingEnvStopLoss(gym.Env):
             coh = coh - spend - costs
 
             # update our holdings
-            actions = np.round(actions, 2)
+            #actions = np.round(actions, 2)
             holdings_updated = holdings + actions
             self.holdings_memory.append(holdings_updated * closings)
             
