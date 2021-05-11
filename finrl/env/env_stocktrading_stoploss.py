@@ -125,7 +125,14 @@ class StockTradingEnvStopLoss(gym.Env):
             self.dates = self.df[date_cn].sort_values().unique()
             self.df = self.df.set_index(date_cn)
             print("data cached!")
-            
+        
+        cwd = os.getcwd()
+        if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files":
+            path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files"
+            os.chdir(path)
+        with open("Leverage.txt", 'r') as reader:
+            Leverage = reader.read()
+        self.Leverage = Leverage
             
     def seed(self, seed=None):
         if seed is None:
@@ -312,7 +319,7 @@ class StockTradingEnvStopLoss(gym.Env):
                 os.chdir(path)
             with open("Leverage.txt", 'r') as reader:
                 Leverage = reader.read()
-            asset_value = np.dot([100000 * i for i in holdings], closings) / float(Leverage)
+            asset_value = np.dot([100000 * i for i in holdings], closings) / self.Leverage
                         
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
             reward = self.get_reward()
@@ -325,7 +332,7 @@ class StockTradingEnvStopLoss(gym.Env):
             
             # multiply action values by our scalar multiplier and save
             actions = actions * self.hmax
-            self.actions_memory.append((([100000 * i for i in actions]) * closings)/float(Leverage)) # capture what the model's trying to do
+            self.actions_memory.append(np.array(([100000 * i for i in actions]) * closings)/float(Leverage)) # capture what the model's trying to do
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, actions, 0)
@@ -347,7 +354,7 @@ class StockTradingEnvStopLoss(gym.Env):
                                    ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
             else:
                 #actions = np.where(closings > 0, actions / closings, 0)
-                #actions = list(map(lambda x: round(x, ndigits=2), actions))
+                actions = list(map(lambda x: round(x, ndigits=2), actions))
                 pass
 
             # clip actions so we can't sell more assets than we hold
