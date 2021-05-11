@@ -133,6 +133,11 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.cash_penalty_proportion = cash_penalty_proportion
         self.days = 365
         
+        with open("/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/" \
+                  "Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files/Leverage.txt", 'r') as reader:
+            Leverage = reader.read()
+        self.Leverage = float(Leverage)
+        
                 
     def seed(self, seed=None):
         if seed is None:
@@ -385,12 +390,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
 
-            cwd = os.getcwd()
-            if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files":
-                path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files"
-                os.chdir(path)
-            with open("Leverage.txt", 'r') as reader:
-                Leverage = reader.read()
             asset_value = np.dot([100000 * i for i in holdings], closings) / self.Leverage
             
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
@@ -489,7 +488,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # log actual total trades we did up to current step
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
-            order_data = pd.read_csv("OrdersReport.csv", sep=';')
+            order_data = pd.read_csv("/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/" \
+                                     "Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files/OrdersReport.csv", sep=';')
             #swap = 0
             #commission = 0
             #for i in range(0, len(order_data)):
