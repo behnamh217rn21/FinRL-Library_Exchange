@@ -335,11 +335,11 @@ class StockTradingEnvStopLoss(gym.Env):
             print("111111111111111111111111111")
             print(actions)
             print(closings)
-            self.actions_memory.append((np.array([100000 * i for i in np.asarray(actions)]) * np.array(closings))/float(Leverage)) # capture what the model's trying to do
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, actions, 0)
-            
+            self.actions_memory.append((np.array([100000 * i for i in np.asarray(actions)]) * np.array(closings))/float(Leverage)) # capture what the model's trying to do
+
             if self.turbulence_threshold is not None:
                 # if turbulence goes over threshold, just clear out all positions
                 if self.turbulence >= self.turbulence_threshold:
