@@ -332,6 +332,9 @@ class StockTradingEnvStopLoss(gym.Env):
             
             # multiply action values by our scalar multiplier and save
             actions = actions * self.hmax
+            print("111111111111111111111111111")
+            print(type(actions))
+            print(type(closings))
             self.actions_memory.append((np.array([100000 * i for i in actions]) * np.array(closings))/float(Leverage)) # capture what the model's trying to do
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
