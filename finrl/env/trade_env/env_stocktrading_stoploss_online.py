@@ -391,7 +391,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 os.chdir(path)
             with open("Leverage.txt", 'r') as reader:
                 Leverage = reader.read()
-            asset_value = np.dot([100000 * i for i in holdings], closings) / Leverage
+            asset_value = np.dot([100000 * i for i in holdings], closings) / float(Leverage)
             
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
             reward = self.get_reward()
@@ -404,7 +404,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # multiply action values by our scalar multiplier and save
             actions = actions * self.hmax
-            self.actions_memory.append((([100000 * i for i in actions]) * closings)/Leverage) # capture what the model's trying to do
+            self.actions_memory.append((([100000 * i for i in actions]) * closings)/float(Leverage)) # capture what the model's trying to do
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, actions, 0)
@@ -443,14 +443,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
             sells = np.round(sells, 2)
-            proceeds = np.dot(sells*100000, closings) / 1000
+            proceeds = np.dot(sells*100000, closings) / float(Leverage)
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
 
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             buys = np.round(buys, 2)
-            spend = np.dot(buys*100000, closings) / 1000
+            spend = np.dot(buys*100000, closings) / float(Leverage)
             costs += spend * self.buy_cost_pct
             
             # if we run out of cash...
