@@ -126,11 +126,8 @@ class StockTradingEnvStopLoss(gym.Env):
             self.df = self.df.set_index(date_cn)
             print("data cached!")
         
-        cwd = os.getcwd()
-        if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files":
-            path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files"
-            os.chdir(path)
-        with open("Leverage.txt", 'r') as reader:
+        with open("/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/" \
+                  "Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files/Leverage.txt", 'r') as reader:
             Leverage = reader.read()
         self.Leverage = float(Leverage)
             
@@ -313,12 +310,6 @@ class StockTradingEnvStopLoss(gym.Env):
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
 
-            cwd = os.getcwd()
-            if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files":
-                path = "/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files"
-                os.chdir(path)
-            with open("Leverage.txt", 'r') as reader:
-                Leverage = reader.read()
             asset_value = np.dot([100000 * i for i in holdings], closings) / self.Leverage
                         
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
@@ -335,10 +326,8 @@ class StockTradingEnvStopLoss(gym.Env):
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, actions, 0)
-            self.actions_memory.append((np.array([100000 * i for i in np.asarray(actions)]) * np.array(closings))/float(Leverage)) # capture what the model's trying to do
+            self.actions_memory.append((([100000 * i for i in np.array(actions)]) * np.array(closings)) / self.Leverage) # capture what the model's trying to do
 
-            print("111111111111111111111111111")
-            print(actions)
             if self.turbulence_threshold is not None:
                 # if turbulence goes over threshold, just clear out all positions
                 if self.turbulence >= self.turbulence_threshold:
@@ -357,7 +346,6 @@ class StockTradingEnvStopLoss(gym.Env):
             else:
                 #actions = np.where(closings > 0, actions / closings, 0)
                 actions = list(map(lambda x: round(x, ndigits=2), actions))
-                pass
 
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
@@ -373,14 +361,14 @@ class StockTradingEnvStopLoss(gym.Env):
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
             sells = np.round(sells, 2)
-            proceeds = np.dot(sells*100000, closings) / float(Leverage)
+            proceeds = np.dot(sells*100000, closings) / self.Leverage
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             buys = np.round(buys, 2)
-            spend = np.dot(buys*100000, closings) / float(Leverage)
+            spend = np.dot(buys*100000, closings) / self.Leverage
             costs += spend * self.buy_cost_pct
             
             # if we run out of cash...
