@@ -307,7 +307,7 @@ class StockTradingEnvStopLoss(gym.Env):
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
 
-            asset_value = np.dot([100000 * i for i in holdings], closings)
+            asset_value = np.dot(holdings, closings)
             
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
             reward = self.get_reward()
@@ -320,7 +320,7 @@ class StockTradingEnvStopLoss(gym.Env):
             
             # multiply action values by our scalar multiplier and save
             actions = actions * self.hmax
-            self.actions_memory.append(([100000 * i for i in actions]) * closings) # capture what the model's trying to do
+            self.actions_memory.append(actions * closings) # capture what the model's trying to do
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, actions, 0)
@@ -409,7 +409,7 @@ class StockTradingEnvStopLoss(gym.Env):
             # update our holdings
             actions = np.round(actions, 2)
             holdings_updated = holdings + actions
-            self.holdings_memory.append((holdings_updated*100000) * closings)
+            self.holdings_memory.append(holdings_updated * closings)
             
             # Update average buy price
             buys = np.sign(buys)
