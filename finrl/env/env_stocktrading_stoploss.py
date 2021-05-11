@@ -312,7 +312,7 @@ class StockTradingEnvStopLoss(gym.Env):
                 os.chdir(path)
             with open("Leverage.txt", 'r') as reader:
                 Leverage = reader.read()
-            asset_value = np.dot([100000 * i for i in holdings], closings) / Leverage
+            asset_value = np.dot([100000 * i for i in holdings], closings) / float(Leverage)
                         
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
             reward = self.get_reward()
@@ -325,7 +325,7 @@ class StockTradingEnvStopLoss(gym.Env):
             
             # multiply action values by our scalar multiplier and save
             actions = actions * self.hmax
-            self.actions_memory.append((([100000 * i for i in actions]) * closings)/Leverage) # capture what the model's trying to do
+            self.actions_memory.append((([100000 * i for i in actions]) * closings)/float(Leverage)) # capture what the model's trying to do
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, actions, 0)
