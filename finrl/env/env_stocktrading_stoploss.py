@@ -115,18 +115,15 @@ class StockTradingEnvStopLoss(gym.Env):
         self.cached_data = None
         self.cash_penalty_proportion = cash_penalty_proportion
         
-        self.edit = False
-
         if self.cache_indicator_data:
             print("caching data")
             self.cached_data = [
                 self.get_date_vector(i) for i, _ in enumerate(self.dates)
             ]
-            if self.edit == True:
-                self.cached_data = list(filter(None, self.cached_data))
-                self.df.reset_index(inplace=True)
-                self.dates = self.df[date_cn].sort_values().unique()
-                self.df = self.df.set_index(date_cn)
+            self.cached_data = list(filter(None, self.cached_data))
+            self.df.reset_index(inplace=True)
+            self.dates = self.df[date_cn].sort_values().unique()
+            self.df = self.df.set_index(date_cn)
             print("data cached!")
             
             
@@ -189,7 +186,6 @@ class StockTradingEnvStopLoss(gym.Env):
                     v += subset.loc[date, cols].tolist()
                 except:
                     print("Date {} will be deleted".format(date))
-                    self.edit = True
                     dt = pd.Timestamp(np.datetime64(date))
                     self.df.drop(dt, inplace=True)
                     v = []
