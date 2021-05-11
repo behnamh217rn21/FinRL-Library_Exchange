@@ -172,7 +172,12 @@ FX_MAJOR_TICKER = ["EURUSD=X",
 		   "USDCAD=X",
 		   "USDCHF=X",
 		   "NZDUSD=X",
-		   "USDJPY=X",
+		   "EURCHF=X",
+		   "EURGBP=X",
+		   "GBPCHF=X",
+		   #"USDJPY=X",
+		   #"EURJPY=X",
+		   #"GBPJPY=X",
 		  ]
 
 # self defined
