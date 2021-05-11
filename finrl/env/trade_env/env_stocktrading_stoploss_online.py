@@ -501,7 +501,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # update our holdings
             actions = np.round(actions, 2)
-            actions = np.round(holdings, 2)
+            holdings = np.round(holdings, 2)
             holdings_updated = holdings + actions
 
             # Update average buy price
