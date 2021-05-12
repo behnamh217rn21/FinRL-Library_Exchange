@@ -346,7 +346,8 @@ class StockTradingEnvStopLoss(gym.Env):
             else:
                 #actions = np.where(closings > 0, actions / closings, 0)
                 #actions = list(map(lambda x: round(x, ndigits=2), actions))
-                pass
+                actions = list(map(lambda x: round(x, ndigits=2), actions))
+                actions = np.asarray(actions)
             
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
@@ -361,14 +362,12 @@ class StockTradingEnvStopLoss(gym.Env):
 
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
-            sells = np.round(sells, 2)
             proceeds = np.dot(sells*100, closings) / self.Leverage
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
-            buys = np.round(buys, 2)
             spend = np.dot(buys*100, closings) / self.Leverage
             costs += spend * self.buy_cost_pct
             
@@ -409,8 +408,6 @@ class StockTradingEnvStopLoss(gym.Env):
             coh = coh - spend - costs
 
             # update our holdings
-            actions = np.round(actions, 2)
-            holdings = np.round(holdings, 2)
             holdings_updated = holdings + actions
             
             # Update average buy price
