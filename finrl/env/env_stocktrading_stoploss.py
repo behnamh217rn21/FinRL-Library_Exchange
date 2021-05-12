@@ -345,8 +345,9 @@ class StockTradingEnvStopLoss(gym.Env):
                                    ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
             else:
                 #actions = np.where(closings > 0, actions / closings, 0)
-                actions = list(map(lambda x: round(x, ndigits=2), actions))
-
+                #actions = list(map(lambda x: round(x, ndigits=2), actions))
+                pass
+            
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
             
