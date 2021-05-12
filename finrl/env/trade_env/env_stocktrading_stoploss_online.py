@@ -201,11 +201,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
     
             
     def get_date_vector(self, date, cols=None):
-        cwd = os.getcwd()
-        if cwd != "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange":
-            path = "/mnt/c/Users/BEHNAMH721AS.RN/OneDrive/Desktop/FinRL-Library_Exchange"
-            os.chdir(path)
-            
         if cols is None:
             cols = self.daily_information_cols
         
