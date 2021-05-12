@@ -204,9 +204,9 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if cols is None:
             cols = self.daily_information_cols
         
-            #if self._h_cnt == 7: self._h_cnt = 0
+            #if self.h_counter == 7: self.h_counter = 0
             #else: 
-                #self._h_cnt = self._h_cnt + 1                
+                #self.h_counter += 1                
             #date //= 7
             #now_t = Timestamp.now('UTC')+ timedelta(hours=3)
             #now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
