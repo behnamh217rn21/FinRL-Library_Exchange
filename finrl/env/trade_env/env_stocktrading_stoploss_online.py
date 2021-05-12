@@ -390,7 +390,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
 
-            asset_value = np.dot([100000 * i for i in holdings], closings) / self.Leverage
+            asset_value = np.dot([100 * i for i in holdings], closings) / self.Leverage
             
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
             reward = self.get_reward()
@@ -406,7 +406,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, actions, 0)
-            self.actions_memory.append((([100000 * i for i in np.array(actions)]) * np.array(closings)) / self.Leverage) # capture what the model's trying to do
+            self.actions_memory.append((([100 * i for i in np.array(actions)]) * np.array(closings)) / self.Leverage) # capture what the model's trying to do
  
             if self.turbulence_threshold is not None:
                 # if turbulence goes over threshold, just clear out all positions
@@ -440,15 +440,15 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
-            sells = np.round(sells, 5)
-            proceeds = np.dot(sells*100000, closings) / self.Leverage
+            sells = np.round(sells, 2)
+            proceeds = np.dot(sells*100, closings) / self.Leverage
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
 
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
-            buys = np.round(buys, 5)
-            spend = np.dot(buys*100000, closings) / self.Leverage
+            buys = np.round(buys, 2)
+            spend = np.dot(buys*100, closings) / self.Leverage
             costs += spend * self.buy_cost_pct
             
             # if we run out of cash...
@@ -499,8 +499,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             #coh = coh - spend - costs - swap - commission
             
             # update our holdings
-            actions = np.round(actions, 5)
-            holdings = np.round(holdings, 5)
+            actions = np.round(actions, 2)
+            holdings = np.round(holdings, 2)
             holdings_updated = holdings + actions
 
             # Update average buy price
