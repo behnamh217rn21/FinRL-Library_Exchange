@@ -322,7 +322,7 @@ class StockTradingEnvStopLoss(gym.Env):
             self.account_information["reward"].append(reward)
             
             # multiply action values by our scalar multiplier and save
-            actions = actions / self.hmax
+            actions = actions * self.hmax
             
             # buy/sell only if the price is > 0 (no missing data in this particular date)
             actions = np.where(closings > 0, actions, 0)
