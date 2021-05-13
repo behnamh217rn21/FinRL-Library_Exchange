@@ -58,7 +58,7 @@ def main():
     env_trade, obs_trade = e_trade_gym.get_sb_env()
     
     print("****Model Prediction****")
-    agent = DRLAgent(env=test_env)
+    agent = DRLAgent(env=env_trade)
     ddpg_params = {"actor_lr": 5e-06,
                    "critic_lr": 5e-06,
                    "gamma": 0.99,
