@@ -249,7 +249,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
     def rates_subscriptions(self, _symbols):
         # creates object with a predefined configuration
-        print('running rates subscriptions process ...')
         func = rates_subscriptions_v1.rates_subscriptions(_instruments=_symbols)
         func.run()
         # Waits example termination
