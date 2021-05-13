@@ -126,7 +126,7 @@ class StockTradingEnvStopLoss(gym.Env):
             self.df = self.df.set_index(date_cn)
             print("data cached!")
         
-        with open("/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/" \
+        with open("/mnt/c/Users/Administrator/AppData/Roaming/MetaQuotes/" \
                   "Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files/Leverage.txt", 'r') as reader:
             Leverage = reader.read()
         self.Leverage = float(Leverage)
