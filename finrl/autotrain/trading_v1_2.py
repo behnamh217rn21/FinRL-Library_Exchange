@@ -55,15 +55,14 @@ def main():
                         'print_verbosity': 1, 
                         'discrete_actions': False}
     e_trade_gym = StockTradingEnvStopLossOnline(**env_trade_kwargs)
-    env_trade, obs_trade = e_trade_gym.get_sb_env()
+    env_trade, _ = e_trade_gym.get_sb_env()
     
     print("****Model Prediction****")
     agent = DRLAgent(env=env_trade)
     ddpg_params = {"actor_lr": 5e-06,
                    "critic_lr": 5e-06,
                    "gamma": 0.99,
-                   "batch_size": 1024,
-                   "eval_env": env_trade}
+                   "batch_size": 1024}
 
     model = agent.get_model("ddpg",
                             model_kwargs = ddpg_params,
@@ -71,13 +70,11 @@ def main():
     
     DDPG_model = model.load(DDPG_model_path)
     df_account_value, df_actions = DRLAgent.DRL_prediction_online(model=DDPG_model,
-                                                                  obs=obs_trade,
-                                                                  environment=env_trade,
+                                                                  environment=e_trade_gym,
                                                                   n_hrs=14)
     
     #df_account_value, df_actions = DRLAgent.DRL_prediction_online(model=DDPG_model,
-                                                                   #obs=obs_trade,
-                                                                   #environment=env_trade)
+                                                                   #environment=e_trade_gym)
     
     print("****Prediction Resault Saving****")
     now = datetime.datetime.now().strftime("%Y-%m-%d-%HH%MM")
