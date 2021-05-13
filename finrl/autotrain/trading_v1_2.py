@@ -26,7 +26,7 @@ def main():
     """
     
     print("==============Start Trading===========")
-    DDPG_model = "./" + config.TRAINED_MODEL_DIR + "/DDPG.model"
+    DDPG_model_path = "./" + config.TRAINED_MODEL_DIR + "/DDPG.model"
 
     #print("****Environment Document****")
     #print(StockTradingEnvStopLoss_online.__doc__)
@@ -55,11 +55,29 @@ def main():
                         'print_verbosity': 1, 
                         'discrete_actions': False}
     e_trade_gym = StockTradingEnvStopLossOnline(**env_trade_kwargs)
+    env_trade, obs_trade = e_trade_gym.get_sb_env()
     
     print("****Model Prediction****")
-    df_account_value, df_actions = DRLAgent.DRL_prediction_online(model=DDPG_model, 
-                                                                  environment=e_trade_gym,
-                                                                  n_days=2)
+    agent = DRLAgent(env=test_env)
+    ddpg_params = {"actor_lr": 5e-06,
+                   "critic_lr": 5e-06,
+                   "gamma": 0.99,
+                   "batch_size": 1024,
+                   "eval_env": env_trade}
+
+    model = agent.get_model("ddpg",
+                                 model_kwargs = ddpg_params,
+                                 verbose = 0)
+    
+    DDPG_model = model.load(DDPG_model_path)
+    df_account_value, df_actions = DRLAgent.DRL_prediction_online(model=DDPG_model,
+                                                                  obs=obs_trade,
+                                                                  environment=env_trade,
+                                                                  n_hrs=14)
+    
+    #df_account_value, df_actions = DRLAgent.DRL_prediction_online(model=DDPG_model,
+                                                                   #obs=obs_trade,
+                                                                   #environment=env_trade)
     
     print("****Prediction Resault Saving****")
     now = datetime.datetime.now().strftime("%Y-%m-%d-%HH%MM")
