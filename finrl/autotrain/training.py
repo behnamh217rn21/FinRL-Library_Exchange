@@ -149,7 +149,7 @@ def main():
     print("==============Start Trading===========")
     print("****Model Prediction****")
     df_account_value, df_actions = DRLAgent.DRL_prediction(model=DDPG_model, 
-                                                           environment = e_trade_gym)
+                                                           environment=e_trade_gym)
     
     print("****Prediction Resault Saving****")
     now = datetime.datetime.now().strftime("%Y-%m-%d-%HH%MM")
