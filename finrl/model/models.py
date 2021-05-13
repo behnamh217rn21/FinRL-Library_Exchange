@@ -59,7 +59,7 @@ class DRLAgent:
         account_memory = []
         actions_memory = []
         test_env.reset()
-        for i in range(n_hrs):
+        for i in range(n_hrs+2):
             action, _states = model.predict(test_obs)
             #account_memory = test_env.env_method(method_name="save_asset_memory")
             #actions_memory = test_env.env_method(method_name="save_action_memory")
