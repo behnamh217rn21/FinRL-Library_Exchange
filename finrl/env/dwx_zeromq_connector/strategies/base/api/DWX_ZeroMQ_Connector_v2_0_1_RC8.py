@@ -598,9 +598,8 @@ class DWX_ZeroMQ_Connector():
                                        string_delimiter=';'):
         
         # Subscribe to SYMBOL first.
-        self._SUB_SOCKET.setsockopt_string(zmq.SUBSCRIBE, _symbol)
-        
-        print("[KERNEL] Subscribed to {} BID/ASK updates. See self._Market_Data_DB.".format(_symbol))
+        self._SUB_SOCKET.setsockopt_string(zmq.SUBSCRIBE, _symbol)      
+        #print("[KERNEL] Subscribed to {} BID/ASK updates. See self._Market_Data_DB.".format(_symbol))
     
     """
     Function to unsubscribe to given Symbol's BID/ASK feed from MetaTrader
