@@ -53,40 +53,38 @@ class DRLAgent:
         DRL_prediction(); make a prediction in a test dataset and get results
     """
     @staticmethod
-    def DRL_prediction_online(model, environment, n_days):
-        test_env, test_obs = environment.get_sb_env()
+    def DRL_prediction_online(model, obs, environment, n_hrs):
         """make a prediction"""
         account_memory = []
         actions_memory = []
-        test_env.reset()
-        for i in range(n_days*7):
-            action, _states = model.predict(test_obs)
+        environment.reset()
+        for i in range(n_hrs):
+            action, _states = model.predict(obs)
             #account_memory = test_env.env_method(method_name="save_asset_memory")
             #actions_memory = test_env.env_method(method_name="save_action_memory")
-            test_obs, rewards, dones, info = test_env.step(action)
-            if i == (counter - 2):
-                account_memory = test_env.env_method(method_name="save_asset_memory")
-                actions_memory = test_env.env_method(method_name="save_action_memory")
+            obs, rewards, dones, info = environment.step(action)
+            if i == (n_hrs - 2):
+                account_memory = environment.env_method(method_name="save_asset_memory")
+                actions_memory = environment.env_method(method_name="save_action_memory")
             if dones[0]:
                 print("hit end!")
                 break
         return account_memory[0], actions_memory[0]
 
     @staticmethod
-    def DRL_prediction(model, environment):
-        test_env, test_obs = environment.get_sb_env()
+    def DRL_prediction(model, obs, environment):
         """make a prediction"""
         account_memory = []
         actions_memory = []
-        test_env.reset()
+        environment.reset()
         for i in range(len(environment.df.index.unique())):
-            action, _states = model.predict(test_obs)
+            action, _states = model.predict(obs)
             #account_memory = test_env.env_method(method_name="save_asset_memory")
             #actions_memory = test_env.env_method(method_name="save_action_memory")
-            test_obs, rewards, dones, info = test_env.step(action)
+            obs, rewards, dones, info = environment.step(action)
             if i == (len(environment.df.index.unique()) - 2):
-                account_memory = test_env.env_method(method_name="save_asset_memory")
-                actions_memory = test_env.env_method(method_name="save_action_memory")
+                account_memory = environment.env_method(method_name="save_asset_memory")
+                actions_memory = environment.env_method(method_name="save_action_memory")
             if dones[0]:
                 print("hit end!")
                 break
