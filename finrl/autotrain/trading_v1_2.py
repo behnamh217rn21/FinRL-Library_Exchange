@@ -66,8 +66,8 @@ def main():
                    "eval_env": env_trade}
 
     model = agent.get_model("ddpg",
-                                 model_kwargs = ddpg_params,
-                                 verbose = 0)
+                            model_kwargs = ddpg_params,
+                            verbose = 0)
     
     DDPG_model = model.load(DDPG_model_path)
     df_account_value, df_actions = DRLAgent.DRL_prediction_online(model=DDPG_model,
