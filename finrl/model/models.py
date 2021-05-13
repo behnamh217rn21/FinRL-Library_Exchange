@@ -54,18 +54,12 @@ class DRLAgent:
     """
     @staticmethod
     def DRL_prediction_online(model, environment, n_hrs):
-        print("11111111111111111111111111111111111")
-        print(environment)
         test_env, test_obs = environment.get_sb_env()
-        print("222222222222222222222222222222222222")
-        print(test_obs)
         """make a prediction"""
         account_memory = []
         actions_memory = []
         test_env.reset()
         for i in range(n_hrs):
-            print("333333333333333333333333333333333333333333")
-            action, _states = model.predict(environment)
             action, _states = model.predict(test_obs)
             #account_memory = test_env.env_method(method_name="save_asset_memory")
             #actions_memory = test_env.env_method(method_name="save_action_memory")
