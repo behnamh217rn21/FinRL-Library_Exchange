@@ -57,8 +57,9 @@ def main():
     e_trade_gym = StockTradingEnvStopLossOnline(**env_trade_kwargs)
     
     print("****Model Prediction****")
-    df_account_value, df_actions = DRLAgent.DRL_prediction(model=DDPG_model, 
-                                                           environment = e_trade_gym)
+    df_account_value, df_actions = DRLAgent.DRL_prediction_online(model=DDPG_model, 
+                                                                  environment=e_trade_gym,
+                                                                  n_days=2)
     
     print("****Prediction Resault Saving****")
     now = datetime.datetime.now().strftime("%Y-%m-%d-%HH%MM")
