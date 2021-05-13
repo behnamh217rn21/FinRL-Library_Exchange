@@ -53,26 +53,46 @@ class DRLAgent:
         DRL_prediction(); make a prediction in a test dataset and get results
     """
     @staticmethod
+    def DRL_prediction_online(model, environment, n_days):
+        test_env, test_obs = environment.get_sb_env()
+        """make a prediction"""
+        account_memory = []
+        actions_memory = []
+        test_env.reset()
+        for i in range(n_days*7):
+            action, _states = model.predict(test_obs)
+            #account_memory = test_env.env_method(method_name="save_asset_memory")
+            #actions_memory = test_env.env_method(method_name="save_action_memory")
+            test_obs, rewards, dones, info = test_env.step(action)
+            if i == (counter - 2):
+                account_memory = test_env.env_method(method_name="save_asset_memory")
+                actions_memory = test_env.env_method(method_name="save_action_memory")
+            if dones[0]:
+                print("hit end!")
+                break
+        return account_memory[0], actions_memory[0]
+
+    @staticmethod
     def DRL_prediction(model, environment):
         test_env, test_obs = environment.get_sb_env()
         """make a prediction"""
         account_memory = []
         actions_memory = []
         test_env.reset()
-        counter = (2*60)//5
-        for i in range(counter):
+        for i in range(len(environment.df.index.unique())):
             action, _states = model.predict(test_obs)
             #account_memory = test_env.env_method(method_name="save_asset_memory")
             #actions_memory = test_env.env_method(method_name="save_action_memory")
             test_obs, rewards, dones, info = test_env.step(action)
-            if i == (counter - 2):
-              account_memory = test_env.env_method(method_name="save_asset_memory")
-              actions_memory = test_env.env_method(method_name="save_action_memory")
+            if i == (len(environment.df.index.unique()) - 2):
+                account_memory = test_env.env_method(method_name="save_asset_memory")
+                actions_memory = test_env.env_method(method_name="save_action_memory")
             if dones[0]:
                 print("hit end!")
                 break
         return account_memory[0], actions_memory[0]
-
+    
+    
     def __init__(self, env):
         self.env = env
 
