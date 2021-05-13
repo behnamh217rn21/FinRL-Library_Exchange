@@ -56,11 +56,9 @@ class DRLAgent:
     def DRL_prediction_online(model, environment, n_hrs):
         print("11111111111111111111111111111111111")
         print(environment)
-        print(len(environment))
         test_env, test_obs = environment.get_sb_env()
         print("222222222222222222222222222222222222")
         print(test_obs)
-        print(len(test_obs))
         """make a prediction"""
         account_memory = []
         actions_memory = []
