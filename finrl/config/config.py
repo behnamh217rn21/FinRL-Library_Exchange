@@ -102,7 +102,6 @@ CUSTOM_US_TICKER = ["AAPL",
 		    "WFC",
 		    "WMT",
 		    "XOM",
-		    "BRK.B"
 		   ]
 
 FX_MAJOR_TICKER = ["EURUSD",
