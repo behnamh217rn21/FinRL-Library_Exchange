@@ -91,7 +91,6 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         self._delay = _delay
         self._verbose = _verbose
 
-        self._RT = -1
         self.cnt = -1
         self.p_time= "2000-01-01 00:00"
 
@@ -177,11 +176,9 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                     processed['daily_variance'] = (processed.high - processed.low) / processed.close
                     print(processed)
                     processed.to_csv(file)
-                    
-                    self._RT += 1
-                    if self._RT >= 2:
-                        with open('./finrl/marketdata/f_time.txt', 'w') as f2:
-                            f2.write('%s' % str(_time))
+
+                    with open('./finrl/marketdata/f_time.txt', 'w') as f2:
+                        f2.write('%s' % str(_time))
                             
                     # finishes (removes all subscriptions)
                     self.stop()
