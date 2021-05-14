@@ -496,10 +496,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             #coh = coh - spend - costs - swap - commission
             
             # update our holdings
-            holdings = list(map(lambda x: round(x, ndigits=2), holdings))
-            holdings = np.asarray(holdings)
-            actions = list(map(lambda x: round(x, ndigits=2), actions))
-            actions = np.asarray(actions)
+            print(actions)
             holdings_updated = holdings + actions
 
             # Update average buy price
