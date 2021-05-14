@@ -159,6 +159,8 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
 
         try:
             if (self.cnt+1) % len(self._instruments) == 0:
+                print("1111111111111111111")
+                print(self.data_df)
                 assert len(self.data_df) == len(self._instruments) 
                 assert self.data_df.index[0] == 0
                 self.cnt = -1
