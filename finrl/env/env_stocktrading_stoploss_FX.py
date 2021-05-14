@@ -361,12 +361,16 @@ class StockTradingEnvStopLoss(gym.Env):
 
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
+            sells = list(map(lambda x: round(x, ndigits=5), sells))
+            sells = np.asarray(sells)
             proceeds = np.dot(sells*100000, closings) / self.Leverage
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
+            buys = list(map(lambda x: round(x, ndigits=5), buys))
+            buys = np.asarray(buys)
             spend = np.dot(buys*100000, closings) / self.Leverage
             costs += spend * self.buy_cost_pct
             
@@ -407,6 +411,10 @@ class StockTradingEnvStopLoss(gym.Env):
             coh = coh - spend - costs
 
             # update our holdings
+            holdings = list(map(lambda x: round(x, ndigits=5), holdings))
+            holdings = np.asarray(holdings)
+            actions = list(map(lambda x: round(x, ndigits=5), actions))
+            actions = np.asarray(actions)
             holdings_updated = holdings + actions
             
             # Update average buy price
