@@ -177,8 +177,8 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                     print(processed)
                     processed.to_csv(file)
                     
-                    with open('./finrl/marketdata/f_time.txt', 'w') as f2:
-                        f2.write('%s' % str(_time))
+                    #with open('./finrl/marketdata/f_time.txt', 'w') as f2:
+                        #f2.write('%s' % str(_time))
                             
                     # finishes (removes all subscriptions)
                     self.stop()
