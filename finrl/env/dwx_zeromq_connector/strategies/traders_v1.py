@@ -90,7 +90,7 @@ class t_class(DWX_ZMQ_Strategy):
          '_lots': 0.01,
          '_magic': 123456}
         """
-        print("symbol: {}; sell: {}; buy: {}".format(_symbol, sell, buy))
+        print("sell: {}; buy: {}".format(sell, buy))
         
         while self._market_open:
             try:
