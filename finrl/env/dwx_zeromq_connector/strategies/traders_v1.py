@@ -72,7 +72,7 @@ class t_class(DWX_ZMQ_Strategy):
             _t.daemon = True
             _t.start()
             
-            print('[{}_Trader] Alright ...'.format(_symbol))
+            print('[{}_Trader] Alright >>>'.format(_symbol))
             self._traders.append(_t)
         
     ##########################################################################
