@@ -460,7 +460,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                     # ... end the cycle and penalize
                     return self.return_terminal(reason="CASH SHORTAGE", reward=self.get_reward())
             else:
-                self._trading_process(sells, buys)
+                #self._trading_process(sells, buys)
                 sleep(5)
 
             self.transaction_memory.append(actions) # capture what the model's could do
