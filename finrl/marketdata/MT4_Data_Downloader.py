@@ -105,18 +105,18 @@ class rates_historic(DWX_ZMQ_Strategy):
                                                   _timeframe=self._TF,
                                                   _start='2020.02.05 18:30:00',
                                                   _end=Timestamp.now().strftime('%Y.%m.%d %H:%M:00'))
-        	sleep(10)
+            sleep(10)
 
         print('\nCreating a History Data Dataframe:')
         counter = 0
         _HIST_DATA_DF = pd.DataFrame()
         for symbol in self._symbols_list:
             symbol_H1 = "{}_H1".format(symbol)
-        	for i in range(0, len(self._zmq._History_DB[symbol_H1])):
+            for i in range(0, len(self._zmq._History_DB[symbol_H1])):
                 _HIST_DATA_DF=_HIST_DATA_DF.append([self._zmq._History_DB[symbol_H1][i].values()])
-        		_HIST_DATA_DF = _HIST_DATA_DF.reset_index(drop=True)
-        		_HIST_DATA_DF.loc[counter, "tic"] = symbol
-        		counter += 1
+                _HIST_DATA_DF = _HIST_DATA_DF.reset_index(drop=True)
+                _HIST_DATA_DF.loc[counter, "tic"] = symbol
+                counter += 1
 
         _HIST_DATA_DF.columns = ["date",
                                  "open",
