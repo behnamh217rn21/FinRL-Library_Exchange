@@ -43,8 +43,9 @@ import datetime
 # Class derived from DWZ_ZMQ_Strategy includes data processor for PULL,SUB data
 #############################################################################
 class rates_historic(DWX_ZMQ_Strategy):
-    def __init__(self, 
+    def __init__(self,
                  _name="PRICES_SUBSCRIPTIONS",
+                 _symbols=['EURUSD', 'GDAXI'],
                  _delay=0.1,
                  _broker_gmt=3,
                  _verbose=False):
@@ -59,11 +60,7 @@ class rates_historic(DWX_ZMQ_Strategy):
                          _verbose)
         
         # This strategy's variables
-        with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
-            _symbols = eval(file.readline())
-        self._symbols_list = []
-        for i in range(0, len(_symbols)):
-            self._symbols_list.append(_symbols[i][1])
+        self._symbols_list = _symbols
         self._verbose = _verbose
         self._finished = False; self._delay = _delay
 
@@ -102,8 +99,8 @@ class rates_historic(DWX_ZMQ_Strategy):
         # request rates
         _TF = 60
         for i in range(0, len(self._symbols_list)):
-        	print('Requesting {} Rates from {}'.format(_TF, self._symbols_list[i]))
-        	self._zmq._DWX_MTX_SEND_HIST_REQUEST_(_symbol=self._symbols_list[i],
+            print('Requesting {} Rates from {}'.format(_TF, self._symbols_list[i]))
+            self._zmq._DWX_MTX_SEND_HIST_REQUEST_(_symbol=self._symbols_list[i],
                                                   _timeframe=_TF,
                                                   _start='2020.02.05 18:30:00',
                                                   _end=Timestamp.now().strftime('%Y.%m.%d %H:%M:00'))
@@ -113,9 +110,9 @@ class rates_historic(DWX_ZMQ_Strategy):
         counter = 0
         _HIST_DATA_DF = pd.DataFrame()
         for symbol in self._symbols_list:
-        	symbol_H1 = "{}_H1".format(symbol)
+            symbol_H1 = "{}_H1".format(symbol)
         	for i in range(0, len(self._zmq._History_DB[symbol_H1])):
-        		_HIST_DATA_DF=_HIST_DATA_DF.append([self._zmq._History_DB[symbol_H1][i].values()])
+                _HIST_DATA_DF=_HIST_DATA_DF.append([self._zmq._History_DB[symbol_H1][i].values()])
         		_HIST_DATA_DF = _HIST_DATA_DF.reset_index(drop=True)
         		_HIST_DATA_DF.loc[counter, "tic"] = symbol
         		counter += 1
