@@ -46,7 +46,7 @@ class rates_historic(DWX_ZMQ_Strategy):
     def __init__(self,
                  _name="PRICES_SUBSCRIPTIONS",
                  _symbols=['EURUSD', 'GDAXI'],
-                 _TF=60
+                 _TF=60,
                  _delay=0.1,
                  _broker_gmt=3,
                  _verbose=False):
