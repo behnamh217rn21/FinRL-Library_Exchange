@@ -46,6 +46,7 @@ class rates_historic(DWX_ZMQ_Strategy):
     def __init__(self,
                  _name="PRICES_SUBSCRIPTIONS",
                  _symbols=['EURUSD', 'GDAXI'],
+                 _TF=60
                  _delay=0.1,
                  _broker_gmt=3,
                  _verbose=False):
@@ -61,6 +62,7 @@ class rates_historic(DWX_ZMQ_Strategy):
         
         # This strategy's variables
         self._symbols_list = _symbols
+        self._TF = _TF
         self._verbose = _verbose
         self._finished = False; self._delay = _delay
 
@@ -97,11 +99,10 @@ class rates_historic(DWX_ZMQ_Strategy):
         self._finished = False
 
         # request rates
-        _TF = 60
         for i in range(0, len(self._symbols_list)):
-            print('Requesting {} Rates from {}'.format(_TF, self._symbols_list[i]))
+            print('Requesting {} Rates from {}'.format(self._TF, self._symbols_list[i]))
             self._zmq._DWX_MTX_SEND_HIST_REQUEST_(_symbol=self._symbols_list[i],
-                                                  _timeframe=_TF,
+                                                  _timeframe=self._TF,
                                                   _start='2020.02.05 18:30:00',
                                                   _end=Timestamp.now().strftime('%Y.%m.%d %H:%M:00'))
         	sleep(10)
