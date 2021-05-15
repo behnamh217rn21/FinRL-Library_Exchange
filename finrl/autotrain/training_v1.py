@@ -27,10 +27,10 @@ sys.path.append("..\\FinRL-Library_Exchange")
 
 #############################################################################
 #############################################################################
-def Data_Downloader(_symbols):
+def Data_Downloader(_symbols, _timeframe):
     # creates object with a predefined configuration
     print('running rates_historic process ...')
-    func = MT4_Data_Downloader.rates_historic(_instruments=_symbols)
+    func = MT4_Data_Downloader.rates_historic(_symbols=_symbols, _TF=_timeframe)
     func.run()
     # Waits example termination
     print('Waiting rates_historic process termination...\n')
@@ -48,11 +48,12 @@ def main():
     """
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
+    _timeframe = _symbols[0][0].split("_")[1]
     _symbols_i1 = []
     for i in range(0, len(_symbols)):
         _symbols_i1.append(_symbols[i][1])
-    #Data_Downloader(_symbols_i1)
-    #df = load_dataset(file_name="mt4_dataset.csv")
+    Data_Downloader(_symbols_i1, _timeframe)
+    df = load_dataset(file_name="mt4_dataset.csv")
     """
     """
     df = load_dataset(file_name="data.csv")
