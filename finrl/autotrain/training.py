@@ -52,8 +52,8 @@ def main():
     _symbols_i1 = []
     for i in range(0, len(_symbols)):
         _symbols_i1.append(_symbols[i][1])
-    #Data_Downloader(_symbols_i1, _timeframe)
-    #df = load_dataset(file_name="mt4_dataset.csv")
+    Data_Downloader(_symbols_i1, _timeframe)
+    df = load_dataset(file_name="mt4_dataset.csv")
     """
     """
     df = load_dataset(file_name="data.csv")
