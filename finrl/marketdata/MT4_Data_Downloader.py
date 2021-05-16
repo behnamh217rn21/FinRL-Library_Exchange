@@ -110,6 +110,8 @@ class rates_historic(DWX_ZMQ_Strategy):
         print('\nCreating a History Data Dataframe:')
         counter = 0
         _HIST_DATA_DF = pd.DataFrame()
+        print("11111111111111111111111111111")
+        print(self._zmq._History_DB)
         for symbol in self._symbols_list:
             symbol_H1 = "{}_H1".format(symbol)
             for i in range(0, len(self._zmq._History_DB[symbol_H1])):
