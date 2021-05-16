@@ -507,11 +507,7 @@ class DWX_ZeroMQ_Connector():
                         if msg != '' and msg != None:
                             try: 
                                 _data = eval(msg)
-                                print("22222222222222222222222222222222222")
-                                print(_data)
-                                print("33333333333333333333333333333333333")
-                                print(_data['_symbol'])
-
+                                
                                 if '_action' in _data and _data['_action'] == 'HIST':
                                     _symbol = _data['_symbol']
                                     if '_data' in _data.keys():
