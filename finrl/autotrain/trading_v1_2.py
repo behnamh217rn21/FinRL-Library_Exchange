@@ -70,8 +70,7 @@ def main():
     
     DDPG_model = model.load(DDPG_model_path)
     df_account_value, df_actions = DRLAgent.DRL_prediction_online(model=DDPG_model,
-                                                                  environment=e_trade_gym,
-                                                                  n_hrs=14)
+                                                                  environment=e_trade_gym)
     
     #df_account_value, df_actions = DRLAgent.DRL_prediction(model=DDPG_model,
                                                             #environment=e_trade_gym)
