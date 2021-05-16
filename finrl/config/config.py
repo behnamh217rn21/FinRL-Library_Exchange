@@ -21,7 +21,7 @@ RESULTS_DIR = f"finrl/results"
 ## time_fmt = '%Y-%m-%d %H:%M:00'
 START_DATE = "2021.01.15"; END_DATE = "2021-05-14"
 START_TRADE_DATE = "2021-05-04"
-S_SPLIT = "2021.01.15 14:00:00"; F_SPLIT = "2021-05-14 23:00:00"
+S_SPLIT = "2021-01-15 14:00:00"; F_SPLIT = "2021-05-14 23:00:00"
 T_SPLIT = "2021-05-04 00:00:00"
 
 ## dataset default columns
