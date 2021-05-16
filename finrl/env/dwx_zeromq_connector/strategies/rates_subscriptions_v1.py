@@ -150,7 +150,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         _time = datetime.datetime.strftime(_time, "%Y-%m-%d %H:%M:00")
         _time = datetime.datetime.strptime(_time, "%Y-%m-%d %H:%M:00")
 
-        sleep(_delay)
+        sleep(self._delay)
         self.cnt += 1
         self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
                                          float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
