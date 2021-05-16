@@ -48,7 +48,7 @@ def main():
     """
     with open("./" + config.DATA_SAVE_DIR + "/symbols.txt", "r") as file:
         _symbols = eval(file.readline())
-    _timeframe = _symbols[0][0].split("_")[1]
+    _timeframe = _symbols[0][2]
     _symbols_i1 = []
     for i in range(0, len(_symbols)):
         _symbols_i1.append(_symbols[i][1])
