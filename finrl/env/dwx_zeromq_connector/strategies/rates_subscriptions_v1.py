@@ -72,8 +72,8 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
     def __init__(self, 
                  _name="PRICES_SUBSCRIPTIONS",
                  _instruments=[('INTC_M1', 'INTC', 1), ('BAC_M1', 'BAC', 1)],
-                 _delay=0.1,
-                 _broker_gmt=2,
+                 _delay=3,
+                 _broker_gmt=-3,
                  _verbose=False):
         
         # call DWX_ZMQ_Strategy constructor and passes itself as data processor for handling
@@ -150,16 +150,13 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         _time = datetime.datetime.strftime(_time, "%Y-%m-%d %H:%M:00")
         _time = datetime.datetime.strptime(_time, "%Y-%m-%d %H:%M:00")
 
-        sleep(5)
+        sleep(_delay)
         self.cnt += 1
         self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
                                          float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
         
         f1 = open("./finrl/marketdata/f_time.txt", "r+") 
         f_time = f1.read(); f1.close()
-        
-        print("22222222222222222222222222222")
-        print(self.data_df)
 
         try:
             if (self.cnt+1) % len(self._instruments) == 0:
