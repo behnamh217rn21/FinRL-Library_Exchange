@@ -29,7 +29,7 @@ class t_class(DWX_ZMQ_Strategy):
     def __init__(self, _name="ONLINE_TRADERS",
                  _symbols=['#INTC', '#AAPL'],
                  _delay=0.2,
-                 _broker_gmt=3,
+                 _broker_gmt=-3,
                  _verbose=False
                  ):
         
