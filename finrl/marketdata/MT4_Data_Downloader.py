@@ -107,7 +107,6 @@ class rates_historic(DWX_ZMQ_Strategy):
                                                   _end=Timestamp.now().strftime('%Y.%m.%d %H:%M:00'))
             sleep(2)
 
-        print(self._zmq._History_DB)
         print('\nCreating a History Data Dataframe:')
         counter = 0
         _HIST_DATA_DF = pd.DataFrame()
