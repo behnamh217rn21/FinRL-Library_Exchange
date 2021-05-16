@@ -71,7 +71,7 @@ def main():
     processed['change'] = (processed.close - processed.open) / processed.close
     processed['daily_variance'] = (processed.high - processed.low) / processed.close
     print(processed.head())
-    processed.to_csv("./" + config.DATASET_DIR + "data.csv")
+    processed.to_csv("./" + config.DATASET_DIR + "/data.csv")
     """
     processed = load_dataset(file_name="data.csv")
     print(processed.head())
