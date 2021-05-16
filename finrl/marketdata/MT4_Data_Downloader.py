@@ -102,22 +102,16 @@ class rates_historic(DWX_ZMQ_Strategy):
         for i in range(0, len(self._symbols_list)):
             print('Requesting {} Rates from {}'.format(self._TF, self._symbols_list[i]))
             self._zmq._DWX_MTX_SEND_HIST_REQUEST_(_symbol=self._symbols_list[i],
-                                                  _timeframe=1440,
-                                                  _start='2020.05.04 00:00:00',
-                                                  _end  ='2020.05.14 00:00:00')
+                                                  _timeframe=_TF,
+                                                  _start='2020.02.05 18:30:00',
+                                                  _end=Timestamp.now().strftime('%Y.%m.%d %H:%M:00'))
             sleep(2)
 
         print('\nCreating a History Data Dataframe:')
         counter = 0
         _HIST_DATA_DF = pd.DataFrame()
-        print("11111111111111111111111111111111")
-        print(self._zmq._History_DB)
-        print("22222222222222222222222222222222")
-        print(self._symbols_list)
         for symbol in self._symbols_list:
             symbol_H1 = "{}_H1".format(symbol)
-            print("333333333333333333333333333333333333")
-            print(symbol_H1)
             for i in range(0, len(self._zmq._History_DB[symbol_H1])):
                 _HIST_DATA_DF=_HIST_DATA_DF.append([self._zmq._History_DB[symbol_H1][i].values()])
                 _HIST_DATA_DF = _HIST_DATA_DF.reset_index(drop=True)
