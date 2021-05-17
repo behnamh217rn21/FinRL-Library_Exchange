@@ -24,7 +24,6 @@ def main():
     """
     agent trading
     """
-    
     print("==============Start Trading===========")
     DDPG_model_path = "./" + config.TRAINED_MODEL_DIR + "/DDPG.model"
 
