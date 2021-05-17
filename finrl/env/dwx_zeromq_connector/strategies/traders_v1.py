@@ -74,6 +74,12 @@ class t_class(DWX_ZMQ_Strategy):
             
             print('[{}_Trader]'.format(_symbol))
             self._traders.append(_t)
+      
+        _ot = self._reporting._get_open_trades_(self._delay, 10)            
+        # Reset cycle if nothing received
+        if self._zmq._valid_response_(_ot) == False:
+            print("Nothing Received {OrdersReport not updated}")
+            continue  
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
@@ -97,11 +103,10 @@ class t_class(DWX_ZMQ_Strategy):
                 # Acquire lock
                 self._lock.acquire()
             
-                _ot = self._reporting._get_open_trades_(self._delay, 10)
-                        
+                _ot = self._reporting._get_open_trades_(self._delay, 10)            
                 # Reset cycle if nothing received
                 if self._zmq._valid_response_(_ot) == False:
-                    print("Nothing Received")
+                    print("Nothing Received {open trades")
                     continue  
                 
                 print("trade counter: {}".format(_ot.shape[0]))
@@ -124,7 +129,7 @@ class t_class(DWX_ZMQ_Strategy):
                                                                     10)
                                 # Reset cycle if nothing received
                                 if self._zmq._valid_response_(_ret_cp) == False:
-                                    print("Nothing Received")
+                                    print("Nothing Received {CLOSE_PARTIAL}")
                                     break
                                 print(_ret_o)
                         
@@ -137,7 +142,7 @@ class t_class(DWX_ZMQ_Strategy):
                                                                    10)
                                 # Reset cycle if nothing received
                                 if self._zmq._valid_response_(_ret_c) == False:
-                                    print("Nothing Received")
+                                    print("Nothing Received {CLOSE ==}")
                                     break
                                 print(_ret_o)
                             
@@ -151,7 +156,7 @@ class t_class(DWX_ZMQ_Strategy):
                                                                    10)
                                 # Reset cycle if nothing received
                                 if self._zmq._valid_response_(_ret_c) == False:
-                                    print("Nothing Received")
+                                    print("Nothing Received {CLOSE else}")
                                     break
                                 print(_ret_o)
                                 
