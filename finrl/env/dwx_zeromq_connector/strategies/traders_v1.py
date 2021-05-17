@@ -80,7 +80,7 @@ class t_class(DWX_ZMQ_Strategy):
         if self._zmq._valid_response_(_ot) == False:
             print("Nothing Received {File OrdersReport was not updated}")
         else:
-            print("{File OrdersReport was updated}"
+            print("{File OrdersReport was updated}")
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
