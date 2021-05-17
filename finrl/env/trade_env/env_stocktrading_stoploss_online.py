@@ -133,11 +133,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.cash_penalty_proportion = cash_penalty_proportion
         self.days = 365
         
-        with open("/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/" \
-                  "Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files/Leverage.txt", 'r') as reader:
-            Leverage = reader.read()
-        self.Leverage = float(Leverage)
-        
                 
     def seed(self, seed=None):
         if seed is None:
@@ -181,9 +176,15 @@ class StockTradingEnvStopLossOnline(gym.Env):
         """
         self.dates_cnt = self.days*24
         
-        init_state = np.array([self.initial_amount] 
+        rate = self.get_date_vector(self.date_index))
+        mt4_data = pd.read_csv("/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/" \
+                               "Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files/L_FM.csv", sep=';')
+        self.FreeMargin = mt4_data.loc[0, 'FreeMargin']
+        self.Leverage = mt4_data.loc[0, 'Leverage']
+        self.initial_amount = self.FreeMargin * self.Leverage
+        init_state = np.array([int(self.initial_amount)] 
                               + [0] * len(self.assets) 
-                              + self.get_date_vector(self.date_index))
+                              + rate)
         self.state_memory.append(init_state)
         return init_state
 
@@ -196,7 +197,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         y, x = SplitFactor_str.split(':')
         XY = int(x)*int(y)
         
-        adj_close = (1/XY)*close_p       
+        adj_close = (1/XY)*close_p
         return adj_close
     
             
@@ -205,8 +206,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             cols = self.daily_information_cols
         
             #if self.h_counter == 7: self.h_counter = 0
-            #else: 
-                #self.h_counter += 1                
+            #else: self.h_counter += 1                
             #date //= 7
             #now_t = Timestamp.now('UTC')+ timedelta(hours=3)
             #now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
@@ -303,17 +303,15 @@ class StockTradingEnvStopLossOnline(gym.Env):
         
     def log_header(self):
         self.template = "{0:7}|{1:5}|{2:15}|{3:15}|{4:15}|{5:20}|{6:12}|{7:15}"
-        print(
-            self.template.format("EPISODE",
-                                 "STEPS",
-                                 "TERMINAL_REASON",
-                                 "CASH",
-                                 "TOT_ASSETS",
-                                 "TERMINAL_REWARD_unsc",
-                                 "GAINLOSS_PCT",
-                                 "CASH_PROPORTION",
-                                )
-        )
+        print(self.template.format("EPISODE",
+                                   "STEPS",
+                                   "TERMINAL_REASON",
+                                   "CASH",
+                                   "TOT_ASSETS",
+                                   "TERMINAL_REWARD_unsc",
+                                   "GAINLOSS_PCT",
+                                   "CASH_PROPORTION",
+                                  ))
         self.printed_header = True
         
         
@@ -505,11 +503,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 #for i in range(0, len(order_data)):
                     #commission += order_data.loc[i, 'commission']
                     #swap += order_data.loc[i, 'swap']
-                _f_margin = order_data.loc[len(order_data)-1, 'FreeMargin']
-                coh = _f_margin
+                self.FreeMargin = order_data.loc[len(order_data)-1, 'FreeMargin']
+                self.initial_amount = self.FreeMargin * self.Leverage
+                coh = self.initial_amount
                 #coh = coh - spend - costs - swap - commission
-            else:
-                _f_margin = coh
             
             self.date_index += 1
             if self.turbulence_threshold is not None:
@@ -517,7 +514,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                                        cols=["turbulence"])[0]
 
             # Update State
-            state = ([_f_margin*self.Leverage] + list(holdings_updated) + self.get_date_vector(self.date_index))
+            state = ([coh] + list(holdings_updated) + self.get_date_vector(self.date_index))
 
             self.state_memory.append(state)
             return state, reward, False, {}
