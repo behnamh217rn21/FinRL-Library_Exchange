@@ -75,11 +75,6 @@ class t_class(DWX_ZMQ_Strategy):
             print('[{}_Trader]'.format(_symbol))
             self._traders.append(_t)
       
-        _ot = self._reporting._get_open_trades_(self._delay, 10)            
-        if self._zmq._valid_response_(_ot) == False:
-            print("Nothing Received {File OrdersReport was not updated}")
-        else:
-            print("{File OrdersReport was updated}")
         
     ##########################################################################
     def _trader_(self, _symbol, sell, buy):
@@ -209,6 +204,12 @@ class t_class(DWX_ZMQ_Strategy):
             # from doing anything more. So wait for them to finish.
             _t.join()
         
+        _ot = self._reporting._get_open_trades_(self._delay, 10)            
+        if self._zmq._valid_response_(_ot) == False:
+            print("Nothing Received {File OrdersReport was not updated}")
+        else:
+            print("{File OrdersReport was updated}")
+            
         #_DWX_ZMQ_CLEANUP_()
         self._zmq._DWX_ZMQ_SHUTDOWN_T_()
         print("\ntraders finished.\n")
