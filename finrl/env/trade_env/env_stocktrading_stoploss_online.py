@@ -503,8 +503,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                     #commission += order_data.loc[i, 'commission']
                     #swap += order_data.loc[i, 'swap']
                 self.FreeMargin = order_data['FreeMargin'].iloc[-1]
-                self.initial_amount = self.FreeMargin * self.Leverage
-                coh = self.initial_amount
+                coh = self.FreeMargin * self.Leverage
                 #coh = coh - spend - costs - swap - commission
             
             self.date_index += 1
@@ -512,9 +511,15 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 self.turbulence = self.get_date_vector(self.date_index, 
                                                        cols=["turbulence"])[0]
 
+            print("11111111111111111")
+            print(coh)
+            print("22222222222222222")
+            print(holdings_updated)
             # Update State
             state = ([coh] + list(holdings_updated) + self.get_date_vector(self.date_index))
 
+            print("33333333333333333")
+            print(state)
             self.state_memory.append(state)
             return state, reward, False, {}
             
