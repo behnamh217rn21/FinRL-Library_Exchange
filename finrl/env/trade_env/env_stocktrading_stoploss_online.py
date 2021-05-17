@@ -416,7 +416,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                                    ((actions + self.shares_increment) // self.shares_increment) * self.shares_increment)
             else:
                 #actions = np.where(closings > 0, actions / closings, 0)
-                actions = list(map(lambda x: round(x, ndigits=2), actions))
+                actions = list(map(lambda x: round(x, ndigits=5), actions))
                 actions = np.asarray(actions)
                 
             # clip actions so we can't sell more assets than we hold
@@ -432,18 +432,22 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
-            sells = list(map(lambda x: round(x, ndigits=2), sells))
+            sells = list(map(lambda x: round(x, ndigits=5), sells))
             sells = np.asarray(sells)
             proceeds = np.dot(sells*100, closings) / self.Leverage
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
+            print("1111111111111111111111")
+            print(sells)
 
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
-            buys = list(map(lambda x: round(x, ndigits=2), buys))
+            buys = list(map(lambda x: round(x, ndigits=5), buys))
             buys = np.asarray(buys)
             spend = np.dot(buys*100, closings) / self.Leverage
             costs += spend * self.buy_cost_pct
+            print("2222222222222222222222")
+            print(buys)
             
             # if we run out of cash...
             if (spend + costs) > coh:
