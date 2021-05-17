@@ -483,30 +483,31 @@ class StockTradingEnvStopLossOnline(gym.Env):
             # log actual total trades we did up to current step
             self.actual_num_trades = np.sum(np.abs(np.sign(actions)))
             
-            order_data = pd.read_csv("/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/" \
-                                     "Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files/OrdersReport.csv", sep=';')
-            #swap = 0
-            #commission = 0
-            #for i in range(0, len(order_data)):
-                #commission += order_data.loc[i, 'commission']
-                #swap += order_data.loc[i, 'swap']
-            _f_margin = order_data.loc[len(order_data)-1, 'FreeMargin']
-            coh = _f_margin
-            #coh = coh - spend - costs - swap - commission
-            
             # update our holdings
             holdings_updated = holdings + actions
 
             # Update average buy price
-            buys = np.sign(buys)
-            self.n_buys += buys
-            self.avg_buy_price = np.where(buys > 0, 
+            buys_s = np.sign(buys)
+            self.n_buys += buys_s
+            self.avg_buy_price = np.where(buys_s > 0, 
                                           self.avg_buy_price + ((closings - self.avg_buy_price) / self.n_buys), 
                                           self.avg_buy_price) # incremental average
             
             # set as zero when we don't have any holdings anymore
             self.n_buys = np.where(holdings_updated > 0, self.n_buys, 0)
             self.avg_buy_price = np.where(holdings_updated > 0, self.avg_buy_price, 0) 
+            
+            if any(x for x in buys) or any(x for x in sells):
+                order_data = pd.read_csv("/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/" \
+                                         "Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files/OrdersReport.csv", sep=';')
+                #swap = 0
+                #commission = 0
+                #for i in range(0, len(order_data)):
+                    #commission += order_data.loc[i, 'commission']
+                    #swap += order_data.loc[i, 'swap']
+                _f_margin = order_data.loc[len(order_data)-1, 'FreeMargin']
+                coh = _f_margin
+                #coh = coh - spend - costs - swap - commission
             
             self.date_index += 1
             if self.turbulence_threshold is not None:
