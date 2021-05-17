@@ -87,20 +87,13 @@ def main():
     #print(StockTradingEnvStopLoss.__doc__)
     
     print("****Build Train Environment****")
-    file = open("./" + config.DATA_SAVE_DIR + "/balance.txt","r+") 
-    initial_amount = file.read()
-    initial_amount = float(initial_amount)
-    file.close()
-    
-    information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", \
-                        "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
-
-    from pathlib import Path
-    path = Path(__file__).resolve().parents[4].joinpath("AppData/Roaming/MetaQuotes/Terminal/2E8DC23981084565FA3E19C061F586B2/" \
-                                                        "MQL4/Files/Leverage.txt")
-    with open(path, 'r') as reader:
-        Leverage = reader.read()
+    in_L = pd.read_csv("./" + config.DATA_SAVE_DIR + "/in_L.csv", sep=';')
+    initial_amount = in_L.loc[0, 'initial_amount']
+    Leverage = in_L.loc[0, 'Leverage']
     print("Leverage : {}".format(Leverage))
+
+    information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", 
+                        "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     env_train_kwargs = {'initial_amount': initial_amount*float(Leverage),
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
