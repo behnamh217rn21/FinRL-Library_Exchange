@@ -459,7 +459,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 else:
                     # ... end the cycle and penalize
                     return self.return_terminal(reason="CASH SHORTAGE", reward=self.get_reward())
-            else:
+            elif any(x for x in buys) or any(x for x in sells):
                 self._trading_process(sells, buys)
 
             self.transaction_memory.append(actions) # capture what the model's could do
@@ -508,6 +508,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 _f_margin = order_data.loc[len(order_data)-1, 'FreeMargin']
                 coh = _f_margin
                 #coh = coh - spend - costs - swap - commission
+            else:
+                _f_margin = coh
             
             self.date_index += 1
             if self.turbulence_threshold is not None:
