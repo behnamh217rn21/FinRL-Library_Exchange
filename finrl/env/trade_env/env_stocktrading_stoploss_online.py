@@ -93,7 +93,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
                  profit_loss_ratio=2,
                  turbulence_threshold=None,
                  print_verbosity=10,
-                 initial_amount=1e6,
                  daily_information_cols=["open", "close", "high", "low", "volume"],
                  cash_penalty_proportion=0.1,
                  patient=False,
@@ -111,7 +110,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.currency = currency
         self.shares_increment = shares_increment
         self.hmax = hmax
-        self.initial_amount = initial_amount
+        self.initial_amount = 0
         self.print_verbosity = print_verbosity
         self.buy_cost_pct = buy_cost_pct
         self.sell_cost_pct = sell_cost_pct
@@ -176,7 +175,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         """
         self.dates_cnt = self.days*24
         
-        rate = self.get_date_vector(self.date_index))
+        rate = self.get_date_vector(self.date_index)
         mt4_data = pd.read_csv("/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/" \
                                "Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files/L_FM.csv", sep=';')
         self.FreeMargin = mt4_data.loc[0, 'FreeMargin']
