@@ -76,7 +76,6 @@ class t_class(DWX_ZMQ_Strategy):
             self._traders.append(_t)
       
         _ot = self._reporting._get_open_trades_(self._delay, 10)            
-        # Reset cycle if nothing received
         if self._zmq._valid_response_(_ot) == False:
             print("Nothing Received {File OrdersReport was not updated}")
         else:
