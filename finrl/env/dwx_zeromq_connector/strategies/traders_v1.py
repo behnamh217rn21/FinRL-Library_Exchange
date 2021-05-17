@@ -105,7 +105,8 @@ class t_class(DWX_ZMQ_Strategy):
                     continue  
                 
                 print("trade counter: {}".format(_ot.shape[0]))
-                print(_ot)
+                if _ot.shape[0] > 0 :
+                    print(_ot)
                 
                 ###############################
                 # SECTION - SELL TRADES #
@@ -124,7 +125,8 @@ class t_class(DWX_ZMQ_Strategy):
                                 # Reset cycle if nothing received
                                 if self._zmq._valid_response_(_ret_cp) == False:
                                     print("Nothing Received")
-                                    break   
+                                    break
+                                print(_ret_o)
                         
                             elif sell == _ot["_lots"].loc[_ot.index == i]:
                                 _ret_c = self._execution._execute_({'_action': 'CLOSE',
@@ -137,6 +139,7 @@ class t_class(DWX_ZMQ_Strategy):
                                 if self._zmq._valid_response_(_ret_c) == False:
                                     print("Nothing Received")
                                     break
+                                print(_ret_o)
                             
                             else:
                                 sell = sell - _ot["_lots"].loc[_ot["_symbol"] == _symbol]
@@ -149,7 +152,8 @@ class t_class(DWX_ZMQ_Strategy):
                                 # Reset cycle if nothing received
                                 if self._zmq._valid_response_(_ret_c) == False:
                                     print("Nothing Received")
-                                    break 
+                                    break
+                                print(_ret_o)
                                 
                             # Sleep between commands to MetaTrader
                             sleep(self._delay)
@@ -181,6 +185,7 @@ class t_class(DWX_ZMQ_Strategy):
                     if self._zmq._valid_response_(_ret_o) == False:
                         print("Nothing Received")
                         break
+                    print(_ret_o)
         
             finally:
                 # Release lock
