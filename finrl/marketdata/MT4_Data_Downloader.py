@@ -111,9 +111,9 @@ class rates_historic(DWX_ZMQ_Strategy):
         counter = 0
         _HIST_DATA_DF = pd.DataFrame()
         for symbol in self._symbols_list:
-            symbol_M5 = "{}_M5".format(symbol)
-            for i in range(0, len(self._zmq._History_DB[symbol_M5])):
-                _HIST_DATA_DF = _HIST_DATA_DF.append([self._zmq._History_DB[symbol_M5][i].values()])
+            symbol_H1 = "{}_H1".format(symbol)
+            for i in range(0, len(self._zmq._History_DB[symbol_H1])):
+                _HIST_DATA_DF = _HIST_DATA_DF.append([self._zmq._History_DB[symbol_H1][i].values()])
                 _HIST_DATA_DF = _HIST_DATA_DF.reset_index(drop=True)
                 _HIST_DATA_DF.loc[counter, "tic"] = symbol
                 counter += 1
