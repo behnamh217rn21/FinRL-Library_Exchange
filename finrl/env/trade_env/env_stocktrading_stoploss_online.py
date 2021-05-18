@@ -438,17 +438,13 @@ class StockTradingEnvStopLossOnline(gym.Env):
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
 
-            print("222222222222222")
-            print(sells)
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
             buys = list(map(lambda x: round(x, ndigits=2), buys))
             buys = np.asarray(buys)
             spend = np.dot(buys*100000, closings)
             costs += spend * self.buy_cost_pct
-            
-            print("3333333333333333")
-            print(buys)
+
             # if we run out of cash...
             if (spend + costs) > coh:
                 if self.patient:
