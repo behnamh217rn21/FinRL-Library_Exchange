@@ -61,6 +61,8 @@ class DRLAgent:
         test_env.reset()
         while True:
             action, _states = model.predict(test_obs)
+            print("111111111111111111111")
+            print(action)
             #account_memory = test_env.env_method(method_name="save_asset_memory")
             #actions_memory = test_env.env_method(method_name="save_action_memory")
             test_obs, rewards, dones, info = test_env.step(action)
