@@ -95,6 +95,7 @@ def main():
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", 
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     env_train_kwargs = {'initial_amount': initial_amount*float(Leverage),
+                        'leverage': Leverage,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
                         'hmax': 0.1,
@@ -108,6 +109,7 @@ def main():
     
     print("****Build Trade Environment****")
     env_trade_kwargs = {'initial_amount': initial_amount*float(Leverage),
+                        'leverage': Leverage,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
                         'hmax': 0.1,
