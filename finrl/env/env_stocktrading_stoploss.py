@@ -310,7 +310,7 @@ class StockTradingEnvStopLoss(gym.Env):
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
 
-            asset_value = np.dot([100 * i for i in holdings], closings) / self.Leverage
+            asset_value = np.dot([100 * i for i in holdings], closings)
                         
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
             reward = self.get_reward()
@@ -363,7 +363,7 @@ class StockTradingEnvStopLoss(gym.Env):
             sells = -np.clip(actions, -np.inf, 0)
             sells = list(map(lambda x: round(x, ndigits=2), sells))
             sells = np.asarray(sells)
-            proceeds = np.dot(sells*100, closings) / self.Leverage
+            proceeds = np.dot(sells*100, closings)
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             
@@ -371,7 +371,7 @@ class StockTradingEnvStopLoss(gym.Env):
             buys = np.clip(actions, 0, np.inf)
             buys = list(map(lambda x: round(x, ndigits=2), buys))
             buys = np.asarray(buys)
-            spend = np.dot(buys*100, closings) / self.Leverage
+            spend = np.dot(buys*100, closings)
             costs += spend * self.buy_cost_pct
             
             # if we run out of cash...
