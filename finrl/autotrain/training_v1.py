@@ -86,13 +86,14 @@ def main():
     
     print("****Build Train Environment****")
     in_L = pd.read_csv("./" + config.DATA_SAVE_DIR + "/in_L.csv", sep=';')
-    initial_amount = in_L.loc[0, 'initial_amount']
+    initial_amount_train = in_L.loc[0, 'initial_amount_train']
+    initial_amount_trade = in_L.loc[0, 'initial_amount_trade']
     Leverage = in_L.loc[0, 'Leverage']
     print("Leverage : {}".format(Leverage))
 
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", 
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
-    env_train_kwargs = {'initial_amount': initial_amount*float(Leverage),
+    env_train_kwargs = {'initial_amount': initial_amount_train*float(Leverage),
                         'leverage': Leverage,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
@@ -106,7 +107,7 @@ def main():
     env_train, _ = e_train_gym.get_sb_env()
        
     print("****Build Trade Environment****")
-    env_trade_kwargs = {'initial_amount': initial_amount*float(Leverage),
+    env_trade_kwargs = {'initial_amount': initial_amount_trade*float(Leverage),
                         'leverage': Leverage,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
