@@ -434,7 +434,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             sells = -np.clip(actions, -np.inf, 0)
             sells = list(map(lambda x: round(x, ndigits=2), sells))
             sells = np.asarray(sells)
-            proceeds = np.dot(sells*100000, closings) / self.Leverage
+            proceeds = np.dot(sells*100000, closings)
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
 
@@ -442,7 +442,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             buys = np.clip(actions, 0, np.inf)
             buys = list(map(lambda x: round(x, ndigits=2), buys))
             buys = np.asarray(buys)
-            spend = np.dot(buys*100000, closings) / self.Leverage
+            spend = np.dot(buys*100000, closings)
             costs += spend * self.buy_cost_pct
             
             # if we run out of cash...
