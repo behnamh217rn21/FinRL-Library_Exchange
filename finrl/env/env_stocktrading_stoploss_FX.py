@@ -74,6 +74,7 @@ class StockTradingEnvStopLoss(gym.Env):
                  turbulence_threshold=None,
                  print_verbosity=10,
                  initial_amount=1e6,
+                 leverage=500,
                  daily_information_cols=["open", "close", "high", "low", "volume"],
                  cache_indicator_data=True,
                  cash_penalty_proportion=0.1,
@@ -125,11 +126,8 @@ class StockTradingEnvStopLoss(gym.Env):
             self.dates = self.df[date_cn].sort_values().unique()
             self.df = self.df.set_index(date_cn)
             print("data cached!")
-        
-        with open("/mnt/c/Users/Administrator/AppData/Roaming/MetaQuotes/" \
-                  "Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files/Leverage.txt", 'r') as reader:
-            Leverage = reader.read()
-        self.Leverage = float(Leverage)
+
+        self.Leverage = float(leverage)
             
     def seed(self, seed=None):
         if seed is None:
