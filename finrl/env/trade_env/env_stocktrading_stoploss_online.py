@@ -381,7 +381,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             closings = np.array(self.get_date_vector(self.date_index, cols=["close"]))
 
-            asset_value = np.dot([100000 * i for i in holdings], closings) / self.Leverage
+            asset_value = np.dot([100000 * i for i in holdings], closings)
             
             # reward is (cash + assets) - (cash_last_step + assets_last_step)
             reward = self.get_reward()
