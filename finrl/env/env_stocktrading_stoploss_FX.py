@@ -376,11 +376,6 @@ class StockTradingEnvStopLoss(gym.Env):
             
             # if we run out of cash...
             if (spend + costs) > coh:
-                print("111111111111111111111111111")
-                print(coh)
-                print(spend)
-                print(actions)
-                print(buys)
                 if self.patient:
                     # ... just don't buy anything until we got additional cash
                     self.log_step(reason="CASH SHORTAGE")
