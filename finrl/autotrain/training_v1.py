@@ -88,6 +88,8 @@ def main():
     in_L = pd.read_csv("./" + config.DATA_SAVE_DIR + "/in_L.csv", sep=';')
     initial_amount_train = in_L.loc[0, 'initial_amount_train']
     initial_amount_trade = in_L.loc[0, 'initial_amount_trade']
+    print("Initial_Amount_Train : {}".format(initial_amount_train))
+    print("Initial_Amount_Trade : {}".format(initial_amount_trade))
     Leverage = in_L.loc[0, 'Leverage']
     print("Leverage : {}".format(Leverage))
 
