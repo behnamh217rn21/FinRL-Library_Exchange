@@ -55,11 +55,12 @@ def main():
                             verbose = 0)
     
     DDPG_model = model.load(DDPG_model_path)
-    df_account_value, df_actions = DRLAgent.DRL_prediction_online(model=DDPG_model,
-                                                                  environment=e_trade_gym)
+    DRLAgent.DRL_prediction_online(model=DDPG_model,
+                                   environment=e_trade_gym)
     
-    #df_account_value, df_actions = DRLAgent.DRL_prediction(model=DDPG_model,
-                                                            #environment=e_trade_gym)
+    """
+    df_account_value, df_actions = DRLAgent.DRL_prediction(model=DDPG_model,
+                                                           #environment=e_trade_gym)
     
     print("****Prediction Resault Saving****")
     now = datetime.datetime.now().strftime("%Y-%m-%d-%HH%MM")
@@ -70,7 +71,7 @@ def main():
     perf_stats_all = backtest_stats(account_value=df_account_value, value_col_name = 'total_assets')
     perf_stats_all = pd.DataFrame(perf_stats_all)
     perf_stats_all.to_csv("./" + config.RESULTS_DIR + "/_perf_stats_all_" + now + ".csv")
-    
+    """
 
 if __name__ == "__main__":
     main()
