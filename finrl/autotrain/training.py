@@ -91,6 +91,8 @@ def main():
     initial_amount_train = in_L.loc[0, 'initial_amount_train']
     initial_amount_trade = in_L.loc[0, 'initial_amount_trade']
     Leverage = in_L.loc[0, 'Leverage']
+    print("Initial_Amount_Train : {}".format(initial_amount_train))
+    print("Initial_Amount_Trade : {}".format(initial_amount_trade))
     print("Leverage : {}".format(Leverage))
 
     information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", 
