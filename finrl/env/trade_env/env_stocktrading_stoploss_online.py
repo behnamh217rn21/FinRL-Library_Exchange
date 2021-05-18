@@ -513,7 +513,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # Update State
             state = ([coh] + list(holdings_updated) + self.get_date_vector(self.date_index))
-
+            print("current state:\n{}".format(str(state)))
+            
             self.state_memory.append(state)
             return state, reward, False, {}
             
