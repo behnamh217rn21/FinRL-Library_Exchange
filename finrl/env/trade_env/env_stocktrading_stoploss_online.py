@@ -495,7 +495,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.avg_buy_price = np.where(holdings_updated > 0, self.avg_buy_price, 0) 
             
             if any(x for x in buys) or any(x for x in sells):
-                order_data = pd.read_csv("/mnt/c/Users/Administrator/AppData/Roaming/MetaQuotes/" \
+                order_data = pd.read_csv("/mnt/c/Users/BEHNAMH721AS.RN/AppData/Roaming/MetaQuotes/" \
                                          "Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files/OrdersReport.csv", sep=';')
                 #swap = 0
                 #commission = 0
