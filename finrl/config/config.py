@@ -22,7 +22,7 @@ RESULTS_DIR = f"finrl/results"
 START_DATE = "2021-01-15"; END_DATE = "2021-05-18"
 START_TRADE_DATE = "2021-05-09"
 S_SPLIT = "2021-01-15 14:00:00"; F_SPLIT = "2021-05-18 19:00:00"
-T_SPLIT = "2021-05-09 00:00:00"
+T_SPLIT = "2021-04-04 00:00:00"
 
 ## dataset default columns
 DEFAULT_DATA_COLUMNS = ["date", "tic", "close"]
