@@ -418,8 +418,9 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 #actions = np.where(closings > 0, actions / closings, 0)
                 actions = list(map(lambda x: round(x, ndigits=2), actions))
                 actions = np.asarray(actions)
+                print("actions [ProCent]:\n{}".format(actions))
                 actions = np.where(actions>=0.1, actions, 0) # ProCent_accounts
-                print("actions:\n{}".format(actions))
+                print("actions [Normal]:\n{}".format(actions))
 
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
