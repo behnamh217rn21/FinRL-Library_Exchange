@@ -177,7 +177,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         
         rate = self.get_date_vector(self.date_index)
         mt4_data = pd.read_csv("/mnt/c/Users/Administrator/AppData/Roaming/MetaQuotes/" \
-                               "Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files/L_FM.csv", sep=';')
+                               "Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files/L_FM.csv", sep=';')
         self.FreeMargin = mt4_data.loc[0, 'FreeMargin']
         self.Leverage = mt4_data.loc[0, 'Leverage']
         self.initial_amount = self.FreeMargin * self.Leverage
@@ -498,7 +498,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
             if any(x for x in buys) or any(x for x in sells):
                 order_data = pd.read_csv("/mnt/c/Users/Administrator/AppData/Roaming/MetaQuotes/" \
-                                         "Terminal/58F16B8C9F18D6DD6A5DAC862FC9CB62/MQL4/Files/OrdersReport.csv", sep=';')
+                                         "Terminal/2E8DC23981084565FA3E19C061F586B2/MQL4/Files/OrdersReport.csv", sep=';')
                 #swap = 0
                 #commission = 0
                 #for i in range(0, len(order_data)):
