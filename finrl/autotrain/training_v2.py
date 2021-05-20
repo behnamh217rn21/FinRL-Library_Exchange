@@ -41,11 +41,12 @@ def main():
                         "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
     env_train_kwargs = {'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
-                        'hmax': 10,
+                        'hmax': 1,
                         'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 1, 
-                        'discrete_actions': False}
+                        'discrete_actions': False,
+                        'patient': True}
     e_train_gym = StockTradingEnvStopLossOnline(**env_train_kwargs)
     # this is our training env.
     env_train, _ = e_train_gym.get_sb_env()
