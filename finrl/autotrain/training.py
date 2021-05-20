@@ -101,11 +101,12 @@ def main():
                         'leverage': Leverage,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
-                        'hmax': 10,
+                        'hmax': 1,
                         'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols,
                         'print_verbosity': 500, 
-                        'discrete_actions': False}
+                        'discrete_actions': False,
+                        'patient': True}
     e_train_gym = StockTradingEnvStopLoss(df = train_df, **env_train_kwargs)
     # this is our training env. It allows multiprocessing
     env_train, _ = e_train_gym.get_sb_env()
@@ -115,12 +116,13 @@ def main():
                         'leverage': Leverage,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
-                        'hmax': 10,
+                        'hmax': 1,
                         'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
                         'random_start': False,
-                        'discrete_actions': False}
+                        'discrete_actions': False,
+                        'patient': True}
     e_trade_gym = StockTradingEnvStopLoss(df = trade_df, **env_trade_kwargs)
     # this is our observation environment. It allows full diagnostics
     env_trade, _ = e_trade_gym.get_sb_env()
