@@ -11,7 +11,7 @@ from finrl.config import config
 from finrl.marketdata.yahoodownloader import YahooDownloader
 from finrl.preprocessing.preprocessors import FeatureEngineer
 from finrl.preprocessing.data import data_split, load_dataset
-from finrl.env.env_stocktrading_stoploss import StockTradingEnvStopLoss
+from finrl.env.env_stocktrading_stoploss_FX import StockTradingEnvStopLoss
 from finrl.model.models import DRLAgent
 from finrl.trade.backtest import backtest_plot, backtest_stats
 
@@ -99,7 +99,7 @@ def main():
                         'leverage': Leverage,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
-                        'hmax': 0.1,
+                        'hmax': 1,
                         'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols,
                         'print_verbosity': 500, 
@@ -113,7 +113,7 @@ def main():
                         'leverage': Leverage,
                         'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
-                        'hmax': 0.1,
+                        'hmax': 1,
                         'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 500, 
