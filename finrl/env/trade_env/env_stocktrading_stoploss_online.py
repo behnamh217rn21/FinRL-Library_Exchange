@@ -421,10 +421,6 @@ class StockTradingEnvStopLossOnline(gym.Env):
 
             # clip actions so we can't sell more assets than we hold
             actions = np.maximum(actions, -np.array(holdings))
-            
-            print("actions [ProCent]:\n{}".format(actions))
-            actions = np.where(actions>=0.1, actions, 0) # ProCent_accounts
-            print("actions [_Normal]:\n{}".format(actions))
                 
             self.closing_diff_avg_buy = closings - (self.stoploss_penalty * self.avg_buy_price)
             if begin_cash >= self.stoploss_penalty * self.initial_amount:
@@ -438,7 +434,11 @@ class StockTradingEnvStopLossOnline(gym.Env):
             sells = -np.clip(actions, -np.inf, 0)
             sells = list(map(lambda x: round(x, ndigits=2), sells))
             sells = np.asarray(sells)
+            # ProCent_accounts
+            sells = np.where(sells<=-0.1, sells, 0) # ProCent_accounts
+            #
             proceeds = np.dot(sells*100000, closings)
+            print("sell_actions [ProCent]:\n{} => {}".format(sells, proceeds))
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
 
@@ -446,7 +446,11 @@ class StockTradingEnvStopLossOnline(gym.Env):
             buys = np.clip(actions, 0, np.inf)
             buys = list(map(lambda x: round(x, ndigits=2), buys))
             buys = np.asarray(buys)
+            # ProCent_accounts
+            buys = np.where(buys>=0.1, buys, 0) # ProCent_accounts
+            #
             spend = np.dot(buys*100000, closings)
+            print("buy_actions [ProCent]:\n{} => {}".format(buys, spend))
             costs += spend * self.buy_cost_pct
 
             # if we run out of cash...
