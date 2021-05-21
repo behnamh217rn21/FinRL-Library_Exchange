@@ -378,6 +378,8 @@ class StockTradingEnvStopLoss(gym.Env):
             spend = np.dot(buys*100000, closings)
             costs += spend * self.buy_cost_pct
             
+            actions = sells + buys
+            
             # if we run out of cash...
             if (spend + costs) > coh:
                 if self.patient:
