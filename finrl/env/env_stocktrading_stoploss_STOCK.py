@@ -358,12 +358,18 @@ class StockTradingEnvStopLoss(gym.Env):
 
             # compute our proceeds from sells, and add to cash
             sells = -np.clip(actions, -np.inf, 0)
+            # ProCent_accounts
+            sells = np.where(sells<=-0.1, sells, 0) # ProCent_accounts
+            #
             proceeds = np.dot(sells, closings)
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
             
             # compute the cost of our buys
             buys = np.clip(actions, 0, np.inf)
+            # ProCent_accounts
+            buys = np.where(buys>=0.1, buys, 0) # ProCent_accounts
+            #
             spend = np.dot(buys, closings)
             costs += spend * self.buy_cost_pct
             
