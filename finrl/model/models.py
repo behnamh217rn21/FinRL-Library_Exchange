@@ -81,7 +81,14 @@ class DRLAgent:
             account_memory = test_env.env_method(method_name="save_asset_memory")
             actions_memory = test_env.env_method(method_name="save_action_memory")
             test_obs, rewards, dones, info = test_env.step(action)
-        return account_memory[0], actions_memory[0]
+            print("777777777777777")
+            print(account_memory)
+            print("888888888888888")
+            print(actions_memory)
+            print("999999999999999")
+            print(type(account_memory))
+            print(type(actions_memory))
+        return account_memory, actions_memory
     
     @staticmethod
     def DRL_prediction(model, environment):
