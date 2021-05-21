@@ -61,8 +61,8 @@ class DRLAgent:
         test_env.reset()
         while True:
             action, _states = model.predict(test_obs)
-            #account_memory = test_env.env_method(method_name="save_asset_memory")
-            #actions_memory = test_env.env_method(method_name="save_action_memory")
+            account_memory = test_env.env_method(method_name="save_asset_memory")
+            actions_memory = test_env.env_method(method_name="save_action_memory")
             test_obs, rewards, dones, info = test_env.step(action)
             #if dones:
                 #print("hit end!")
@@ -78,16 +78,10 @@ class DRLAgent:
         test_env.reset()
         for i in range(len(environment.df.index.unique())):
             action, _states = model.predict(test_obs)
-            #account_memory = test_env.env_method(method_name="save_asset_memory")
-            #actions_memory = test_env.env_method(method_name="save_action_memory")
+            account_memory = test_env.env_method(method_name="save_asset_memory")
+            actions_memory = test_env.env_method(method_name="save_action_memory")
             test_obs, rewards, dones, info = test_env.step(action)
-            if i == (len(environment.df.index.unique()) - 2):
-                account_memory = test_env.env_method(method_name="save_asset_memory")
-                actions_memory = test_env.env_method(method_name="save_action_memory")
-        print("111111111111111")
-        print(account_memory)
-        print(actions_memory)
-        return account_memory, actions_memory
+        return account_memory[0], actions_memory[0]
     
     @staticmethod
     def DRL_prediction(model, environment):
