@@ -84,6 +84,9 @@ class DRLAgent:
             if i == (len(environment.df.index.unique()) - 2):
                 account_memory = test_env.env_method(method_name="save_asset_memory")
                 actions_memory = test_env.env_method(method_name="save_action_memory")
+        print("111111111111111")
+        print(account_memory)
+        print(actions_memory)
         return account_memory, actions_memory
     
     @staticmethod
