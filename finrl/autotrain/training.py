@@ -54,9 +54,6 @@ def main():
         _symbols_i1.append(_symbols[i][1])
     Data_Downloader(_symbols_i1, _timeframe)
     df = load_dataset(file_name="mt4_dataset.csv")
-    """
-    """
-    df = load_dataset(file_name="data.csv")
     print(df.head())
      
     print("****Start Feature Engineering****")
@@ -65,6 +62,9 @@ def main():
                          use_turbulence=True,
                          user_defined_feature=False)
     processed = fe.preprocess_data(df)
+    processed.to_csv("./" + config.DATASET_DIR + "/data.csv")
+    """
+    """
     np.seterr(divide = 'ignore')
     processed['log_volume'] = np.where((processed.volume * processed.close) > 0, \
                                        np.log(processed.volume * processed.close), 0)
