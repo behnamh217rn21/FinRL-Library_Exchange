@@ -29,8 +29,7 @@ DEFAULT_DATA_COLUMNS = ["date", "tic", "close"]
 
 ## stockstats technical indicator column names
 ## check https://pypi.org/project/stockstats/ for different names
-TECHNICAL_INDICATORS_LIST = ["macd", "boll_ub", "boll_lb", "rsi_30", "cci_30",
-			     "dx_30", "close_30_sma", "close_60_sma"]
+TECHNICAL_INDICATORS_LIST = ["macd", "boll_ub", "boll_lb", "rsi_14", "cci_14", "close_14_ema", "atr_14", "kdjk", "kdjd", "kdjj"]
 
 ## Model Parameters
 A2C_PARAMS = {"n_steps": 5,
