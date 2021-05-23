@@ -63,8 +63,7 @@ def main():
                          user_defined_feature=False)
     processed = fe.preprocess_data(df)
     processed.to_csv("./" + config.DATASET_DIR + "/data.csv")
-    """
-    """
+    
     np.seterr(divide = 'ignore')
     processed['log_volume'] = np.where((processed.volume * processed.close) > 0, \
                                        np.log(processed.volume * processed.close), 0)
@@ -72,6 +71,10 @@ def main():
     processed['daily_variance'] = (processed.high - processed.low) / processed.close
     print(processed.head())
     processed.to_csv("./" + config.DATASET_DIR + "/data.csv")
+    """
+    """
+    from subprocess import call
+    call(["python", "./finrl.marketdata/TwelveData.py"])
     """
     processed = load_dataset(file_name="data.csv")
     print(processed.head())
