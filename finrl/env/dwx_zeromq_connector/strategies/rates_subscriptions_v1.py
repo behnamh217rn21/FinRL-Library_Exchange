@@ -95,7 +95,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         self.p_time= "2000-01-01 00:00"
 
         self.cols = ["date", "open", "high", "low", "close", "volume", "spread", "real_volume", "tic",
-                     "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", "close_30_sma", "close_60_sma"]
+                     "upper_band", "lower_band", "ema", "macd_signal", "macd_hist", "cci", "atr", "rsi", "adx"]
         
         self._error = False
 
