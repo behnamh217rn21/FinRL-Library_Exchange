@@ -144,7 +144,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         ohlc, indicator = _msg.split("|")
         
         _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = ohlc.split(",")
-        _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = indicator.split(";")
+        upper_band, lower_band, ema, macd_signal, macd_hist, cci, atr, rsi, adx = indicator.split(";")
         
         _time = pd.to_datetime(_time, format="%Y.%m.%d %H:%M")
         _time = datetime.datetime.strftime(_time, "%Y-%m-%d %H:%M:00")
@@ -153,7 +153,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         sleep(self._delay)
         self.cnt += 1
         self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
-                                         float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
+                                         float(upper_band), float(lower_band), float(ema), float(macd_signal), float(macd_hist), float(cci), float(atr), float(rsi), float(adx))
         
         f1 = open("./finrl/marketdata/f_time.txt", "r+") 
         f_time = f1.read(); f1.close()
@@ -170,12 +170,14 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                                          use_turbulence=False,
                                          user_defined_feature=False)
                     processed = fe.preprocess_data(self.data_df)
+                    """
                     np.seterr(divide = 'ignore')
                     processed['log_volume'] = np.where((processed.volume * processed.close) > 0, \
                                                        np.log(processed.volume * processed.close), 0)
                     processed['change'] = (processed.close - processed.open) / processed.close
                     processed['daily_variance'] = (processed.high - processed.low) / processed.close
                     print(processed)
+                    """
                     processed.to_csv(file)
                     
                     with open('./finrl/marketdata/f_time.txt', 'w') as f2:
