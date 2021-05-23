@@ -73,6 +73,10 @@ def main():
     print(processed.head())
     processed.to_csv("./" + config.DATASET_DIR + "/data.csv")
     """
+    """
+    from subprocess import call
+    call(["python", "./finrl.marketdata/TwelveData.py"])
+    """
     processed = load_dataset(file_name="data.csv")
     print(processed.head())
         
