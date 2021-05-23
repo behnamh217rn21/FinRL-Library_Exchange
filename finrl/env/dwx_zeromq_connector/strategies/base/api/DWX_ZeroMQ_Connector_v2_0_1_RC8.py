@@ -565,17 +565,17 @@ class DWX_ZeroMQ_Connector():
                         elif len(_data.split("|")) == 2:
                             _ohlc, _indicator = _data.split("|")
                             _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = _ohlc.split(",")
-                            _macd, _boll_ub, _boll_lb, _rsi_30, _cci_30, _adx_30, _close_30_sma, _close_60_sma = _indicator.split(string_delimiter)
+                            upper_band, lower_band, ema, macd_signal, macd_hist, cci, atr, rsi, adx = _indicator.split(string_delimiter)
                             
                             if self._verbose:
                                 print("\n[" + _symbol + "] " + self._timestamp + " (" + _time + "/" + _open + "/" + _high + "/" + _low + "/" + _close + "/" + _tick_vol + "/" + _spread + "/" + _real_vol + "/" + \
-                                      _macd + "/" + _boll_ub + "/" + _boll_lb + "/" + _rsi_30 + "/" + _cci_30 + "/" + _adx_30 + "/" + _close_30_sma + "/" + _close_60_sma + ") TIME/OPEN/HIGH/LOW/CLOSE/TICKVOL/SPREAD/VOLUME/MACD/BOLL_UB/BOLL_LB/RSI/CCI/ADX/SMA_30/SMA_60")                    
+                                      upper_band + "/" + lower_band + "/" + ema + "/" + macd_signal + "/" + macd_hist + "/" + cci + "/" + atr + "/" + rsi + "/" + adx + ") TIME/OPEN/HIGH/LOW/CLOSE/TICKVOL/SPREAD/VOLUME/UPPER_BAND/LOWER_BAND/EMA/MACD_SIGNAL/MACD_HIST/CCI/ATR/RSI/ADX")                    
                            
                             # Update Market Rate DB
                             if _symbol not in self._Market_Data_DB.keys():
                                 self._Market_Data_DB[_symbol] = {}
                             self._Market_Data_DB[_symbol][self._timestamp] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), \
-                                                                              float(_macd), float(_boll_ub), float(_boll_lb), float(_rsi_30), float(_cci_30), float(_adx_30), float(_close_30_sma), float(_close_60_sma))
+                                                                              float(upper_band), float(lower_band), float(ema), float(macd_signal), float(macd_hist), float(cci), float(atr), float(rsi), float(adx))
                         # invokes data handlers on sub port
                         for hnd in self._subdata_handlers:
                             hnd.onSubData(msg)
