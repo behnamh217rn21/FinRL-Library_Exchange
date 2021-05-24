@@ -97,8 +97,7 @@ def main():
     Leverage = in_L.loc[0, 'Leverage']
     print("Leverage : {}".format(Leverage))
 
-    information_cols = ["close", "macd", "boll_ub", "boll_lb", "rsi_30", "cci_30", "dx_30", 
-                        "close_30_sma", "close_60_sma", "log_volume", "change", "daily_variance"]
+    information_cols = ["close", "upper_band", "lower_band", "ema", "macd_signal", "macd_hist", "cci", "atr", "rsi", "adx"]
     env_train_kwargs = {'initial_amount': initial_amount_train*float(Leverage),
                         'leverage': Leverage,
                         'sell_cost_pct': 0,
