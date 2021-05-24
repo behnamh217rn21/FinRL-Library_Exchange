@@ -95,7 +95,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         self.p_time= "2000-01-01 00:00"
 
         self.cols = ["date", "open", "high", "low", "close", "volume", "spread", "real_volume", "tic",
-                     "upper_band", "lower_band", "ema", "macd_signal", "macd_hist", "cci", "atr", "rsi", "adx"]
+                     "upper_band", "lower_band", "ema", "macd_signal", "macd_hist", "cci", "rsi", "adx", "slow_k", "slow_d"]
         
         self._error = False
 
@@ -144,7 +144,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         ohlc, indicator = _msg.split("|")
         
         _time, _open, _high, _low, _close, _tick_vol, _spread, _real_vol = ohlc.split(",")
-        upper_band, lower_band, ema, macd_signal, macd_hist, cci, atr, rsi, adx = indicator.split(";")
+        upper_band, lower_band, ema, macd_signal, macd_hist, cci, rsi, adx, slow_k, slow_d = indicator.split(";")
         
         _time = pd.to_datetime(_time, format="%Y.%m.%d %H:%M")
         _time = datetime.datetime.strftime(_time, "%Y-%m-%d %H:%M:00")
@@ -153,7 +153,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         sleep(self._delay)
         self.cnt += 1
         self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
-                                         float(upper_band), float(lower_band), float(ema), float(macd_signal), float(macd_hist), float(cci), float(atr), float(rsi), float(adx))
+                                         float(upper_band), float(lower_band), float(ema), float(macd_signal), float(macd_hist), float(cci), float(rsi), float(adx), float(slow_k), float(slow_d))
         
         f1 = open("./finrl/marketdata/f_time.txt", "r+") 
         f_time = f1.read(); f1.close()
