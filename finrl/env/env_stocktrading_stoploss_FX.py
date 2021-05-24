@@ -85,11 +85,7 @@ class StockTradingEnvStopLoss(gym.Env):
         self.df = df
         self.symbol = "tic"
         self.assets = df[self.symbol].unique()
-        print("111111111111111111111")
-        print(self.assets)
         self.dates = df[date_cn].sort_values().unique()
-        print("222222222222222222222")
-        print(self.dates)
         self.random_start = random_start
         self.discrete_actions = discrete_actions
         self.patient = patient
@@ -185,14 +181,14 @@ class StockTradingEnvStopLoss(gym.Env):
                 cols = self.daily_information_cols
             trunc_df = self.df.loc[[date]]
             v = []
-            print("3333333333333333333333333")
-            print(date)
-            print("4444444444444444444444444")
-            print(trunc_df)
             for a in self.assets:
                 try:
                     subset = trunc_df[trunc_df[self.symbol] == a]
+                    print("3333333333333333333333333")
+                    print(subset)
                     v += subset.loc[date, cols].tolist()
+                    print("4444444444444444444444444")
+                    print(v)
                 except:
                     print("Date {} will be deleted".format(date))
                     dt = pd.Timestamp(np.datetime64(date))
