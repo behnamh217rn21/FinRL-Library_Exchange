@@ -184,11 +184,7 @@ class StockTradingEnvStopLoss(gym.Env):
             for a in self.assets:
                 try:
                     subset = trunc_df[trunc_df[self.symbol] == a]
-                    print("3333333333333333333333333")
-                    print(subset)
                     v += subset.loc[date, cols].tolist()
-                    print("4444444444444444444444444")
-                    print(v)
                 except:
                     print("Date {} will be deleted".format(date))
                     dt = pd.Timestamp(np.datetime64(date))
