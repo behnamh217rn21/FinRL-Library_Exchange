@@ -72,7 +72,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
     def __init__(self, 
                  _name="PRICES_SUBSCRIPTIONS",
                  _instruments=[('INTC_M1', 'INTC', 1), ('BAC_M1', 'BAC', 1)],
-                 _delay=3,
+                 _delay=0.2,
                  _broker_gmt=-3,
                  _verbose=False):
         
@@ -150,7 +150,7 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
         _time = datetime.datetime.strftime(_time, "%Y-%m-%d %H:%M:00")
         _time = datetime.datetime.strptime(_time, "%Y-%m-%d %H:%M:00")
 
-        sleep(self._delay)
+        sleep(self._delay*15)
         self.cnt += 1
         self.data_df.loc[self.cnt, :] = (str(_time), float(_open), float(_high), float(_low), float(_close), int(_tick_vol), int(_spread), int(_real_vol), _topic.split("_")[0], \
                                          float(upper_band), float(lower_band), float(ema), float(macd_signal), float(macd_hist), float(cci), float(rsi), float(adx), float(slow_k), float(slow_d))
