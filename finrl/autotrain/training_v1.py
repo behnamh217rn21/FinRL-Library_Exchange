@@ -133,7 +133,7 @@ def main():
     ddpg_params = {"actor_lr": 5e-06,
                    "critic_lr": 5e-06,
                    "gamma": 0.99,
-                   "batch_size": 1024,
+                   "batch_size": 64,
                    "eval_env": env_trade}
     
     policy_kwargs = {"net_arch": ["lstm", \
@@ -154,7 +154,7 @@ def main():
     
     print("****Train_Model****")
     DDPG_model = agent.train_model(model=DDPG_model, 
-                                   total_timesteps=500000,
+                                   total_timesteps=100000,
                                    log_interval=1)
     
     print("****Model Saving****")
