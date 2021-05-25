@@ -176,8 +176,8 @@ class rates_subscriptions(DWX_ZMQ_Strategy):
                                                        np.log(processed.volume * processed.close), 0)
                     processed['change'] = (processed.close - processed.open) / processed.close
                     processed['daily_variance'] = (processed.high - processed.low) / processed.close
-                    print(processed)
                     """
+                    print(processed)
                     processed.to_csv(file)
                     
                     with open('./finrl/marketdata/f_time.txt', 'w') as f2:
