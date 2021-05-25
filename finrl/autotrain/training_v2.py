@@ -37,7 +37,7 @@ def main():
     #print(StockTradingEnvStopLossOnline.__doc__)
     
     print("****Build Train Environment****")
-    information_cols = ["close", "upper_band", "lower_band", "ema", "macd_signal", "macd_hist", "cci", "atr", "rsi", "adx"]
+    information_cols = ["close", "upper_band", "lower_band", "ema", "macd_signal", "macd_hist", "cci", "rsi", "adx", "slow_k", "slow_d"]
     env_train_kwargs = {'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
                         'hmax': 1,
