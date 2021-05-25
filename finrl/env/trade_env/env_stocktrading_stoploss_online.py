@@ -227,12 +227,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         sleep(0.2)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         self.fetch_dt = trunc_df['date'][0]
-        print("11111111111111")
-        print(self.fetch_dt)
-        print(type(self.fetch_dt))
         trunc_df = trunc_df.set_index('date')
-        print("22222222222222")
-        print(trunc_df)
 
         #time = self.fetch_dt.split(" ")[1]
         #if (datetime.today().weekday() == 4) and (time == "22:00:00"):
@@ -242,11 +237,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
         v = []
         for a in self.assets:
             try:
-                print("333333333333")
-                print(a)
                 subset = trunc_df[trunc_df[self.symbol] == a]
                 print("444444444444")
-                print(subset)
+                print(self.fetch_dt)
+                print(cols)
                 #subset.loc[date_time, "close"] =  adjusted_prices(a, subset.loc[date_time, "close"])
                 v += subset.loc[self.fetch_dt, cols].tolist()
                 print("555555555555")
