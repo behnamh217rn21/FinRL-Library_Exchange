@@ -238,13 +238,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
         for a in self.assets:
             try:
                 subset = trunc_df[trunc_df[self.symbol] == a]
-                print("444444444444")
-                print(self.fetch_dt)
-                print(cols)
                 #subset.loc[date_time, "close"] =  adjusted_prices(a, subset.loc[date_time, "close"])
                 v += subset.loc[self.fetch_dt, cols].tolist()
-                print("555555555555")
-                print(v)
             except:
                 print("No data received on {}".format(self.fetch_dt))
                 return self.get_date_vector(date)
