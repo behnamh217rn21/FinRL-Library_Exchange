@@ -241,8 +241,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 #subset.loc[date_time, "close"] =  adjusted_prices(a, subset.loc[date_time, "close"])
                 v += subset.loc[self.fetch_dt, cols].tolist()
             except:
-                print("No data received on {}".format(date))
-                return self.get_date_vector(date, cols)
+                print("No data received on {}".format(self.fetch_dt))
+                return self.get_date_vector(date)
         assert len(v) == len(self.assets) * len(cols)
         return v
 
