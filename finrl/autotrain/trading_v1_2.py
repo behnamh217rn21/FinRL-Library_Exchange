@@ -55,13 +55,12 @@ def main():
                             verbose = 0)
     
     DDPG_model = model.load(DDPG_model_path)
-    DRLAgent.DRL_prediction_online(model=DDPG_model,
-                                   environment=e_trade_gym)
+    running_hours = 365*24
+    df_account_value, df_actions = DRLAgent.DRL_prediction_online(model=DDPG_model,
+                                                                  environment=e_trade_gym,
+                                                                  H_counter=running_hours)
     
-    """
-    df_account_value, df_actions = DRLAgent.DRL_prediction(model=DDPG_model,
-                                                           #environment=e_trade_gym)
-    
+    """ 
     print("****Prediction Resault Saving****")
     now = datetime.datetime.now().strftime("%Y-%m-%d-%HH%MM")
     df_account_value.to_csv("./" + config.RESULTS_DIR + "/_df_account_value_" + now + ".csv")
