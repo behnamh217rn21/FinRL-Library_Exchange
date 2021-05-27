@@ -130,6 +130,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.episode_history = []
         self.printed_header = False
         self.cash_penalty_proportion = cash_penalty_proportion
+        
+        self.dates = []
         self.end_date = 365
         
                 
@@ -202,7 +204,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
     def get_date_vector(self, date, cols=None):
         if cols is None:
             cols = self.daily_information_cols
-        
+            self.dates.append(self._dt)
+            
             #if self.h_counter == 7: self.h_counter = 0
             #else: self.h_counter += 1                
             #date //= 7
@@ -225,10 +228,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 
         sleep(0.2)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
-        self.fetch_dt = trunc_df['date'][0]
+        self._dt = trunc_df['date'][0]
         trunc_df = trunc_df.set_index('date')
 
-        #time = self.fetch_dt.split(" ")[1]
+        #time = self._dt.split(" ")[1]
         #if (datetime.today().weekday() == 4) and (time == "22:00:00"):
             #print("sleep for two days ...")
             #sleep(172800+3600)
@@ -237,10 +240,10 @@ class StockTradingEnvStopLossOnline(gym.Env):
         for a in self.assets:
             try:
                 subset = trunc_df[trunc_df[self.symbol] == a]
-                #subset.loc[date_time, "close"] =  adjusted_prices(a, subset.loc[date_time, "close"])
-                v += subset.loc[self.fetch_dt, cols].tolist()
+                #subset.loc[self._dt, "close"] =  adjusted_prices(a, subset.loc[self._dt, "close"])
+                v += subset.loc[self._dt, cols].tolist()
             except:
-                print("No data received on {}".format(self.fetch_dt))
+                print("No data received on {}".format(self._dt))
                 return self.get_date_vector(date)
         assert len(v) == len(self.assets) * len(cols)
         return v
@@ -547,7 +550,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if self.current_step == 0:
             return None
         else:
-            self.account_information["date"] = self.dates_cnt[
+            self.account_information["date"] = self.dates[
                 -len(self.account_information["cash"]) :
             ]
             return pd.DataFrame(self.account_information)
@@ -556,7 +559,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if self.current_step == 0:
             return None
         else:
-            return pd.DataFrame({"date": self.dates_cnt[-len(self.account_information["cash"]) :],
+            return pd.DataFrame({"date": self.dates[-len(self.account_information["cash"]) :],
                                  "actions": self.actions_memory,
                                  "transactions": self.transaction_memory,
                                 })
