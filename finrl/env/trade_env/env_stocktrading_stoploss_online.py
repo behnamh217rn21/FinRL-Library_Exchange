@@ -550,6 +550,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if self.current_step == 0:
             return None
         else:
+            self.dates = np.array(self.dates)
             self.account_information["date"] = self.dates[
                 -len(self.account_information["cash"]) :
             ]
@@ -559,6 +560,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         if self.current_step == 0:
             return None
         else:
+            self.dates = np.array(self.dates)
             return pd.DataFrame({"date": self.dates[-len(self.account_information["cash"]) :],
                                  "actions": self.actions_memory,
                                  "transactions": self.transaction_memory,
