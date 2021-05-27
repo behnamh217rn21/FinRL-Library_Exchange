@@ -130,7 +130,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
         self.episode_history = []
         self.printed_header = False
         self.cash_penalty_proportion = cash_penalty_proportion
-        self.days = 365
+        self.end_date = 365
         
                 
     def seed(self, seed=None):
@@ -168,12 +168,11 @@ class StockTradingEnvStopLossOnline(gym.Env):
         now_t = Timestamp.now('UTC') + timedelta(hours=3)
         now_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
         _date = now_t.split(" ")[0]
-        self.dates = pd.bdate_range(start=_date, periods=self.days)
+        self.dates = pd.bdate_range(start=_date, periods=end_date)
         self.dates = self.dates + timedelta(minutes=990)
         
         self._h_cnt = 0
         """
-        self.dates_cnt = self.days*24
         
         rate = self.get_date_vector(self.date_index)
         mt4_data = pd.read_csv("/mnt/c/Users/Administrator/AppData/Roaming/MetaQuotes/" \
@@ -369,7 +368,7 @@ class StockTradingEnvStopLossOnline(gym.Env):
             self.log_step(reason="update")
             
         # if we're at the end
-        if self.date_index == self.dates_cnt - 1:
+        if self.date_index == self.end_date - 1:
             # if we hit the end, set reward to total gains (or losses)
             return self.return_terminal(reward=self.get_reward())
         else:
