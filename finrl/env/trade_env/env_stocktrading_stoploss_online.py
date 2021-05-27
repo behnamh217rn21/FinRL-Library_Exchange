@@ -203,8 +203,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
             
     def get_date_vector(self, date, cols=None):
         if cols is None:
+            _save_date = True
             cols = self.daily_information_cols
-            self.dates.append(self._dt)
             
             #if self.h_counter == 7: self.h_counter = 0
             #else: self.h_counter += 1                
@@ -225,11 +225,14 @@ class StockTradingEnvStopLossOnline(gym.Env):
                 
             print("****Start Fetching Data (rates subscriptions process)****")
             self.rates_subscriptions(self._symbols,)
-                
+            
         sleep(0.2)
         trunc_df = pd.read_csv("./" + config.DATA_SAVE_DIR + "/data.csv", sep=',', low_memory=False, index_col=[0])
         self._dt = trunc_df['date'][0]
         trunc_df = trunc_df.set_index('date')
+        
+        if _save_date:
+            self.dates.append(self._dt)
 
         #time = self._dt.split(" ")[1]
         #if (datetime.today().weekday() == 4) and (time == "22:00:00"):
