@@ -202,6 +202,8 @@ class StockTradingEnvStopLossOnline(gym.Env):
     
             
     def get_date_vector(self, date, cols=None):
+        _save_date = False
+        
         if cols is None:
             _save_date = True
             cols = self.daily_information_cols
