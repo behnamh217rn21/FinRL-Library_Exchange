@@ -84,6 +84,8 @@ def main():
     # Training data split
     train_df = data_split(processed, config.S_SPLIT, config.T_SPLIT)
     print("train dataset length: {}".format(str(len(train_df))))
+    trade_df = data_split(processed, config.T_SPLIT, config.F_SPLIT)
+    print("trade dataset length: {}".format(str(len(trade_df))))
 
     #print("****Environment Document****")
     #print(StockTradingEnvStopLoss.__doc__)
@@ -92,9 +94,9 @@ def main():
     in_L = pd.read_csv("./" + config.DATA_SAVE_DIR + "/in_L.csv", sep=';')
     initial_amount_train = in_L.loc[0, 'initial_amount_train']
     initial_amount_trade = in_L.loc[0, 'initial_amount_trade']
+    Leverage = in_L.loc[0, 'Leverage']
     print("Initial_Amount_Train : {}".format(initial_amount_train))
     print("Initial_Amount_Trade : {}".format(initial_amount_trade))
-    Leverage = in_L.loc[0, 'Leverage']
     print("Leverage : {}".format(Leverage))
 
     information_cols = ["close", "upper_band", "lower_band", "ema", "macd_signal", "macd_hist", "cci", "rsi", "adx", "slow_k", "slow_d"]
