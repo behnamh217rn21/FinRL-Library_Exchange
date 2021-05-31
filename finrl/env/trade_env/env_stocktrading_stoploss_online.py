@@ -441,11 +441,13 @@ class StockTradingEnvStopLossOnline(gym.Env):
             sells = -np.clip(actions, -np.inf, 0)
             sells = list(map(lambda x: round(x, ndigits=2), sells))
             sells = np.asarray(sells)
+            """
             # ProCent_accounts
             sells = np.where(sells<=-0.1, sells, 0) # ProCent_accounts
             #
+            """
             proceeds = np.dot(sells*100000, closings)
-            print("sell_actions [ProCent]:\n{} => {}".format(sells, proceeds))
+            print("sell_actions:\n{} => {}".format(sells, proceeds))
             costs = proceeds * self.sell_cost_pct
             coh = begin_cash + proceeds
 
@@ -453,11 +455,13 @@ class StockTradingEnvStopLossOnline(gym.Env):
             buys = np.clip(actions, 0, np.inf)
             buys = list(map(lambda x: round(x, ndigits=2), buys))
             buys = np.asarray(buys)
+            """
             # ProCent_accounts
             buys = np.where(buys>=0.1, buys, 0) # ProCent_accounts
             #
+            """
             spend = np.dot(buys*100000, closings)
-            print("buy_actions [ProCent]:\n{} => {}".format(buys, spend))
+            print("buy_actions:\n{} => {}".format(buys, spend))
             costs += spend * self.buy_cost_pct
 
             # if we run out of cash...
