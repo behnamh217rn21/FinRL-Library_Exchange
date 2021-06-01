@@ -34,7 +34,7 @@ def main():
     information_cols = ["close", "upper_band", "lower_band", "ema", "macd_signal", "macd_hist", "cci", "rsi", "adx", "slow_k", "slow_d"]
     env_trade_kwargs = {'sell_cost_pct': 0,
                         'buy_cost_pct': 0,
-                        'hmax': 1,
+                        'hmax': 2,
                         'cash_penalty_proportion': 0.2,
                         'daily_information_cols': information_cols, 
                         'print_verbosity': 1, 
