@@ -168,8 +168,8 @@ class t_class(DWX_ZMQ_Strategy):
                     # Note: Just for this example, only the Order Type is dynamic.
                     globals()[x_num] = self._zmq._generate_default_order_dict()
                     globals()[x_num]['_symbol'] = _symbol
-                    globals()[x_num]['_SL'] = 999
-                    globals()[x_num]['_TP'] = 60
+                    globals()[x_num]['_SL'] = 100
+                    globals()[x_num]['_TP'] = 100
                     globals()[x_num]['_comment'] = '{}_Trader'.format(_symbol)
                     # 0 (OP_BUY) or 1 (OP_SELL)
                     globals()[x_num]['_type'] = 0    
